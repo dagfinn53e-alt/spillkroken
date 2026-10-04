@@ -25,7 +25,7 @@
 <div class="pile" id="stock"></div><div class="pile" id="waste"></div><div></div>
 <div class="slot" id="f0"></div><div class="slot" id="f1"></div><div class="slot" id="f2"></div><div class="slot" id="f3"></div>
 </div><div class="tableau" id="tab"></div>
-<div class="help">Klikk på et åpent kort for å markere det (gul ramme), og klikk deretter på kolonnen du vil flytte det til. Du kan flytte hele rekker. Dobbeltklikk øverste kort for å legge det på essbunken.</div></div>
+<div class="help">Klikk på et åpent kort for å markere det med gul ramme. Klikk deretter direkte på kortet du vil legge det oppå. Du kan også flytte hele rekker. Dobbeltklikk øverste kort for å legge det på essbunken.</div></div>
 <script>
 const SUITS=['♠','♥','♦','♣']; let stock,waste,cols,found,sel;
 const isRed=c=>c.s==='♥'||c.s==='♦', nm=v=>v===1?'A':v===11?'J':v===12?'Q':v===13?'K':v;
@@ -55,7 +55,17 @@ let st=document.getElementById('stock');st.innerHTML='';st.onclick=draw;if(stock
 let wa=document.getElementById('waste');wa.innerHTML='';wa.onclick=null;if(waste.length){let e=cardEl(waste[waste.length-1],sel?.type==='w');e.onclick=ev=>{ev.stopPropagation();chooseWaste()};e.ondblclick=ev=>{ev.stopPropagation();autoFoundation('w')};wa.appendChild(e)}
 for(let i=0;i<4;i++){let f=document.getElementById('f'+i);f.innerHTML='';f.onclick=()=>toFoundation(i);if(found[i].length)f.appendChild(cardEl(found[i][found[i].length-1]));else f.innerHTML=`<div class="slotlabel">${SUITS[i]}</div>`}
 let tab=document.getElementById('tab');tab.innerHTML='';
-cols.forEach((col,ci)=>{let d=document.createElement('div');d.className='col';d.onclick=()=>moveToCol(ci);col.forEach((c,idx)=>{let e=cardEl(c,sel?.type==='c'&&sel.ci===ci&&sel.idx===idx);e.style.top=(idx*34)+'px';e.style.zIndex=idx+1;if(c.up){e.onclick=ev=>{ev.stopPropagation();chooseCol(ci,idx)};e.ondblclick=ev=>{ev.stopPropagation();autoFoundation('c',ci,idx)}}d.appendChild(e)});tab.appendChild(d)})
+cols.forEach((col,ci)=>{let d=document.createElement('div');d.className='col';d.onclick=()=>moveToCol(ci);col.forEach((c,idx)=>{let e=cardEl(c,sel?.type==='c'&&sel.ci===ci&&sel.idx===idx);e.style.top=(idx*34)+'px';e.style.zIndex=idx+1;if(c.up){
+e.onclick=ev=>{
+ ev.stopPropagation();
+ if(sel && !(sel.type==='c' && sel.ci===ci && sel.idx===idx)){
+   moveToCol(ci);
+ }else{
+   chooseCol(ci,idx);
+ }
+};
+e.ondblclick=ev=>{ev.stopPropagation();autoFoundation('c',ci,idx)}
+}d.appendChild(e)});tab.appendChild(d)})
 }
 newGame();
 </script></body></html>
