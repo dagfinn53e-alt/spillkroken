@@ -4,54 +4,58 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>7-kabalen – Spillglede</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle,#16804b,#064b2d);font-family:Arial,sans-serif;color:white;min-height:100vh}
-.top{text-align:center;padding:12px}.top h1{margin:5px;color:#ffe16a;text-shadow:0 3px #4b2b00;font-size:clamp(30px,5vw,55px)}
-.controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:8px}.btn{border:2px solid #5a2b0e;border-radius:22px;padding:9px 18px;background:#ffd85b;color:#32190d;font-weight:900;text-decoration:none;cursor:pointer}
-.board{max-width:1100px;margin:auto;padding:10px}.upper{display:grid;grid-template-columns:1fr 1fr .35fr 1fr 1fr 1fr 1fr;gap:8px;min-height:130px}
-.slot,.pile{width:100%;aspect-ratio:0.70;border:2px dashed #ffffff88;border-radius:9px;position:relative;max-height:130px;min-height:92px}
-.card{position:absolute;left:0;top:0;width:100%;aspect-ratio:.70;background:white;border:2px solid #222;border-radius:8px;color:#111;font-weight:900;font-size:clamp(17px,3vw,29px);padding:5px;box-shadow:0 2px 4px #0007;user-select:none;cursor:pointer}
-.card.red{color:#d11928}.card.down{background:repeating-linear-gradient(45deg,#153f9d 0 8px,#fff 8px 11px);color:transparent;border:3px solid white}
-.tableau{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:25px}.col{min-height:440px;position:relative;border-radius:8px}
-.hint{text-align:center;font-weight:700;margin:12px 8px 0;color:#eaffef}.status{text-align:center;min-height:28px;color:#ffe16a;font-weight:900;font-size:18px}
-@media(max-width:650px){.board{padding:5px}.upper,.tableau{gap:4px}.col{min-height:360px}.card{padding:3px}.upper{min-height:95px}.slot,.pile{min-height:72px}.tableau{margin-top:14px}}
-</style></head><body>
-<div class="top"><h1>🃏 7-KABALEN</h1>
-<div class="controls"><button class="btn" onclick="newGame()">🔄 Ny kabal</button><a class="btn" href="kortspill.html">← Kortspill</a><a class="btn" href="index.html">🏠 Spillglede</a></div>
-<div class="status" id="status">Klikk på kortstokken for å trekke kort.</div></div>
-<div class="board">
-<div class="upper">
-<div class="pile" id="stock" onclick="draw()"></div><div class="pile" id="waste"></div><div></div>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 15%,#16815a,#06472f 70%);font-family:Arial,sans-serif;color:#fff}
+.top{text-align:center;padding:10px}.top h1{margin:4px;color:#ffd85b;font-size:clamp(32px,5vw,58px);text-shadow:0 4px #5a2708}
+.controls{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}.btn{border:2px solid #6a330e;border-radius:24px;padding:9px 18px;background:linear-gradient(#ffe271,#e7a72c);color:#32190d;font-weight:900;text-decoration:none;cursor:pointer}
+.status{text-align:center;min-height:28px;color:#ffe477;font-weight:900;font-size:18px;padding-top:5px}
+.board{max-width:1120px;margin:auto;padding:10px}.upper{display:grid;grid-template-columns:1fr 1fr .35fr 1fr 1fr 1fr 1fr;gap:9px;min-height:145px}
+.slot,.pile{position:relative;aspect-ratio:.70;border:2px dashed #ffffff88;border-radius:12px;max-height:140px;min-height:95px}
+.slotlabel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;opacity:.55}
+.card{position:absolute;left:0;top:0;width:100%;aspect-ratio:.70;background:linear-gradient(145deg,#fff,#f2ead9);border:2px solid #24160f;border-radius:10px;color:#17120f;font-weight:900;box-shadow:0 3px 7px #0008;cursor:pointer;user-select:none;overflow:hidden}
+.card .tl{position:absolute;left:7px;top:4px;font-size:clamp(16px,2.1vw,27px);line-height:.9;text-align:center}.card .mid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(27px,4vw,50px)}
+.card.red{color:#c71928}.card.down{background:repeating-linear-gradient(45deg,#173e9b 0 7px,#2d62d1 7px 12px,#fff 12px 14px);border:4px solid #fff;color:transparent}
+.card.selected{outline:5px solid #ffd83d;transform:translateY(-5px);z-index:99}
+.tableau{display:grid;grid-template-columns:repeat(7,1fr);gap:9px;margin-top:20px}.col{min-height:470px;position:relative;border-radius:10px}
+.help{text-align:center;font-weight:700;padding:12px 8px 25px;color:#eafff1}
+@media(max-width:650px){.board{padding:5px}.upper,.tableau{gap:4px}.upper{min-height:100px}.slot,.pile{min-height:70px}.tableau{margin-top:10px}.col{min-height:390px}.card .tl{left:3px;top:3px}.help{font-size:13px}}
+</style></head>
+<body>
+<div class="top"><h1>🃏 7-KABALEN</h1><div class="controls"><button class="btn" onclick="newGame()">🔄 Ny kabal</button><a class="btn" href="kortspill.html">← Kortspill</a><a class="btn" href="index.html">🏠 Spillglede</a></div><div class="status" id="status"></div></div>
+<div class="board"><div class="upper">
+<div class="pile" id="stock"></div><div class="pile" id="waste"></div><div></div>
 <div class="slot" id="f0"></div><div class="slot" id="f1"></div><div class="slot" id="f2"></div><div class="slot" id="f3"></div>
-</div>
-<div class="tableau" id="tab"></div>
-<div class="hint">Klikk først på kortet du vil flytte, og deretter på bunken du vil flytte det til. Dobbeltklikk et åpent kort for å sende det til riktig essbunke.</div>
-</div>
+</div><div class="tableau" id="tab"></div>
+<div class="help">Klikk på et åpent kort for å markere det (gul ramme), og klikk deretter på kolonnen du vil flytte det til. Du kan flytte hele rekker. Dobbeltklikk øverste kort for å legge det på essbunken.</div></div>
 <script>
-const suits=['♠','♥','♦','♣'], red=s=>s==='♥'||s==='♦';
-let stock=[],waste=[],cols=[],found=[[],[],[],[]],sel=null;
-function deck(){let d=[];for(let s=0;s<4;s++)for(let v=1;v<=13;v++)d.push({s:suits[s],v,up:false});return d.sort(()=>Math.random()-.5)}
-function name(v){return v===1?'A':v===11?'J':v===12?'Q':v===13?'K':v}
-function newGame(){let d=deck();stock=[];waste=[];found=[[],[],[],[]];cols=Array.from({length:7},()=>[]);
-for(let c=0;c<7;c++)for(let r=0;r<=c;r++){let x=d.pop();x.up=r===c;cols[c].push(x)} stock=d; sel=null; msg('Klikk på kortstokken for å trekke kort.');render()}
-function msg(x){document.getElementById('status').textContent=x}
-function draw(){sel=null;if(stock.length){let c=stock.pop();c.up=true;waste.push(c)}else if(waste.length){stock=waste.reverse().map(c=>({...c,up:false}));waste=[]}render()}
-function cardHTML(c,top,click,dbl=''){return `<div class="card ${c.up?(red(c.s)?'red':''):'down'}" style="top:${top}px" onclick="${click};event.stopPropagation()" ${dbl?`ondblclick="${dbl};event.stopPropagation()"`:''}>${c.up?name(c.v)+c.s:''}</div>`}
-function select(src,a,b){sel={src,a,b};msg('Velg hvor kortet skal flyttes.');render()}
-function targetCol(i){if(!sel)return;let moving=getMoving(); if(!moving.length)return;
-let dest=cols[i], first=moving[0], ok=dest.length?dest.at(-1).up&&dest.at(-1).v===first.v+1&&red(dest.at(-1).s)!==red(first.s):first.v===13;
-if(ok){removeMoving();cols[i].push(...moving);flip(sel?.a);sel=null;msg('Bra trekk!');render();check()}else msg('Det trekket er ikke lov.')}
-function getMoving(){if(!sel)return[];if(sel.src==='w')return [waste.at(-1)];if(sel.src==='c')return cols[sel.a].slice(sel.b);return[]}
-function removeMoving(){if(sel.src==='w')waste.pop();else if(sel.src==='c')cols[sel.a].splice(sel.b)}
-function flip(i){if(i!=null&&cols[i]?.length&&!cols[i].at(-1).up)cols[i].at(-1).up=true}
-function toFoundation(src,a,b){let c=src==='w'?waste.at(-1):cols[a][b];if(!c||!c.up)return;let si=suits.indexOf(c.s),f=found[si];if((!f.length&&c.v===1)||(f.length&&f.at(-1).v+1===c.v)){if(src==='w')waste.pop();else{if(b!==cols[a].length-1)return;cols[a].pop();flip(a)}f.push(c);sel=null;msg('Kort lagt på essbunken.');render();check()}else msg('Kortet kan ikke legges der ennå.')}
-function foundationClick(i){if(!sel)return;let m=getMoving();if(m.length!==1)return;let c=m[0],f=found[i];if(suits.indexOf(c.s)===i&&((!f.length&&c.v===1)||(f.length&&f.at(-1).v+1===c.v))){removeMoving();flip(sel.a);f.push(c);sel=null;render();check()}else msg('Det trekket er ikke lov.')}
-function check(){if(found.reduce((n,f)=>n+f.length,0)===52){msg('🏆 GRATULERER! KABALEN GIKK OPP! 🏆');setTimeout(()=>alert('🏆 Gratulerer! Du klarte 7-kabalen!'),200)}}
+const SUITS=['♠','♥','♦','♣']; let stock,waste,cols,found,sel;
+const isRed=c=>c.s==='♥'||c.s==='♦', nm=v=>v===1?'A':v===11?'J':v===12?'Q':v===13?'K':v;
+function shuffled(){let d=[];for(const s of SUITS)for(let v=1;v<=13;v++)d.push({s,v,up:false});for(let i=d.length-1;i;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d}
+function newGame(){let d=shuffled();stock=[];waste=[];cols=Array.from({length:7},()=>[]);found=Array.from({length:4},()=>[]);sel=null;
+for(let c=0;c<7;c++)for(let r=0;r<=c;r++){let x=d.pop();x.up=r===c;cols[c].push(x)}stock=d;msg('Klikk kortstokken for å trekke kort.');render()}
+function msg(t){document.getElementById('status').textContent=t}
+function cardEl(c,selected=false){let e=document.createElement('div');e.className='card '+(c.up?(isRed(c)?'red ':''):'down ')+(selected?'selected':'');if(c.up)e.innerHTML=`<div class="tl">${nm(c.v)}<br>${c.s}</div><div class="mid">${c.s}</div>`;return e}
+function draw(){sel=null;if(stock.length){let c=stock.pop();c.up=true;waste.push(c)}else if(waste.length){stock=waste.reverse();stock.forEach(c=>c.up=false);waste=[]}render()}
+function chooseWaste(){if(!waste.length)return;sel={type:'w'};msg('Kort valgt – klikk på en kolonne eller essbunke.');render()}
+function chooseCol(ci,idx){if(!cols[ci][idx].up)return;sel={type:'c',ci,idx};msg('Kort valgt – klikk på kolonnen du vil flytte til.');render()}
+function moving(){return !sel?[]:sel.type==='w'?[waste[waste.length-1]]:cols[sel.ci].slice(sel.idx)}
+function removeSel(){if(sel.type==='w')waste.pop();else cols[sel.ci].splice(sel.idx)}
+function flip(ci){if(ci!==undefined&&cols[ci].length&&!cols[ci][cols[ci].length-1].up)cols[ci][cols[ci].length-1].up=true}
+function moveToCol(di){if(!sel)return;let mv=moving(),c=mv[0],dest=cols[di],last=dest[dest.length-1];
+let ok=dest.length?(last.up&&last.v===c.v+1&&isRed(last)!==isRed(c)):c.v===13;
+if(!ok){msg('Det trekket er ikke lov.');return}
+let old=sel.type==='c'?sel.ci:undefined;removeSel();dest.push(...mv);flip(old);sel=null;msg('Bra trekk!');render()}
+function toFoundation(i){if(!sel)return;let mv=moving();if(mv.length!==1){msg('Bare ett kort kan flyttes til essbunken.');return}
+let c=mv[0],f=found[i];let ok=SUITS[i]===c.s&&((!f.length&&c.v===1)||(f.length&&f[f.length-1].v+1===c.v));
+if(!ok){msg('Det kortet kan ikke legges der ennå.');return}
+let old=sel.type==='c'?sel.ci:undefined;removeSel();f.push(c);flip(old);sel=null;msg('Kort lagt på essbunken.');render();win()}
+function autoFoundation(type,ci,idx){if(type==='c'&&idx!==cols[ci].length-1)return;sel=type==='w'?{type:'w'}:{type:'c',ci,idx};let c=moving()[0];toFoundation(SUITS.indexOf(c.s))}
+function win(){if(found.reduce((a,f)=>a+f.length,0)===52){msg('🏆 GRATULERER – KABALEN GIKK OPP! 🏆');setTimeout(()=>alert('🏆 Gratulerer! Du klarte 7-kabalen!'),150)}}
 function render(){
-let st=document.getElementById('stock');st.innerHTML=stock.length?cardHTML({up:false},0,'draw()'):'<div style="text-align:center;padding-top:35%;font-size:28px">↻</div>';
-let w=document.getElementById('waste');w.innerHTML=waste.length?cardHTML(waste.at(-1),0,"select('w',0,0)","toFoundation('w',0,0)"):'';
-for(let i=0;i<4;i++){let e=document.getElementById('f'+i);e.onclick=()=>foundationClick(i);e.innerHTML=found[i].length?cardHTML(found[i].at(-1),0,''): `<div style="text-align:center;padding-top:35%;font-size:25px">${suits[i]}</div>`}
-let t=document.getElementById('tab');t.innerHTML='';
-cols.forEach((col,i)=>{let d=document.createElement('div');d.className='col';d.onclick=()=>targetCol(i);col.forEach((c,j)=>{let top=j*32;let clk=c.up?`select('c',${i},${j})`:'';let dbl=c.up&&j===col.length-1?`toFoundation('c',${i},${j})`:'';d.innerHTML+=cardHTML(c,top,clk,dbl)});t.appendChild(d)})
+let st=document.getElementById('stock');st.innerHTML='';st.onclick=draw;if(stock.length)st.appendChild(cardEl({up:false}));else st.innerHTML='<div class="slotlabel">↻</div>';
+let wa=document.getElementById('waste');wa.innerHTML='';wa.onclick=null;if(waste.length){let e=cardEl(waste[waste.length-1],sel?.type==='w');e.onclick=ev=>{ev.stopPropagation();chooseWaste()};e.ondblclick=ev=>{ev.stopPropagation();autoFoundation('w')};wa.appendChild(e)}
+for(let i=0;i<4;i++){let f=document.getElementById('f'+i);f.innerHTML='';f.onclick=()=>toFoundation(i);if(found[i].length)f.appendChild(cardEl(found[i][found[i].length-1]));else f.innerHTML=`<div class="slotlabel">${SUITS[i]}</div>`}
+let tab=document.getElementById('tab');tab.innerHTML='';
+cols.forEach((col,ci)=>{let d=document.createElement('div');d.className='col';d.onclick=()=>moveToCol(ci);col.forEach((c,idx)=>{let e=cardEl(c,sel?.type==='c'&&sel.ci===ci&&sel.idx===idx);e.style.top=(idx*34)+'px';e.style.zIndex=idx+1;if(c.up){e.onclick=ev=>{ev.stopPropagation();chooseCol(ci,idx)};e.ondblclick=ev=>{ev.stopPropagation();autoFoundation('c',ci,idx)}}d.appendChild(e)});tab.appendChild(d)})
 }
 newGame();
 </script></body></html>
