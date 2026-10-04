@@ -20,7 +20,12 @@ h1{text-align:center;color:#ffd94f;font-size:46px;margin:0;text-shadow:3px 3px #
 <div class="top"><a class="back" href="index.html">← Spillglede</a><div class="logo">SPILLGLEDE 🎲</div></div>
 <div class="board"><div class="inner"><h1>YATZY</h1><div class="sub">Kast · hold · velg poeng · maks 3 kast</div>
 <div id="dice" class="dice"></div><div class="controls"><button id="roll" class="roll">KAST TERNINGENE</button></div><div id="msg" class="msg">Trykk på knappen for å starte.</div>
-<div id="score" class="score"></div><div class="total">TOTAL: <span id="total">0</span> POENG</div><button id="new" class="new">↻ Nytt spill</button>
+<div id="score" class="score"></div>
+<div class="total" style="font-size:18px;line-height:1.8">
+  ØVRE SUM: <span id="upper">0</span> / 63<br>
+  BONUS: <span id="bonus">0</span> POENG
+</div>
+<div class="total">TOTAL: <span id="total">0</span> POENG</div><button id="new" class="new">↻ Nytt spill</button>
 </div></div></div>
 <script>
 const C=[["Enere","n1"],["Toere","n2"],["Treere","n3"],["Firere","n4"],["Femmere","n5"],["Seksere","n6"],["Ett par","pair"],["To par","two"],["Tre like","three"],["Fire like","four"],["Liten straight","small"],["Stor straight","large"],["Hus","house"],["Sjanse","chance"],["Yatzy","yatzy"]];
@@ -38,7 +43,11 @@ function val(k){let c=cnt(),v=Object.keys(c).map(Number),sum=d.reduce((a,b)=>a+b
  if(k==="house"){let a=Object.values(c).sort();return JSON.stringify(a)==="[2,3]"?sum:0}
  if(k==="chance")return sum;if(k==="yatzy")return v.some(x=>c[x]===5)?50:0;return 0}
 function dice(){D.innerHTML="";d.forEach((x,i)=>{let b=document.createElement("button");b.className="die"+(h[i]?" held":"");b.textContent=x;b.onclick=()=>{if(!r)return;h[i]=!h[i];dice()};D.appendChild(b)})}
-function score(){S.innerHTML="";C.forEach(([n,k])=>{let b=document.createElement("button"),done=k in s;b.disabled=done||!r;b.innerHTML="<span>"+n+"</span><strong>"+(done?s[k]:(r?val(k):"–"))+"</strong>";b.onclick=()=>pick(k);S.appendChild(b)});document.querySelector("#total").textContent=Object.values(s).reduce((a,b)=>a+b,0)}
+function score(){S.innerHTML="";C.forEach(([n,k])=>{let b=document.createElement("button"),done=k in s;b.disabled=done||!r;b.innerHTML="<span>"+n+"</span><strong>"+(done?s[k]:(r?val(k):"–"))+"</strong>";b.onclick=()=>pick(k);S.appendChild(b)});let upper=["n1","n2","n3","n4","n5","n6"].reduce((a,k)=>a+(s[k]||0),0);
+let bonus=upper>=63?50:0;
+document.querySelector("#upper").textContent=upper;
+document.querySelector("#bonus").textContent=bonus;
+document.querySelector("#total").textContent=Object.values(s).reduce((a,b)=>a+b,0)+bonus}
 function roll(){if(r>=3)return;d=d.map((x,i)=>h[i]?x:Math.ceil(Math.random()*6));r++;M.textContent="Kast "+r+" av 3 – trykk på terninger du vil holde, eller velg poeng.";R.textContent=r<3?"KAST IGJEN":"VELG POENG";R.disabled=r>=3;dice();score()}
 function pick(k){s[k]=val(k);r=0;h=[0,0,0,0,0];R.disabled=false;R.textContent="KAST TERNINGENE";M.textContent=Object.keys(s).length===C.length?"🏆 Spillet er ferdig!":"Poeng lagret – klar for neste runde.";dice();score()}
 function reset(){d=[1,1,1,1,1];h=[0,0,0,0,0];r=0;s={};R.disabled=false;R.textContent="KAST TERNINGENE";M.textContent="Trykk på knappen for å starte.";dice();score()}
