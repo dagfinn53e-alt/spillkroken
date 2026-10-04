@@ -14,6 +14,9 @@ h1{text-align:center;color:#ffd94f;font-size:46px;margin:0;text-shadow:3px 3px #
 .controls{text-align:center}.roll{border:3px solid #ffd35b;background:linear-gradient(#29a942,#087c25);color:#fff;font-size:20px;font-weight:900;padding:15px 32px;border-radius:30px;cursor:pointer;box-shadow:0 5px 0 #075b1d}.roll:disabled{filter:grayscale(1);opacity:.6}.msg{text-align:center;min-height:26px;margin:15px;color:#fff4cd;font-weight:700}
 .score{display:grid;grid-template-columns:1fr 1fr;gap:8px}.score button{display:flex;justify-content:space-between;border:2px solid #a77835;background:#fff8df;color:#33220f;border-radius:11px;padding:11px 13px;font-weight:800;cursor:pointer}.score button:hover:not(:disabled){background:#ffe9a1}.score button:disabled{cursor:default;background:#ded5ba;color:#514b3d}
 .total{margin-top:18px;padding:15px;border-radius:13px;background:#241207;border:2px solid #c98b36;font-size:25px;font-weight:900;text-align:center;color:#ffd94f}.new{display:block;margin:15px auto 0;border:1px solid #e6c077;background:#5d2c15;color:#fff;padding:11px 18px;border-radius:12px;font-weight:800;cursor:pointer}
+.finish{display:none;position:fixed;inset:0;background:#000b;z-index:50;align-items:center;justify-content:center;padding:18px}
+.finish.show{display:flex}.finishbox{width:min(520px,100%);text-align:center;background:linear-gradient(145deg,#6b3519,#3c1d0e);border:5px solid #e0a33c;border-radius:28px;padding:28px;box-shadow:0 20px 70px #000}
+.finishbox h2{font-size:38px;color:#ffd94f;margin:0 0 8px}.finalscore{font-size:56px;font-weight:900;margin:15px 0;color:#fff}.finishbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.finishbtns button,.finishbtns a{border:2px solid #ffd35b;background:#168f31;color:#fff;padding:13px 20px;border-radius:22px;font-weight:900;text-decoration:none;cursor:pointer}
 @media(max-width:600px){.wrap{padding:9px}.board{padding:10px;border-width:3px}.inner{padding:12px}.die{width:59px;height:59px;font-size:34px;border-radius:13px}.score{grid-template-columns:1fr}h1{font-size:37px}.logo{font-size:22px}}
 </style></head>
 <body><div class="wrap">
@@ -52,4 +55,33 @@ function roll(){if(r>=3)return;d=d.map((x,i)=>h[i]?x:Math.ceil(Math.random()*6))
 function pick(k){s[k]=val(k);r=0;h=[0,0,0,0,0];R.disabled=false;R.textContent="KAST TERNINGENE";M.textContent=Object.keys(s).length===C.length?"🏆 Spillet er ferdig!":"Poeng lagret – klar for neste runde.";dice();score()}
 function reset(){d=[1,1,1,1,1];h=[0,0,0,0,0];r=0;s={};R.disabled=false;R.textContent="KAST TERNINGENE";M.textContent="Trykk på knappen for å starte.";dice();score()}
 R.onclick=roll;document.querySelector("#new").onclick=()=>{if(confirm("Vil du starte et nytt spill?"))reset()};reset();
+</script>
+<div id="finish" class="finish">
+ <div class="finishbox">
+  <h2>🏆 SPILLET ER FERDIG!</h2>
+  <div>Din sluttpoengsum:</div>
+  <div class="finalscore"><span id="finalscore">0</span></div>
+  <div class="finishbtns">
+   <button id="again">🎲 Spill igjen</button>
+   <a href="index.html">← Til Spillglede</a>
+  </div>
+ </div>
+</div>
+<script>
+function grandTotal(){
+ let upper=["n1","n2","n3","n4","n5","n6"].reduce((a,k)=>a+(s[k]||0),0);
+ return Object.values(s).reduce((a,b)=>a+b,0)+(upper>=63?50:0);
+}
+const oldPick=pick;
+pick=function(k){
+ oldPick(k);
+ if(Object.keys(s).length===C.length){
+   document.querySelector("#finalscore").textContent=grandTotal()+" poeng";
+   document.querySelector("#finish").classList.add("show");
+ }
+}
+document.querySelector("#again").onclick=()=>{
+ document.querySelector("#finish").classList.remove("show");
+ reset();
+};
 </script></body></html>
