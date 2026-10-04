@@ -4,66 +4,48 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Memory – Spillglede</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Arial,sans-serif;color:#fff;background:radial-gradient(circle at top,#74411f,#2b160d 72%)}
-header{text-align:center;padding:18px 10px 8px}
-h1{margin:0;color:#ffd85b;font-size:clamp(38px,7vw,72px);text-shadow:0 4px #5b270c,0 8px 16px #000}
-.sub{font-weight:800;font-size:clamp(15px,2vw,21px);margin:5px}
-.controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px}
-.btn{border:3px solid #63300e;border-radius:28px;padding:10px 20px;background:linear-gradient(#ffe477,#e7aa31);color:#351a0b;font-weight:900;text-decoration:none;cursor:pointer;font-size:16px}
-.stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:10px auto 14px}
-.stat{background:#fff1;border:2px solid #ffd85b;border-radius:18px;padding:8px 16px;font-weight:900}
-.game{max-width:900px;margin:auto;padding:8px 14px 30px;display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;color:#fff;background:radial-gradient(circle at top,#75431f,#2a150c 72%)}
+header{text-align:center;padding:16px 10px 5px}h1{margin:0;color:#ffd85b;font-size:clamp(38px,7vw,70px);text-shadow:0 4px #5b270c,0 8px 16px #000}
+.sub{font-weight:800;font-size:clamp(15px,2vw,20px);margin:4px}.controls,.levels,.stats{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:10px}
+.btn,.level{border:3px solid #63300e;border-radius:28px;padding:9px 18px;background:linear-gradient(#ffe477,#e7aa31);color:#351a0b;font-weight:900;text-decoration:none;cursor:pointer;font-size:16px}
+.level.active{background:linear-gradient(#55d768,#128832);color:white;border-color:#ffe16a}
+.stat{background:#fff1;border:2px solid #ffd85b;border-radius:18px;padding:7px 14px;font-weight:900}
+.game{max-width:920px;margin:auto;padding:7px 12px 28px;display:grid;gap:11px;justify-content:center}
+.game.easy{grid-template-columns:repeat(4,minmax(70px,145px))}.game.normal{grid-template-columns:repeat(4,minmax(65px,140px))}.game.hard{grid-template-columns:repeat(6,minmax(55px,125px))}
 .tile{aspect-ratio:1/1;border:4px solid #f0c44e;border-radius:18px;position:relative;cursor:pointer;perspective:700px;background:none;padding:0}
-.inner{position:absolute;inset:0;transition:transform .42s;transform-style:preserve-3d}
-.tile.open .inner,.tile.matched .inner{transform:rotateY(180deg)}
+.inner{position:absolute;inset:0;transition:transform .4s;transform-style:preserve-3d}.tile.open .inner,.tile.matched .inner{transform:rotateY(180deg)}
 .face{position:absolute;inset:0;border-radius:13px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center}
-.back{background:linear-gradient(145deg,#2456b5,#102d70);font-size:clamp(30px,6vw,60px);text-shadow:0 3px #000;box-shadow:inset 0 0 0 5px #ffffff33}
-.front{transform:rotateY(180deg);background:linear-gradient(145deg,#fff8df,#e8c97c);font-size:clamp(42px,8vw,78px);box-shadow:inset 0 0 0 4px #7a3d16}
+.back{background:linear-gradient(145deg,#2456b5,#102d70);font-size:clamp(27px,5vw,55px);text-shadow:0 3px #000;box-shadow:inset 0 0 0 5px #ffffff33}
+.front{transform:rotateY(180deg);background:linear-gradient(145deg,#fff8df,#e8c97c);font-size:clamp(34px,7vw,70px);box-shadow:inset 0 0 0 4px #7a3d16}
 .tile.matched{opacity:.72;cursor:default}.tile.matched .front{background:linear-gradient(145deg,#c8ffd0,#70d881)}
-.message{text-align:center;color:#ffe16a;font-size:21px;font-weight:900;min-height:30px}
-.overlay{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:10;padding:20px}
-.overlay.show{display:flex}.box{max-width:500px;width:100%;background:linear-gradient(#ffe8a0,#d99a3d);color:#32170b;border:6px solid #6a310e;border-radius:28px;text-align:center;padding:28px;box-shadow:0 15px 40px #000}
-.box h2{font-size:36px;margin:0 0 10px}.box p{font-size:20px;font-weight:800}
-@media(max-width:600px){.game{gap:7px;padding:5px 7px 20px}.tile{border-width:3px;border-radius:12px}.face{border-radius:8px}.stats{gap:6px}.stat{padding:6px 10px}}
-</style>
-</head>
+.message{text-align:center;color:#ffe16a;font-size:20px;font-weight:900;min-height:28px}
+.overlay{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;z-index:10;padding:20px}.overlay.show{display:flex}
+.box{max-width:500px;width:100%;background:linear-gradient(#ffe8a0,#d99a3d);color:#32170b;border:6px solid #6a310e;border-radius:28px;text-align:center;padding:28px;box-shadow:0 15px 40px #000}.box h2{font-size:36px;margin:0 0 10px}.box p{font-size:20px;font-weight:800}
+@media(max-width:650px){.game{gap:6px;padding:5px 6px 20px}.game.easy,.game.normal{grid-template-columns:repeat(4,1fr)}.game.hard{grid-template-columns:repeat(4,1fr)}.tile{border-width:3px;border-radius:11px}.face{border-radius:7px}.front{font-size:clamp(30px,10vw,52px)}.levels{gap:5px}.level{padding:8px 11px;font-size:14px}}
+</style></head>
 <body>
-<header><h1>🧠 MEMORY</h1><div class="sub">Finn to like bilder – hvor få forsøk klarer du det på?</div>
+<header>
+<h1>🧠 MEMORY – DYR</h1><div class="sub">Velg vanskelighetsgrad og finn alle parene</div>
+<div class="levels"><button class="level" id="easy" onclick="setLevel('easy')">🐣 Lett · 6 par</button><button class="level" id="normal" onclick="setLevel('normal')">🐾 Normal · 8 par</button><button class="level" id="hard" onclick="setLevel('hard')">🦁 Vanskelig · 12 par</button></div>
 <div class="controls"><button class="btn" onclick="newGame()">🔄 Nytt spill</button><a class="btn" href="index.html">🏠 Spillglede</a></div>
-<div class="stats"><div class="stat">Forsøk: <span id="moves">0</span></div><div class="stat">Par: <span id="pairs">0</span> / 8</div><div class="stat">Tid: <span id="time">0:00</span></div></div>
+<div class="stats"><div class="stat">Forsøk: <span id="moves">0</span></div><div class="stat">Par: <span id="pairs">0</span> / <span id="goal">8</span></div><div class="stat">Tid: <span id="time">0:00</span></div></div>
 <div class="message" id="msg">Klikk på to kort for å finne et par.</div></header>
-<main class="game" id="game"></main>
+<main class="game normal" id="game"></main>
 <div class="overlay" id="win"><div class="box"><h2>🏆 Du klarte det!</h2><p id="result"></p><button class="btn" onclick="newGame()">🎮 Spill igjen</button> <a class="btn" href="index.html">🏠 Spillglede</a></div></div>
 <script>
-const pictures=['🐶','🐱','🐼','🦊','🐸','🦁','🐵','🐧'];
-let cards=[],first=null,second=null,lock=false,moves=0,pairs=0,start=0,timer=null;
+const all=['🐶','🐱','🐼','🦊','🐸','🦁','🐵','🐧','🐰','🐨','🐯','🦄'];
+const cfg={easy:6,normal:8,hard:12};let level='normal',cards=[],first=null,second=null,lock=false,moves=0,pairs=0,start=0,timer=null;
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function newGame(){
- clearInterval(timer); timer=null; first=second=null; lock=false;moves=0;pairs=0;start=Date.now();
- document.getElementById('moves').textContent=0;document.getElementById('pairs').textContent=0;document.getElementById('time').textContent='0:00';document.getElementById('win').classList.remove('show');
- cards=shuffle([...pictures,...pictures].map((p,i)=>({p,id:i,open:false,matched:false})));
- render(); timer=setInterval(clock,1000);document.getElementById('msg').textContent='Klikk på to kort for å finne et par.';
-}
+function setLevel(l){level=l;newGame()}
+function newGame(){clearInterval(timer);timer=null;first=second=null;lock=false;moves=0;pairs=0;start=Date.now();let n=cfg[level];
+document.querySelectorAll('.level').forEach(x=>x.classList.remove('active'));document.getElementById(level).classList.add('active');
+let g=document.getElementById('game');g.className='game '+level;document.getElementById('moves').textContent=0;document.getElementById('pairs').textContent=0;document.getElementById('goal').textContent=n;document.getElementById('time').textContent='0:00';document.getElementById('win').classList.remove('show');
+let pics=shuffle([...all]).slice(0,n);cards=shuffle([...pics,...pics].map((p,i)=>({p,id:i,open:false,matched:false})));render();timer=setInterval(clock,1000);document.getElementById('msg').textContent='Klikk på to kort for å finne et par.'}
 function clock(){let s=Math.floor((Date.now()-start)/1000);document.getElementById('time').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
-function render(){
- const g=document.getElementById('game');g.innerHTML='';
- cards.forEach((c,i)=>{let b=document.createElement('button');b.className='tile'+(c.open?' open':'')+(c.matched?' matched':'');b.innerHTML=`<span class="inner"><span class="face back">★</span><span class="face front">${c.p}</span></span>`;b.onclick=()=>flip(i);g.appendChild(b)})
-}
-function flip(i){
- if(lock||cards[i].open||cards[i].matched)return;
- cards[i].open=true;render();
- if(first===null){first=i;return}
- second=i;moves++;document.getElementById('moves').textContent=moves;lock=true;
- if(cards[first].p===cards[second].p){
-   cards[first].matched=cards[second].matched=true;pairs++;document.getElementById('pairs').textContent=pairs;
-   document.getElementById('msg').textContent='🎉 Par!';first=second=null;lock=false;render();
-   if(pairs===8){clearInterval(timer);clock();setTimeout(()=>{document.getElementById('result').textContent=`Du fant alle 8 parene på ${moves} forsøk og ${document.getElementById('time').textContent}.`;document.getElementById('win').classList.add('show')},400)}
- } else {
-   document.getElementById('msg').textContent='Ikke par – prøv igjen.';
-   setTimeout(()=>{cards[first].open=cards[second].open=false;first=second=null;lock=false;render()},850)
- }
-}
+function render(){let g=document.getElementById('game');g.innerHTML='';cards.forEach((c,i)=>{let b=document.createElement('button');b.className='tile'+(c.open?' open':'')+(c.matched?' matched':'');b.innerHTML=`<span class="inner"><span class="face back">★</span><span class="face front">${c.p}</span></span>`;b.onclick=()=>flip(i);g.appendChild(b)})}
+function flip(i){if(lock||cards[i].open||cards[i].matched)return;cards[i].open=true;render();if(first===null){first=i;return}second=i;moves++;document.getElementById('moves').textContent=moves;lock=true;
+if(cards[first].p===cards[second].p){cards[first].matched=cards[second].matched=true;pairs++;document.getElementById('pairs').textContent=pairs;document.getElementById('msg').textContent='🎉 Par!';first=second=null;lock=false;render();
+if(pairs===cfg[level]){clearInterval(timer);clock();setTimeout(()=>{document.getElementById('result').textContent=`Du fant alle ${pairs} parene på ${moves} forsøk og ${document.getElementById('time').textContent}.`;document.getElementById('win').classList.add('show')},350)}}
+else{document.getElementById('msg').textContent='Ikke par – prøv igjen.';setTimeout(()=>{cards[first].open=cards[second].open=false;first=second=null;lock=false;render()},850)}}
 newGame();
-</script>
-</body></html>
+</script></body></html>
