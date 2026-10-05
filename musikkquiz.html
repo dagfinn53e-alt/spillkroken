@@ -1,0 +1,946 @@
+'<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Musikk Quiz</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#111827,#4c1d95,#7c2d12);
+  color:white;
+  text-align:center;
+}
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:25px;
+}
+h1{
+  font-size:44px;
+  margin-bottom:10px;
+}
+.card{
+  background:rgba(255,255,255,0.13);
+  border-radius:22px;
+  padding:25px;
+  margin:20px 0;
+  box-shadow:0 8px 25px rgba(0,0,0,.35);
+}
+button{
+  border:0;
+  border-radius:14px;
+  padding:14px 22px;
+  margin:8px;
+  font-size:18px;
+  cursor:pointer;
+  background:#facc15;
+  color:#111;
+  font-weight:bold;
+}
+button:hover{
+  background:#fde047;
+}
+button:focus{
+  outline:none;
+}
+.back{
+  background:#2563eb;
+  color:white;
+}
+.back:hover{
+  background:#1d4ed8;
+}
+.choice{
+  display:block;
+  width:90%;
+  max-width:560px;
+  margin:12px auto;
+  background:white;
+  color:#111;
+}
+.choice:hover{
+  background:#f3f4f6;
+}
+.choice:focus{
+  background:white;
+  outline:none;
+}
+.choice.correct:hover{
+  background:#22c55e!important;
+  color:white;
+}
+.choice.wrong:hover{
+  background:#ef4444!important;
+  color:white;
+}
+.correct{
+  background:#22c55e!important;
+  color:white;
+}
+.wrong{
+  background:#ef4444!important;
+  color:white;
+}
+.hidden{
+  display:none;
+}
+.small{
+  font-size:16px;
+  opacity:.9;
+}
+.medal{
+  font-size:32px;
+  font-weight:bold;
+}
+.note{
+  font-size:15px;
+  opacity:.85;
+}
+
+.statsBox{
+  background:rgba(255,255,255,0.16);
+  border-radius:18px;
+  padding:16px;
+  margin:18px auto;
+  max-width:620px;
+  font-size:18px;
+  line-height:1.7;
+}
+.levelBox{
+  margin-top:20px;
+}
+.levelBtn{
+  background:#a7f3d0;
+}
+.levelBtn.active{
+  background:#22c55e;
+  color:white;
+  transform:scale(1.05);
+}
+.confetti{
+  position:fixed;
+  font-size:28px;
+  pointer-events:none;
+  animation:fall 3s linear forwards;
+  z-index:9999;
+}
+@keyframes fall{
+  0%{transform:translateY(-50px) rotate(0deg);opacity:1;}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
+}
+
+
+.music-partner{
+  background:rgba(255,255,255,0.16);
+  border:1px solid rgba(255,255,255,0.35);
+  border-radius:24px;
+  padding:18px;
+  margin:18px 0 20px;
+  display:grid;
+  grid-template-columns:150px 1fr;
+  gap:18px;
+  align-items:center;
+  text-align:left;
+  box-shadow:0 8px 25px rgba(0,0,0,.25);
+}
+.music-partner-logo{
+  width:150px;
+  height:150px;
+  object-fit:cover;
+  border-radius:18px;
+  border:2px solid rgba(255,255,255,.65);
+  background:white;
+}
+.music-partner-eyebrow{
+  color:#facc15;
+  font-weight:900;
+  font-size:18px;
+  margin-bottom:6px;
+}
+.music-partner-title{
+  margin:0 0 6px;
+  font-size:28px;
+  color:white;
+}
+.music-partner-text{
+  margin:0 0 12px;
+  color:#f8fafc;
+  line-height:1.55;
+  font-size:16px;
+}
+.music-partner-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:#111827;
+  background:#facc15;
+  border-radius:999px;
+  padding:12px 18px;
+  font-weight:900;
+  box-shadow:0 6px 16px rgba(0,0,0,.18);
+}
+.music-partner-btn:hover{
+  background:#fde047;
+}
+@media(max-width:700px){
+  .music-partner{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+  .music-partner-logo{
+    margin:0 auto;
+  }
+}
+
+
+.bingo-link-box{
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.38);
+  border-radius:22px;
+  padding:20px;
+  margin:18px 0 22px;
+  box-shadow:0 8px 25px rgba(0,0,0,.25);
+}
+.bingo-link-box h2{
+  margin:0 0 8px;
+  font-size:30px;
+  color:#facc15;
+}
+.bingo-link-box p{
+  margin:0 0 14px;
+  color:#f8fafc;
+  line-height:1.55;
+  font-size:16px;
+}
+.bingo-link-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+  color:#111827;
+  background:#facc15;
+  border-radius:999px;
+  padding:14px 24px;
+  font-weight:900;
+  box-shadow:0 6px 16px rgba(0,0,0,.18);
+}
+.bingo-link-btn:hover{
+  background:#fde047;
+}
+
+
+.playerBtn.active{background:#22c55e;color:white;transform:scale(1.05)}
+#multiScores{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.scoreChip{padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.16);font-weight:900}
+.scoreChip.turnNow{background:#22c55e;color:white;box-shadow:0 0 0 2px #facc15}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🎵 Musikkquiz – Spillglede</h1>
+
+<button class="back" onclick="location.href='index.html'">
+⬅️ Tilbake til Spillglede
+</button>
+
+<p class="small">Velg tiår og kategori</p>
+
+<div class="card" id="playerSetup">
+  <h2>👥 Antall spillere</h2>
+  <button class="playerBtn active" onclick="selectPlayers(1,this)">1 spiller</button>
+  <button class="playerBtn" onclick="selectPlayers(2,this)">2 spillere</button>
+  <button class="playerBtn" onclick="selectPlayers(3,this)">3 spillere</button>
+  <button class="playerBtn" onclick="selectPlayers(4,this)">4 spillere</button>
+  <p class="note">Hver spiller får spørsmål etter tur. Riktig svar gir 1 poeng.</p>
+</div>
+<div id="setup" class="card">
+  <h2>Velg tiår</h2>
+  <button onclick="selectYear('60')">60-tallet</button>
+  <button onclick="selectYear('70')">70-tallet</button>
+  <button onclick="selectYear('80')">80-tallet</button>
+  <button onclick="selectYear('90')">90-tallet</button>
+
+  <h2>Velg kategori</h2>
+  <button onclick="selectCategory('Country')">Country</button>
+  <button onclick="selectCategory('Soul')">Soul</button>
+  <button onclick="selectCategory('Pop')">Pop</button>
+  <button onclick="selectCategory('Rock')">Rock</button><br><br><button onclick="startRandomQuiz()">🎲 Tilfeldig Musikkquiz</button>
+
+  <p id="chosen">Ingen valg enda</p>
+
+  <div class="levelBox">
+    <h2>Velg antall spørsmål per spiller</h2>
+    <button id="level10" class="levelBtn active" onclick="selectLevel(10)">🟢 10 spørsmål</button>
+    <button id="level20" class="levelBtn" onclick="selectLevel(20)">🟡 20 spørsmål</button>
+    <button id="level30" class="levelBtn" onclick="selectLevel(30)">🔴 30 spørsmål</button>
+    <button id="level50" class="levelBtn" onclick="selectLevel(50)">👑 50 spørsmål</button>
+  </div>
+
+  <button onclick="startQuiz()">Start Quiz</button>
+  <p class="note">Ved flere spillere får alle like mange spørsmål. Ved 20/30/50 blandes flere tiår innen valgt kategori.</p>
+</div>
+
+<div id="quiz" class="card hidden">
+  <h2 id="turnText" style="color:#facc15"></h2>
+  <div id="multiScores" class="statsBox"></div>
+  <h2 id="question"></h2>
+  <div id="answers"></div>
+  <p id="progress"></p>
+  <p id="score"></p>
+</div>
+
+<div id="result" class="card hidden">
+  <h2>🎉 Ferdig!</h2>
+  <p id="finalScore"></p>
+  <p id="medal" class="medal"></p>
+  <button onclick="restart()">Spill igjen</button>
+</div>
+
+</div>
+
+<script>
+let selectedYear="";
+let selectedCategory="";
+let currentQuestion=0;
+let score=0;
+let activeQuestions=[];
+let quizLength=10;
+
+const questions={
+
+"Country":[
+{q:"Hvem sang 'Ring of Fire'?",a:["Johnny Cash","Kenny Rogers","Willie Nelson","Merle Haggard"],correct:0},
+{q:"Hvem sang 'The Gambler'?",a:["Kenny Rogers","Johnny Cash","Alan Jackson","George Strait"],correct:0},
+{q:"Hvem sang 'Jolene'?",a:["Dolly Parton","Tammy Wynette","Patsy Cline","Loretta Lynn"],correct:0},
+{q:"Hvem sang 'On The Road Again'?",a:["Willie Nelson","Johnny Cash","Buck Owens","Kenny Rogers"],correct:0},
+{q:"Hvem sang 'Stand By Your Man'?",a:["Tammy Wynette","Dolly Parton","Skeeter Davis","Reba McEntire"],correct:0},
+{q:"Hvem sang 'Before The Next Teardrop Falls'?",a:["Freddy Fender","Merle Haggard","Buck Owens","Johnny Cash"],correct:0},
+{q:"Hvem sang 'Chattahoochee'?",a:["Alan Jackson","George Strait","Garth Brooks","Kenny Rogers"],correct:0},
+{q:"Hvem sang 'Friends in Low Places'?",a:["Garth Brooks","Alan Jackson","Willie Nelson","Johnny Cash"],correct:0},
+{q:"Hvem sang 'Achy Breaky Heart'?",a:["Billy Ray Cyrus","Kenny Rogers","George Strait","Alan Jackson"],correct:0},
+{q:"Hvem sang 'Man! I Feel Like a Woman!'?",a:["Shania Twain","Dolly Parton","Tammy Wynette","Reba McEntire"],correct:0},
+
+{q:"Hvem sang 'I Walk the Line'?",a:["Johnny Cash","Willie Nelson","Merle Haggard","Buck Owens"],correct:0},
+{q:"Hvem sang 'Lucille'?",a:["Kenny Rogers","Johnny Cash","George Jones","Alan Jackson"],correct:0},
+{q:"Hvem sang 'Coat of Many Colors'?",a:["Dolly Parton","Tammy Wynette","Loretta Lynn","Skeeter Davis"],correct:0},
+{q:"Hvem sang 'Blue Eyes Crying in the Rain'?",a:["Willie Nelson","Kenny Rogers","Johnny Cash","George Strait"],correct:0},
+{q:"Hvem sang 'Harper Valley PTA'?",a:["Jeannie C. Riley","Dolly Parton","Tammy Wynette","Patsy Cline"],correct:0},
+{q:"Hvem sang 'Act Naturally'?",a:["Buck Owens","Johnny Cash","Merle Haggard","Freddy Fender"],correct:0},
+{q:"Hvem sang 'Okie from Muskogee'?",a:["Merle Haggard","Willie Nelson","Johnny Cash","Kenny Rogers"],correct:0},
+{q:"Hvem sang 'Rhinestone Cowboy'?",a:["Glen Campbell","Kenny Rogers","George Strait","Alan Jackson"],correct:0},
+{q:"Hvem sang 'The Dance'?",a:["Garth Brooks","Alan Jackson","Kenny Rogers","George Strait"],correct:0},
+{q:"Hvem sang 'Any Man of Mine'?",a:["Shania Twain","Dolly Parton","Reba McEntire","Faith Hill"],correct:0},
+
+{q:"Hvem sang 'Folsom Prison Blues'?",a:["Johnny Cash","Merle Haggard","Buck Owens","Willie Nelson"],correct:0},
+{q:"Hvem sang 'Coward of the County'?",a:["Kenny Rogers","Johnny Cash","Garth Brooks","Alan Jackson"],correct:0},
+{q:"Hvem sang '9 to 5'?",a:["Dolly Parton","Shania Twain","Tammy Wynette","Reba McEntire"],correct:0},
+{q:"Hvem sang 'Always On My Mind'?",a:["Willie Nelson","Kenny Rogers","George Jones","Alan Jackson"],correct:0},
+{q:"Hvem sang 'The End of the World'?",a:["Skeeter Davis","Patsy Cline","Tammy Wynette","Dolly Parton"],correct:0},
+{q:"Hvem sang 'Together Again'?",a:["Buck Owens","Merle Haggard","Johnny Cash","Freddy Fender"],correct:0},
+{q:"Hvem sang 'Mama Tried'?",a:["Merle Haggard","Johnny Cash","Willie Nelson","Glen Campbell"],correct:0},
+{q:"Hvem sang 'Wichita Lineman'?",a:["Glen Campbell","Kenny Rogers","Alan Jackson","George Strait"],correct:0},
+{q:"Hvem sang 'Amarillo by Morning'?",a:["George Strait","Garth Brooks","Alan Jackson","Willie Nelson"],correct:0},
+{q:"Hvem sang 'That Don't Impress Me Much'?",a:["Shania Twain","Faith Hill","Reba McEntire","Dolly Parton"],correct:0},
+
+{q:"Hvilken sang forbindes mest med Johnny Cash?",a:["Ring of Fire","Jolene","Lucille","The Gambler"],correct:0},
+{q:"Hvilken sang forbindes mest med Kenny Rogers?",a:["The Gambler","Stand By Your Man","Act Naturally","Chattahoochee"],correct:0},
+{q:"Hvilken sang forbindes mest med Dolly Parton?",a:["Jolene","Folsom Prison Blues","Mama Tried","Friends in Low Places"],correct:0},
+{q:"Hvilken sang forbindes mest med Willie Nelson?",a:["On The Road Again","9 to 5","The Dance","Lucille"],correct:0},
+{q:"Hvilken sang forbindes mest med Tammy Wynette?",a:["Stand By Your Man","Ring of Fire","Rhinestone Cowboy","Blue Eyes Crying in the Rain"],correct:0},
+
+{q:"Hvem ble ofte kalt 'The Man in Black'?",a:["Johnny Cash","Kenny Rogers","Willie Nelson","Merle Haggard"],correct:0},
+{q:"Hvilken artist forbindes med sangen 'On The Road Again'?",a:["Willie Nelson","Johnny Cash","Buck Owens","Glen Campbell"],correct:0},
+{q:"Hvilken kvinnelig artist er kjent for temaparken Dollywood?",a:["Dolly Parton","Shania Twain","Tammy Wynette","Faith Hill"],correct:0},
+{q:"Hvilken artist forbindes med Bakersfield-sounden?",a:["Buck Owens","Garth Brooks","Kenny Rogers","Alan Jackson"],correct:0},
+{q:"Hvem hadde en stor hit med 'A Boy Named Sue'?",a:["Johnny Cash","Willie Nelson","Merle Haggard","George Strait"],correct:0},
+
+{q:"Hvem sang 'Islands in the Stream' sammen med Dolly Parton?",a:["Kenny Rogers","Johnny Cash","Willie Nelson","Garth Brooks"],correct:0},
+{q:"Hvem sang 'He Stopped Loving Her Today'?",a:["George Jones","Kenny Rogers","Alan Jackson","Johnny Cash"],correct:0},
+{q:"Hvem sang 'Coal Miner's Daughter'?",a:["Loretta Lynn","Dolly Parton","Tammy Wynette","Skeeter Davis"],correct:0},
+{q:"Hvem sang 'Crazy'?",a:["Patsy Cline","Dolly Parton","Tammy Wynette","Shania Twain"],correct:0},
+{q:"Hvem sang 'Take Me Home, Country Roads'?",a:["John Denver","Johnny Cash","Kenny Rogers","Glen Campbell"],correct:0},
+
+{q:"Hvem sang 'Don't Rock the Jukebox'?",a:["Alan Jackson","George Strait","Garth Brooks","Kenny Rogers"],correct:0},
+{q:"Hvem sang 'Forever and Ever, Amen'?",a:["Randy Travis","Alan Jackson","George Strait","Willie Nelson"],correct:0},
+{q:"Hvem sang 'This Kiss'?",a:["Faith Hill","Shania Twain","Reba McEntire","Dolly Parton"],correct:0},
+{q:"Hvem sang 'Fancy'?",a:["Reba McEntire","Faith Hill","Shania Twain","Tammy Wynette"],correct:0},
+{q:"Hvem sang 'Wide Open Spaces'?",a:["Dixie Chicks","Shania Twain","Faith Hill","Reba McEntire"],correct:0}
+],
+
+
+
+"60_Country":[
+{q:"Hvem sang 'Ring Of Fire'?",a:["Johnny Cash","Kenny Rogers","Willie Nelson","Merle Haggard"],correct:0},
+{q:"Hvem sang 'I Walk The Line'?",a:["Johnny Cash","Willie Nelson","Buck Owens","Merle Haggard"],correct:0},
+{q:"Hvem sang 'Crazy'?",a:["Patsy Cline","Dolly Parton","Tammy Wynette","Loretta Lynn"],correct:0},
+{q:"Hvem sang 'King Of The Road'?",a:["Roger Miller","Johnny Cash","Willie Nelson","Kenny Rogers"],correct:0},
+{q:"Hvem sang 'Act Naturally'?",a:["Buck Owens","Johnny Cash","Merle Haggard","Roger Miller"],correct:0},
+{q:"Hvem sang 'Harper Valley PTA'?",a:["Jeannie C. Riley","Patsy Cline","Tammy Wynette","Dolly Parton"],correct:0},
+{q:"Hvem sang 'The End Of The World'?",a:["Skeeter Davis","Patsy Cline","Tammy Wynette","Loretta Lynn"],correct:0},
+{q:"Hvem sang 'Mama Tried'?",a:["Merle Haggard","Johnny Cash","Buck Owens","Willie Nelson"],correct:0},
+{q:"Hvem sang 'Coal Miner's Daughter'?",a:["Loretta Lynn","Dolly Parton","Tammy Wynette","Patsy Cline"],correct:0},
+{q:"Hvem sang 'Walkin' After Midnight'?",a:["Patsy Cline","Dolly Parton","Tammy Wynette","Loretta Lynn"],correct:0}
+],
+
+"70_Country":[
+{q:"Hvem sang 'Before The Next Teardrop Falls'?",a:["Freddy Fender","Kenny Rogers","Johnny Cash","Willie Nelson"],correct:0},
+{q:"Hvem sang 'Jolene'?",a:["Dolly Parton","Tammy Wynette","Loretta Lynn","Crystal Gayle"],correct:0},
+{q:"Hvem sang 'Lucille'?",a:["Kenny Rogers","Johnny Cash","Willie Nelson","Merle Haggard"],correct:0},
+{q:"Hvem sang 'Blue Eyes Crying In The Rain'?",a:["Willie Nelson","Johnny Cash","Kenny Rogers","George Jones"],correct:0},
+{q:"Hvem sang 'Rhinestone Cowboy'?",a:["Glen Campbell","Kenny Rogers","Johnny Cash","Merle Haggard"],correct:0},
+{q:"Hvem sang 'Stand By Your Man'?",a:["Tammy Wynette","Dolly Parton","Loretta Lynn","Crystal Gayle"],correct:0},
+{q:"Hvem sang 'Okie From Muskogee'?",a:["Merle Haggard","Johnny Cash","Willie Nelson","Kenny Rogers"],correct:0},
+{q:"Hvem sang 'Don't It Make My Brown Eyes Blue'?",a:["Crystal Gayle","Tammy Wynette","Dolly Parton","Loretta Lynn"],correct:0},
+{q:"Hvem sang 'The Most Beautiful Girl'?",a:["Charlie Rich","Kenny Rogers","Johnny Cash","Willie Nelson"],correct:0},
+{q:"Hvem sang 'One Piece At A Time'?",a:["Johnny Cash","Willie Nelson","Merle Haggard","Kenny Rogers"],correct:0}
+],
+
+"80_Country":[
+{q:"Hvem sang 'The Gambler'?",a:["Kenny Rogers","Johnny Cash","George Strait","Randy Travis"],correct:0},
+{q:"Hvem sang 'Forever And Ever, Amen'?",a:["Randy Travis","George Strait","Kenny Rogers","Alan Jackson"],correct:0},
+{q:"Hvem sang 'Islands In The Stream' sammen med Dolly Parton?",a:["Kenny Rogers","Willie Nelson","George Strait","Johnny Cash"],correct:0},
+{q:"Hvem sang 'On The Road Again'?",a:["Willie Nelson","Johnny Cash","George Strait","Merle Haggard"],correct:0},
+{q:"Hvem sang 'Amarillo By Morning'?",a:["George Strait","Randy Travis","Kenny Rogers","Alan Jackson"],correct:0},
+{q:"Hvem sang '9 To 5'?",a:["Dolly Parton","Reba McEntire","Tammy Wynette","Loretta Lynn"],correct:0},
+{q:"Hvem sang 'Why Not Me'?",a:["The Judds","Dolly Parton","Reba McEntire","Crystal Gayle"],correct:0},
+{q:"Hvem sang 'Diggin' Up Bones'?",a:["Randy Travis","George Strait","Kenny Rogers","Willie Nelson"],correct:0},
+{q:"Hvem sang 'I Was Country When Country Wasn't Cool'?",a:["Barbara Mandrell","Dolly Parton","Reba McEntire","Tammy Wynette"],correct:0},
+{q:"Hvem sang 'Fishin' In The Dark'?",a:["Nitty Gritty Dirt Band","Alabama","The Judds","Oak Ridge Boys"],correct:0}
+],
+
+"90_Country":[
+{q:"Hvem sang 'Friends In Low Places'?",a:["Garth Brooks","Alan Jackson","George Strait","Tim McGraw"],correct:0},
+{q:"Hvem sang 'Chattahoochee'?",a:["Alan Jackson","Garth Brooks","George Strait","Tim McGraw"],correct:0},
+{q:"Hvem sang 'Achy Breaky Heart'?",a:["Billy Ray Cyrus","Garth Brooks","Alan Jackson","Tim McGraw"],correct:0},
+{q:"Hvem sang 'Man! I Feel Like A Woman!'?",a:["Shania Twain","Faith Hill","Reba McEntire","LeAnn Rimes"],correct:0},
+{q:"Hvem sang 'This Kiss'?",a:["Faith Hill","Shania Twain","Reba McEntire","Martina McBride"],correct:0},
+{q:"Hvem sang 'Wide Open Spaces'?",a:["Dixie Chicks","Faith Hill","Shania Twain","LeAnn Rimes"],correct:0},
+{q:"Hvem sang 'Don't Rock The Jukebox'?",a:["Alan Jackson","Garth Brooks","George Strait","Tim McGraw"],correct:0},
+{q:"Hvem sang 'The Dance'?",a:["Garth Brooks","Alan Jackson","George Strait","Tim McGraw"],correct:0},
+{q:"Hvem sang 'Any Man Of Mine'?",a:["Shania Twain","Faith Hill","Reba McEntire","Martina McBride"],correct:0},
+{q:"Hvem sang 'Live Like You Were Dying'?",a:["Tim McGraw","Garth Brooks","Alan Jackson","George Strait"],correct:0}
+],
+
+"60_Pop":[
+{q:"Hvilket band ble kjent med Beatlemania?",a:["The Beatles","ABBA","Queen","U2"],correct:0},
+{q:"Hvem sang 'Can't Help Falling In Love'?",a:["Elvis Presley","Tom Jones","Cliff Richard","Engelbert Humperdinck"],correct:0},
+{q:"Hvem sang 'Delilah'?",a:["Tom Jones","Elvis Presley","Cliff Richard","Neil Diamond"],correct:0},
+{q:"Hvem sang 'Sweet Caroline'?",a:["Neil Diamond","Tom Jones","Elvis Presley","Paul Anka"],correct:0},
+{q:"Hvem sang 'Congratulations'?",a:["Cliff Richard","Tom Jones","Elvis Presley","Neil Diamond"],correct:0},
+{q:"Hvilken gruppe sang 'California Dreamin'?",a:["The Mamas & The Papas","The Beatles","The Beach Boys","The Monkees"],correct:0},
+{q:"Hvem sang 'Pretty Woman'?",a:["Roy Orbison","Elvis Presley","Tom Jones","Neil Diamond"],correct:0},
+{q:"Hvilken gruppe sang 'I'm a Believer'?",a:["The Monkees","The Beatles","The Beach Boys","The Hollies"],correct:0},
+{q:"Hvem sang 'Release Me'?",a:["Engelbert Humperdinck","Tom Jones","Elvis Presley","Cliff Richard"],correct:0},
+{q:"Hvilken gruppe sang 'Good Vibrations'?",a:["The Beach Boys","The Beatles","The Monkees","The Hollies"],correct:0}
+],
+"70_Pop":[
+{q:"Hvilken gruppe sang 'Dancing Queen'?",a:["ABBA","Bee Gees","Boney M","Smokie"],correct:0},
+{q:"Hvilken gruppe sang 'Mamma Mia'?",a:["ABBA","Boney M","Bee Gees","Carpenters"],correct:0},
+{q:"Hvem sang 'Stayin' Alive'?",a:["Bee Gees","ABBA","Boney M","Village People"],correct:0},
+{q:"Hvem sang 'How Deep Is Your Love'?",a:["Bee Gees","ABBA","Smokie","Boney M"],correct:0},
+{q:"Hvilken gruppe sang 'Rivers of Babylon'?",a:["Boney M","ABBA","Bee Gees","Village People"],correct:0},
+{q:"Hvilken gruppe sang 'Daddy Cool'?",a:["Boney M","ABBA","Bee Gees","Smokie"],correct:0},
+{q:"Hvem sang 'Crocodile Rock'?",a:["Elton John","Tom Jones","Neil Diamond","Cliff Richard"],correct:0},
+{q:"Hvilken gruppe sang 'YMCA'?",a:["Village People","Bee Gees","ABBA","Boney M"],correct:0},
+{q:"Hvem sang 'Living Next Door To Alice'?",a:["Smokie","Boney M","ABBA","Bee Gees"],correct:0},
+{q:"Hvem sang 'You're The One That I Want' sammen med John Travolta?",a:["Olivia Newton-John","Dolly Parton","Cher","Diana Ross"],correct:0}
+],
+"80_Pop":[
+{q:"Hvem ble kalt 'King of Pop'?",a:["Michael Jackson","Elton John","George Michael","Phil Collins"],correct:0},
+{q:"Hvem sang 'Billie Jean'?",a:["Michael Jackson","Prince","George Michael","Phil Collins"],correct:0},
+{q:"Hvem sang 'Like a Virgin'?",a:["Madonna","Whitney Houston","Cyndi Lauper","Cher"],correct:0},
+{q:"Hvilken norsk gruppe sang 'Take On Me'?",a:["a-ha","Roxette","Europe","Ace of Base"],correct:0},
+{q:"Hvem sang 'Careless Whisper'?",a:["George Michael","Elton John","Phil Collins","Boy George"],correct:0},
+{q:"Hvem sang 'Girls Just Want To Have Fun'?",a:["Cyndi Lauper","Madonna","Whitney Houston","Cher"],correct:0},
+{q:"Hvem sang 'Another Day In Paradise'?",a:["Phil Collins","George Michael","Elton John","Michael Jackson"],correct:0},
+{q:"Hvilken svensk duo sang 'The Look'?",a:["Roxette","ABBA","Ace of Base","Baccara"],correct:0},
+{q:"Hvem sang 'Purple Rain'?",a:["Prince","Michael Jackson","George Michael","Phil Collins"],correct:0},
+{q:"Hvem sang 'Wake Me Up Before You Go-Go'?",a:["Wham!","a-ha","Roxette","Duran Duran"],correct:0}
+],
+"90_Pop":[
+{q:"Hvilken jentegruppe sang 'Wannabe'?",a:["Spice Girls","Bananarama","The Bangles","TLC"],correct:0},
+{q:"Hvilken gruppe sang 'All That She Wants'?",a:["Ace of Base","ABBA","Roxette","Aqua"],correct:0},
+{q:"Hvem sang 'My Heart Will Go On'?",a:["Celine Dion","Mariah Carey","Whitney Houston","Madonna"],correct:0},
+{q:"Hvilken gruppe sang 'Everybody (Backstreet's Back)'?",a:["Backstreet Boys","NSYNC","Boyzone","Take That"],correct:0},
+{q:"Hvem sang 'Believe'?",a:["Cher","Madonna","Celine Dion","Whitney Houston"],correct:0},
+{q:"Hvem sang 'Torn'?",a:["Natalie Imbruglia","Shania Twain","Alanis Morissette","Cher"],correct:0},
+{q:"Hvilken gruppe sang 'Barbie Girl'?",a:["Aqua","Ace of Base","Spice Girls","Roxette"],correct:0},
+{q:"Hvem sang 'Hero'?",a:["Mariah Carey","Celine Dion","Whitney Houston","Cher"],correct:0},
+{q:"Hvem sang 'Kiss From A Rose'?",a:["Seal","George Michael","Phil Collins","Bryan Adams"],correct:0},
+{q:"Hvilken gruppe sang 'Quit Playing Games (With My Heart)'?",a:["Backstreet Boys","Take That","Boyzone","NSYNC"],correct:0}
+],
+
+"60_Rock":[
+{q:"Hvem sang 'Satisfaction'?",a:["The Rolling Stones","The Beatles","The Doors","The Who"],correct:0},
+{q:"Hvilket band hadde Mick Jagger som vokalist?",a:["The Rolling Stones","The Beatles","The Kinks","The Doors"],correct:0},
+{q:"Hvem sang 'Hey Jude'?",a:["The Beatles","The Rolling Stones","The Who","The Doors"],correct:0},
+{q:"Hvilket band sang 'Light My Fire'?",a:["The Doors","The Beatles","The Who","The Kinks"],correct:0},
+{q:"Hvem sang 'My Generation'?",a:["The Who","The Beatles","The Doors","The Rolling Stones"],correct:0},
+{q:"Hvilket band sang 'You Really Got Me'?",a:["The Kinks","The Who","The Doors","The Beatles"],correct:0},
+{q:"Hvem sang 'Born To Be Wild'?",a:["Steppenwolf","The Doors","The Who","The Kinks"],correct:0},
+{q:"Hvem sang 'House of the Rising Sun'?",a:["The Animals","The Beatles","The Doors","The Kinks"],correct:0},
+{q:"Hvilken gitarist er kjent for 'Purple Haze'?",a:["Jimi Hendrix","Eric Clapton","Keith Richards","Pete Townshend"],correct:0},
+{q:"Hvem sang 'All Along the Watchtower' i en kjent rockversjon?",a:["Jimi Hendrix","The Beatles","The Rolling Stones","The Doors"],correct:0}
+],
+"70_Rock":[
+{q:"Hvilket band sang 'Bohemian Rhapsody'?",a:["Queen","Deep Purple","Led Zeppelin","Eagles"],correct:0},
+{q:"Hvem sang 'We Will Rock You'?",a:["Queen","Boston","Kansas","Fleetwood Mac"],correct:0},
+{q:"Hvilket band er kjent for 'Smoke on the Water'?",a:["Deep Purple","Queen","Led Zeppelin","Eagles"],correct:0},
+{q:"Hvilket band ga ut 'Stairway To Heaven'?",a:["Led Zeppelin","Deep Purple","Queen","Boston"],correct:0},
+{q:"Hvem sang 'Hotel California'?",a:["Eagles","Fleetwood Mac","Kansas","Boston"],correct:0},
+{q:"Hvem sang 'Take It Easy'?",a:["Eagles","Queen","Deep Purple","Kansas"],correct:0},
+{q:"Hvem sang 'More Than A Feeling'?",a:["Boston","Kansas","Eagles","Fleetwood Mac"],correct:0},
+{q:"Hvem sang 'Dust In The Wind'?",a:["Kansas","Boston","Eagles","Queen"],correct:0},
+{q:"Hvem sang 'Dreams'?",a:["Fleetwood Mac","Eagles","Boston","Kansas"],correct:0},
+{q:"Hvem sang 'Free Bird'?",a:["Lynyrd Skynyrd","Eagles","Led Zeppelin","Deep Purple"],correct:0}
+],
+"80_Rock":[
+{q:"Hvem sang 'Livin' on a Prayer'?",a:["Bon Jovi","Queen","Metallica","Europe"],correct:0},
+{q:"Hvem sang 'The Final Countdown'?",a:["Europe","Bon Jovi","Journey","Foreigner"],correct:0},
+{q:"Hvem hadde hiten 'Money For Nothing'?",a:["Dire Straits","Queen","AC/DC","Journey"],correct:0},
+{q:"Hvem sang 'You Shook Me All Night Long'?",a:["AC/DC","Bon Jovi","Europe","Foreigner"],correct:0},
+{q:"Hvem sang 'Back In Black'?",a:["AC/DC","Queen","Europe","Journey"],correct:0},
+{q:"Hvem sang 'Jump'?",a:["Van Halen","Bon Jovi","Europe","Journey"],correct:0},
+{q:"Hvem sang 'Panama'?",a:["Van Halen","AC/DC","Foreigner","Boston"],correct:0},
+{q:"Hvem sang 'Don't Stop Believin'?",a:["Journey","Foreigner","Boston","Kansas"],correct:0},
+{q:"Hvem sang 'Juke Box Hero'?",a:["Foreigner","Journey","Europe","Bon Jovi"],correct:0},
+{q:"Hvem sang 'Summer of 69'?",a:["Bryan Adams","Bon Jovi","Europe","Journey"],correct:0}
+],
+"90_Rock":[
+{q:"Hvem sang 'November Rain'?",a:["Guns N' Roses","Bon Jovi","Scorpions","Europe"],correct:0},
+{q:"Hvem sang '(Everything I Do) I Do It For You'?",a:["Bryan Adams","Rod Stewart","Eric Clapton","Meat Loaf"],correct:0},
+{q:"Hvem sang 'Wind Of Change'?",a:["Scorpions","Bon Jovi","Europe","Queen"],correct:0},
+{q:"Hvem sang 'Tears In Heaven'?",a:["Eric Clapton","Bryan Adams","Rod Stewart","Phil Collins"],correct:0},
+{q:"Hvem sang 'I'd Do Anything For Love'?",a:["Meat Loaf","Bryan Adams","Bon Jovi","Scorpions"],correct:0},
+{q:"Hvem sang 'Joyride'?",a:["Roxette","Ace of Base","ABBA","a-ha"],correct:0},
+{q:"Hvem sang 'Bed Of Roses'?",a:["Bon Jovi","Guns N' Roses","Scorpions","Europe"],correct:0},
+{q:"Hvem sang 'The Look'?",a:["Roxette","Ace of Base","ABBA","Blondie"],correct:0},
+{q:"Hvem sang 'Rhythm Of My Heart'?",a:["Rod Stewart","Bryan Adams","Phil Collins","Eric Clapton"],correct:0},
+{q:"Hvem sang 'Always'?",a:["Bon Jovi","Scorpions","Europe","Guns N' Roses"],correct:0}
+],
+
+"60_Soul":[
+{q:"Hvem sang 'When A Man Loves A Woman'?",a:["Percy Sledge","Otis Redding","Sam Cooke","Ben E. King"],correct:0},
+{q:"Hvem sang '(Sittin' On) The Dock Of The Bay'?",a:["Otis Redding","Percy Sledge","Wilson Pickett","Sam Cooke"],correct:0},
+{q:"Hvem sang 'Stand By Me'?",a:["Ben E. King","Otis Redding","Percy Sledge","Sam Cooke"],correct:0},
+{q:"Hvem sang 'Mustang Sally'?",a:["Wilson Pickett","Otis Redding","Percy Sledge","Ben E. King"],correct:0},
+{q:"Hvem sang 'You Send Me'?",a:["Sam Cooke","Otis Redding","Percy Sledge","Wilson Pickett"],correct:0},
+{q:"Hvem sang 'Try A Little Tenderness'?",a:["Otis Redding","Percy Sledge","Ben E. King","Sam Cooke"],correct:0},
+{q:"Hvem sang 'Only You'?",a:["The Platters","The Drifters","The Temptations","The Four Tops"],correct:0},
+{q:"Hvem sang 'There Goes My Baby'?",a:["The Drifters","The Platters","The Temptations","The Supremes"],correct:0},
+{q:"Hvem sang 'For Your Precious Love'?",a:["Jerry Butler","Otis Redding","Percy Sledge","Sam Cooke"],correct:0},
+{q:"Hvem sang 'Warm And Tender Love'?",a:["Percy Sledge","Otis Redding","Wilson Pickett","Ben E. King"],correct:0}
+],
+"70_Soul":[
+{q:"Hvem sang 'You're The First, The Last, My Everything'?",a:["Barry White","Al Green","Lionel Richie","Billy Paul"],correct:0},
+{q:"Hvem sang 'Can't Get Enough Of Your Love, Babe'?",a:["Barry White","Al Green","Marvin Gaye","Billy Paul"],correct:0},
+{q:"Hvem sang 'Let's Stay Together'?",a:["Al Green","Barry White","Billy Paul","Marvin Gaye"],correct:0},
+{q:"Hvem sang 'Me And Mrs. Jones'?",a:["Billy Paul","Barry White","Al Green","Lionel Richie"],correct:0},
+{q:"Hvem sang 'Easy'?",a:["Commodores","The Temptations","Four Tops","The Drifters"],correct:0},
+{q:"Hvem sang 'Three Times A Lady'?",a:["Commodores","Barry White","Al Green","Billy Paul"],correct:0},
+{q:"Hvem sang 'Ain't No Mountain High Enough'?",a:["Diana Ross","Aretha Franklin","Gladys Knight","Roberta Flack"],correct:0},
+{q:"Hvem sang 'Papa Was A Rollin' Stone'?",a:["The Temptations","The Platters","The Drifters","Four Tops"],correct:0},
+{q:"Hvem sang 'My Girl'?",a:["The Temptations","Four Tops","The Drifters","The Platters"],correct:0},
+{q:"Hvem sang 'Reach Out I'll Be There'?",a:["Four Tops","The Temptations","The Drifters","The Platters"],correct:0}
+],
+"80_Soul":[
+{q:"Hvem sang 'Greatest Love of All'?",a:["Whitney Houston","Tina Turner","Anita Baker","Cyndi Lauper"],correct:0},
+{q:"Hvem sang 'Saving All My Love for You'?",a:["Whitney Houston","Tina Turner","Anita Baker","Cher"],correct:0},
+{q:"Hvem sang 'Hello'?",a:["Lionel Richie","George Benson","Billy Ocean","Phil Collins"],correct:0},
+{q:"Hvem sang 'All Night Long'?",a:["Lionel Richie","Billy Ocean","George Benson","Prince"],correct:0},
+{q:"Hvem sang 'What's Love Got To Do With It'?",a:["Tina Turner","Whitney Houston","Anita Baker","Cher"],correct:0},
+{q:"Hvem sang 'The Best'?",a:["Tina Turner","Whitney Houston","Cher","Madonna"],correct:0},
+{q:"Hvem sang 'Give Me The Night'?",a:["George Benson","Lionel Richie","Billy Ocean","Al Jarreau"],correct:0},
+{q:"Hvem sang 'Caribbean Queen'?",a:["Billy Ocean","George Benson","Lionel Richie","Phil Collins"],correct:0},
+{q:"Hvem sang 'Here And Now'?",a:["Luther Vandross","George Benson","Billy Ocean","Lionel Richie"],correct:0},
+{q:"Hvem sang 'Sweet Love'?",a:["Anita Baker","Whitney Houston","Tina Turner","Cher"],correct:0}
+],
+"90_Soul":[
+{q:"Hvem sang 'Hero'?",a:["Mariah Carey","Whitney Houston","Celine Dion","Toni Braxton"],correct:0},
+{q:"Hvem sang 'Without You'?",a:["Mariah Carey","Celine Dion","Whitney Houston","Toni Braxton"],correct:0},
+{q:"Hvilken gruppe sang 'End Of The Road'?",a:["Boyz II Men","All-4-One","Backstreet Boys","Take That"],correct:0},
+{q:"Hvilken gruppe sang 'I'll Make Love To You'?",a:["Boyz II Men","All-4-One","Take That","Backstreet Boys"],correct:0},
+{q:"Hvem sang 'Kiss From A Rose'?",a:["Seal","George Michael","Phil Collins","Bryan Adams"],correct:0},
+{q:"Hvem sang 'Un-Break My Heart'?",a:["Toni Braxton","Mariah Carey","Whitney Houston","Cher"],correct:0},
+{q:"Hvem sang 'I Will Always Love You'?",a:["Whitney Houston","Mariah Carey","Celine Dion","Toni Braxton"],correct:0},
+{q:"Hvem sang 'Because You Loved Me'?",a:["Celine Dion","Mariah Carey","Whitney Houston","Cher"],correct:0},
+{q:"Hvem sang 'How Am I Supposed To Live Without You'?",a:["Michael Bolton","Seal","George Michael","Phil Collins"],correct:0},
+{q:"Hvem sang 'I Swear'?",a:["All-4-One","Boyz II Men","Backstreet Boys","Take That"],correct:0}
+]
+};
+
+function selectYear(year){
+  selectedYear=year;
+  updateChosen();
+}
+
+function selectCategory(category){
+  selectedCategory=category;
+  updateChosen();
+}
+
+function updateChosen(){
+  document.getElementById("chosen").innerHTML=
+  "Valgt: "+(selectedYear?selectedYear+"-tallet":"ingen tiår")+" / "+(selectedCategory||"ingen kategori");
+}
+
+function shuffleArray(array){
+  let copy=[...array];
+  for(let i=copy.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [copy[i],copy[j]]=[copy[j],copy[i]];
+  }
+  return copy;
+}
+
+
+
+function selectLevel(amount){
+  quizLength=amount;
+  document.querySelectorAll(".levelBtn").forEach(b=>b.classList.remove("active"));
+  const btn=document.getElementById("level"+amount);
+  if(btn) btn.classList.add("active");
+  updateStatsBox();
+}
+
+function getStats(){
+  return {
+    best: parseInt(localStorage.getItem("musicQuizBest") || "0"),
+    games: parseInt(localStorage.getItem("musicQuizGames") || "0"),
+    gold: parseInt(localStorage.getItem("musicQuizGold") || "0")
+  };
+}
+
+function saveStats(){
+  let stats=getStats();
+  stats.games++;
+  if(score > stats.best) stats.best=score;
+  if(score === activeQuestions.length) stats.gold++;
+  localStorage.setItem("musicQuizBest", stats.best);
+  localStorage.setItem("musicQuizGames", stats.games);
+  localStorage.setItem("musicQuizGold", stats.gold);
+  updateStatsBox();
+}
+
+function updateStatsBox(){
+  const stats=getStats();
+  const bestText=document.getElementById("bestScore");
+  const gamesText=document.getElementById("gamesPlayed");
+  const goldText=document.getElementById("goldRecords");
+  const rankText=document.getElementById("playerRank");
+
+  if(bestText) bestText.innerText=stats.best+"/"+quizLength;
+  if(gamesText) gamesText.innerText=stats.games;
+  if(goldText) goldText.innerText=stats.gold;
+
+  let rank="Ny spiller";
+  if(stats.gold>=20) rank="👑 Musikklegende";
+  else if(stats.gold>=5) rank="💿 Platina Artist";
+  else if(stats.gold>=1) rank="🏆 Gullplate-vinner";
+  if(rankText) rankText.innerText=rank;
+}
+
+function launchConfetti(){
+ const emojis=['⭐','✨','🎉','🏆','🎵','💿'];
+ for(let i=0;i<55;i++){
+   const el=document.createElement('div');
+   el.className='confetti';
+   el.innerText=emojis[Math.floor(Math.random()*emojis.length)];
+   el.style.left=Math.random()*100+'vw';
+   el.style.animationDelay=(Math.random()*0.7)+'s';
+   document.body.appendChild(el);
+   setTimeout(()=>el.remove(),3500);
+ }
+}
+
+window.addEventListener("load", updateStatsBox);
+
+
+function startRandomQuiz(){
+  const keys = Object.keys(questions).filter(k => k.includes("_"));
+  let pool = [];
+  keys.forEach(k => pool = pool.concat(questions[k]));
+
+  const amount = Math.min(quizLength, pool.length);
+
+  activeQuestions = shuffleArray(pool).slice(0,amount);
+  currentQuestion=0;
+  score=0;
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  showQuestion();
+}
+
+
+function startQuiz(){
+  if(!selectedYear || !selectedCategory){
+    alert("Velg både tiår og kategori først.");
+    return;
+  }
+
+  let key = selectedYear + "_" + selectedCategory;
+  let pool = questions[key] || [];
+
+  /*
+    Hver tiårskategori har ca. 10 spørsmål.
+    Hvis spilleren velger 20, 30 eller 50 spørsmål,
+    blander vi inn alle tiår fra samme kategori.
+  */
+  if(quizLength > pool.length){
+    const categoryKeys = Object.keys(questions).filter(k => k.endsWith("_" + selectedCategory));
+    pool = [];
+    categoryKeys.forEach(k => pool = pool.concat(questions[k]));
+  }
+
+  if(pool.length===0){
+    alert("Denne kategorien har ikke spørsmål enda.");
+    return;
+  }
+
+  const amount = Math.min(quizLength, pool.length);
+
+  activeQuestions=shuffleArray(pool).slice(0,amount);
+  currentQuestion=0;
+  score=0;
+
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+
+  showQuestion();
+}
+
+function showQuestion(){
+  const q=activeQuestions[currentQuestion];
+
+  let mixedAnswers=q.a.map((answer,index)=>{
+    return {
+      text:answer,
+      isCorrect:index===q.correct
+    };
+  });
+
+  mixedAnswers=shuffleArray(mixedAnswers);
+
+  document.getElementById("question").innerText=q.q;
+  document.getElementById("answers").innerHTML="";
+
+  mixedAnswers.forEach((item)=>{
+    const btn=document.createElement("button");
+    btn.className="choice";
+    btn.innerText=item.text;
+    btn.onclick=()=>checkAnswer(item.isCorrect,btn);
+    document.getElementById("answers").appendChild(btn);
+  });
+
+  document.getElementById("progress").innerText=
+  "Spørsmål "+(currentQuestion+1)+" av "+activeQuestions.length;
+
+  document.getElementById("score").innerText="Poeng: "+score;
+}
+
+function checkAnswer(isCorrect,btn){
+  btn.blur();
+  const buttons=document.querySelectorAll(".choice");
+  buttons.forEach(b=>b.disabled=true);
+
+  if(isCorrect){
+    score++;
+    btn.classList.add("correct");
+  }else{
+    btn.classList.add("wrong");
+
+    buttons.forEach(b=>{
+      if(b.onclick && b.innerText){
+        const q=activeQuestions[currentQuestion];
+        const riktigSvar=q.a[q.correct];
+        if(b.innerText===riktigSvar){
+          b.classList.add("correct");
+        }
+      }
+    });
+  }
+
+  setTimeout(()=>{
+    currentQuestion++;
+    if(currentQuestion<activeQuestions.length){
+      showQuestion();
+    }else{
+      showResult();
+    }
+  },1200);
+}
+
+function showResult(){
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  saveStats();
+
+  document.getElementById("finalScore").innerText=
+  "Du fikk "+score+" av "+activeQuestions.length+" riktige.";
+
+  let medal="";
+  let percent = score / activeQuestions.length;
+
+  if(score === activeQuestions.length && activeQuestions.length >= 50) medal="👑 LEGENDE!";
+  else if(score === activeQuestions.length && activeQuestions.length >= 30) medal="💿 PLATINA ARTIST!";
+  else if(score === activeQuestions.length) medal="🏆 GULLPLATE!";
+  else if(percent>=0.8) medal="🥈 Kjempebra!";
+  else if(percent>=0.5) medal="🥉 Bra jobbet!";
+  else medal="🎵 Prøv igjen!";
+
+  document.getElementById("medal").innerText=medal;
+
+  if(score===activeQuestions.length){
+    document.getElementById("finalScore").innerHTML += "<br><br>🌟 GRATULERER! Alt riktig – du er en ekte MUSIKKMESTER! 🌟";
+    launchConfetti();
+  }else if(percent>=0.8){
+    document.getElementById("finalScore").innerHTML += "<br><br>🎉 Fantastisk resultat!";
+    launchConfetti();
+  }else if(percent>=0.5){
+    document.getElementById("finalScore").innerHTML += "<br><br>👏 Bra jobbet!";
+  }
+}
+
+function restart(){
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("setup").classList.remove("hidden");
+}
+
+/* Spillglede flerspillerversjon */
+let numberOfPlayers=1, currentPlayer=0, playerScores=[0], questionsPerPlayer=10;
+
+function selectPlayers(n,btn){
+  numberOfPlayers=n;
+  playerScores=Array(n).fill(0);
+  document.querySelectorAll(".playerBtn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+const originalSelectLevel=selectLevel;
+selectLevel=function(n){
+  questionsPerPlayer=n;
+  originalSelectLevel(n);
+};
+
+function makeQuestionSet(pool, needed){
+  if(!pool.length) return [];
+  const unique=[];
+  const seen=new Set();
+  for(const q of pool){
+    const key=(q.q||"").trim().toLowerCase();
+    if(!seen.has(key)){
+      seen.add(key);
+      unique.push(q);
+    }
+  }
+  return shuffleArray([...unique]).slice(0,Math.min(needed,unique.length));
+}
+
+startRandomQuiz=function(){
+  const keys=Object.keys(questions).filter(k=>k.includes("_"));
+  let pool=[]; keys.forEach(k=>pool=pool.concat(questions[k]));
+  activeQuestions=makeQuestionSet(pool, questionsPerPlayer*numberOfPlayers);
+  currentQuestion=0; currentPlayer=0; playerScores=Array(numberOfPlayers).fill(0); score=0;
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("playerSetup").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  showQuestion();
+};
+
+startQuiz=function(){
+  if(!selectedYear || !selectedCategory){alert("Velg både tiår og kategori først.");return;}
+  let key=selectedYear+"_"+selectedCategory;
+  let pool=questions[key]||[];
+  if(questionsPerPlayer>pool.length){
+    const categoryKeys=Object.keys(questions).filter(k=>k.endsWith("_"+selectedCategory));
+    pool=[]; categoryKeys.forEach(k=>pool=pool.concat(questions[k]));
+  }
+  if(!pool.length){alert("Denne kategorien har ikke spørsmål enda.");return;}
+  activeQuestions=makeQuestionSet(pool, questionsPerPlayer*numberOfPlayers);
+  currentQuestion=0; currentPlayer=0; playerScores=Array(numberOfPlayers).fill(0); score=0;
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("playerSetup").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  showQuestion();
+};
+
+function renderMultiScores(){
+  document.getElementById("multiScores").innerHTML=playerScores.map((x,i)=>
+    '<span class="scoreChip '+(i===currentPlayer?'turnNow':'')+'">Spiller '+(i+1)+': '+x+' poeng</span>'
+  ).join("");
+}
+
+showQuestion=function(){
+  const q=activeQuestions[currentQuestion];
+  let mixedAnswers=q.a.map((answer,index)=>({text:answer,isCorrect:index===q.correct}));
+  mixedAnswers=shuffleArray(mixedAnswers);
+  document.getElementById("turnText").innerText=numberOfPlayers===1?"🎵 Ditt spørsmål":"🎯 Spiller "+(currentPlayer+1)+" sin tur";
+  renderMultiScores();
+  document.getElementById("question").innerText=q.q;
+  document.getElementById("answers").innerHTML="";
+  mixedAnswers.forEach(item=>{
+    const btn=document.createElement("button"); btn.className="choice"; btn.innerText=item.text;
+    btn.onclick=()=>checkAnswer(item.isCorrect,btn);
+    document.getElementById("answers").appendChild(btn);
+  });
+  const round=Math.floor(currentQuestion/numberOfPlayers)+1;
+  const totalRounds=Math.ceil(activeQuestions.length/numberOfPlayers);
+  document.getElementById("progress").innerText="Runde "+round+" av "+totalRounds;
+  document.getElementById("score").innerText=numberOfPlayers===1?"Poeng: "+playerScores[0]:"";
+};
+
+checkAnswer=function(isCorrect,btn){
+  btn.blur();
+  const buttons=document.querySelectorAll(".choice"); buttons.forEach(b=>b.disabled=true);
+  if(isCorrect){playerScores[currentPlayer]++;btn.classList.add("correct");}
+  else{
+    btn.classList.add("wrong");
+    const q=activeQuestions[currentQuestion], riktig=q.a[q.correct];
+    buttons.forEach(b=>{if(b.innerText===riktig)b.classList.add("correct")});
+  }
+  renderMultiScores();
+  setTimeout(()=>{
+    currentQuestion++;
+    if(currentQuestion<activeQuestions.length){
+      currentPlayer=(currentPlayer+1)%numberOfPlayers;
+      showQuestion();
+    }else showResult();
+  },1200);
+};
+
+showResult=function(){
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  const best=Math.max(...playerScores);
+  const winners=playerScores.map((x,i)=>x===best?i+1:null).filter(Boolean);
+  let title=numberOfPlayers===1?"🎵 Ferdig!":(winners.length===1?"🏆 Spiller "+winners[0]+" vinner!":"🤝 Uavgjort!");
+  document.getElementById("finalScore").innerHTML="<b>"+title+"</b><br><br>"+
+    playerScores.map((x,i)=>{
+      const received=Math.floor((activeQuestions.length-1-i)/numberOfPlayers)+1;
+      return "Spiller "+(i+1)+": <b>"+x+" av "+Math.max(0,received)+" riktige</b>";
+    }).join("<br>");
+  document.getElementById("medal").innerText=best===questionsPerPlayer?"👑 MUSIKKMESTER!":"🎉 Bra spilt!";
+  if(best/questionsPerPlayer>=.8) launchConfetti();
+};
+
+restart=function(){
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("setup").classList.remove("hidden");
+  document.getElementById("playerSetup").classList.remove("hidden");
+};
+
+</script>
+
+</body>
+</html>
