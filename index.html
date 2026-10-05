@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Spillglede</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#70431f,#24130c 72%);color:#fff}
+header{text-align:center;padding:28px 14px 18px}
+h1{margin:0;color:#ffd85b;font-size:clamp(48px,8vw,82px);text-shadow:0 4px #54240b}
+.lead{font-size:clamp(17px,2.3vw,24px);font-weight:800;color:#fff2c1;margin:8px 0}
+.grid{max-width:1120px;margin:10px auto 38px;padding:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.game{min-height:235px;border:5px solid #d6a33b;border-radius:26px;text-decoration:none;color:#35190b;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;box-shadow:0 9px 0 #5b2b10,0 14px 24px #0006;transition:.15s}
+.game:hover{transform:translateY(-4px)}
+.icon{font-size:68px;line-height:1}
+.game h2{font-size:30px;margin:12px 0 7px}
+.game p{font-size:17px;font-weight:800;margin:0;line-height:1.45}
+.yatzy{background:linear-gradient(145deg,#fff7dc,#d9efff)}
+.ludo{background:linear-gradient(145deg,#e1ffdc,#8ee39a)}
+.cards{background:linear-gradient(145deg,#ffe2c8,#e6a269)}
+.memory{background:linear-gradient(145deg,#eadcff,#bd91f0)}
+.bingo{background:linear-gradient(145deg,#d8efff,#78bdf5)}
+.quiz{background:linear-gradient(145deg,#fff2aa,#ffc84d)}
+footer{text-align:center;padding:0 15px 28px;color:#ffe7aa;font-weight:800}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.game{min-height:185px}.icon{font-size:58px}}
+</style>
+</head>
+<body>
+<header>
+<h1>🎉 SPILLGLEDE 🎉</h1>
+<div class="lead">Spill sammen – le sammen – ha det moro!</div>
+</header>
+<div class="grid">
+<a class="game yatzy" href="yatzy.html"><span class="icon">🎲</span><h2>Yatzy</h2><p>1–4 spillere<br>5 terninger og komplett poengblokk</p></a>
+<a class="game ludo" href="ludo.html"><span class="icon">🔴🟢</span><h2>Ludo</h2><p>2–4 spillere<br>Få brikkene først hjem</p></a>
+<a class="game cards" href="kortspill.html"><span class="icon">🃏</span><h2>Kortspill</h2><p>7-kabalen<br>Flere kortspill kommer</p></a>
+<a class="game memory" href="memory.html"><span class="icon">🧠</span><h2>Memory</h2><p>1–4 spillere<br>6, 8 eller 12 par</p></a>
+<a class="game bingo" href="bingo.html"><span class="icon">🎱</span><h2>Bingo</h2><p>Vanlig Bingo – 4 spillere<br>Musikkbingo – 2 spillere / 2 brett</p></a>
+<a class="game quiz" href="musikkquiz.html"><span class="icon">🎵</span><h2>Musikkquiz</h2><p>1–4 spillere<br>Musikk fra flere tiår</p></a>
+</div>
+<footer>Spillglede – for familie og venner ❤️</footer>
+</body>
+</html>
