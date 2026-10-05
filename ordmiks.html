@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ordmiks – Spillglede</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;color:#13233f;background:linear-gradient(145deg,#e9f6ff,#fff7d8 55%,#f2e8ff);min-height:100vh}
+.wrap{max-width:1100px;margin:auto;padding:18px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.back{background:#17345d;color:white;text-decoration:none;padding:11px 17px;border-radius:14px;font-weight:800}
+h1{text-align:center;font-size:clamp(38px,7vw,68px);margin:14px 0 4px;color:#17345d}.sub{text-align:center;font-weight:800;margin:0 0 20px}
+.panel{background:#fffdf6;border:3px solid #e2b84f;border-radius:25px;padding:20px;box-shadow:0 10px 28px #18304b22}
+.setup{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:end}.field label{display:block;font-weight:900;margin-bottom:6px}.field select{font-size:18px;padding:11px;border:2px solid #17345d;border-radius:12px;background:white}
+button{border:0;border-radius:14px;padding:13px 18px;font-size:18px;font-weight:900;cursor:pointer}.start{background:#f1c84b;color:#14233e}
+.players{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.player{background:white;border:3px solid #b8c8dc;border-radius:19px;padding:14px;text-align:center;font-weight:900;transition:.2s}.player.active{border-color:#e0a800;background:#fff1a9;transform:translateY(-3px)}.score{font-size:25px;margin-top:5px}
+.turn{text-align:center;font-weight:900;background:#17345d;color:white;border-radius:999px;padding:8px 16px;width:max-content;max-width:100%;margin:10px auto}
+.game{text-align:center}.hint{font-size:18px;font-weight:800;margin:10px 0}.mixed{font-size:clamp(32px,7vw,58px);font-weight:1000;letter-spacing:.16em;color:#17345d;margin:16px 0;overflow-wrap:anywhere}
+.answer{font-size:24px;width:min(430px,100%);padding:13px;border:3px solid #8fa7c1;border-radius:15px;text-transform:uppercase;text-align:center;font-weight:900}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}.check{background:#54bd75;color:#082a14}.skip{background:#dbe6f1;color:#17345d}.msg{min-height:36px;font-size:21px;font-weight:900;margin:14px 0}.progress{font-weight:800;color:#53657c}
+.overlay{position:fixed;inset:0;background:#10213dcc;display:none;align-items:center;justify-content:center;padding:20px}.modal{max-width:520px;width:100%;background:#fffdf4;border-radius:26px;padding:28px;text-align:center;border:4px solid #f1c84b}.modal h2{font-size:34px;margin:0 0 12px}.modal button{background:#17345d;color:white;margin:5px}
+@media(max-width:760px){.players{grid-template-columns:repeat(2,1fr)}} @media(max-width:440px){.players{grid-template-columns:1fr}.mixed{letter-spacing:.08em}}
+</style></head>
+<body><div class="wrap">
+<div class="top"><a class="back" href="index.html">← Spillglede</a></div>
+<h1>🔤 ORDMIKS</h1><p class="sub">Finn riktig ord fra bokstavene som er blandet!</p>
+<div class="panel">
+<div class="setup">
+<div class="field"><label>Spillere</label><select id="count"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+<div class="field"><label>Vanskelighetsgrad</label><select id="level"><option>Lett</option><option selected>Middels</option><option>Vanskelig</option><option>Blandet</option></select></div>
+<div class="field"><label>Antall ord</label><select id="rounds"><option>10</option><option selected>20</option><option>30</option></select></div>
+<button class="start" onclick="startGame()">Start nytt spill</button>
+</div>
+<div id="players" class="players"></div>
+<div id="turn" class="turn">Velg innstillinger og start spillet</div>
+<div class="game">
+<div class="hint" id="hint">💡 Hint kommer her</div><div class="mixed" id="mixed">ORDMIKS</div>
+<input id="answer" class="answer" placeholder="Skriv ordet" autocomplete="off">
+<div class="actions"><button class="check" onclick="check()">✓ Sjekk svar</button><button class="skip" onclick="skip()">Vis svar / neste</button></div>
+<div id="msg" class="msg"></div><div id="progress" class="progress"></div>
+</div></div></div>
+<div id="overlay" class="overlay"><div class="modal"><h2 id="resultTitle">Resultat</h2><div id="result"></div><button onclick="closeResult();startGame()">Spill igjen</button><button onclick="location.href='index.html'">Til forsiden</button></div></div>
+<script>
+const BANK={"Lett": [["KATT", "Et dyr som ofte sier mjau"], ["HUND", "Menneskets firbeinte venn"], ["BIL", "Et kjøretøy med fire hjul"], ["HUS", "Et sted å bo"], ["SOL", "Lyser på himmelen om dagen"], ["MAT", "Noe vi spiser"], ["BOK", "Noe du kan lese"], ["FISK", "Lever i vann"], ["BÅT", "Brukes på sjøen"], ["SKO", "Har du på føttene"], ["OST", "Kan ligge på brødskiven"], ["MELK", "Hvit drikke"], ["EPLE", "En vanlig frukt"], ["KAKE", "Noe søtt til kaffen"], ["DØR", "Du går gjennom den"], ["STOL", "Du sitter på den"], ["BORD", "Møbel med plate og bein"], ["REGN", "Vann som faller fra skyene"], ["SNØ", "Hvitt og kaldt om vinteren"], ["TRE", "Vokser i skogen"], ["BLOMST", "Kan stå i en vase"], ["KAFFE", "Varm drikk"], ["BRØD", "Vanlig mat til frokost"], ["LAMPE", "Gir lys inne"], ["TOG", "Kjører på skinner"], ["BUSS", "Frakter mange passasjerer"], ["SKY", "Svever på himmelen"], ["SENG", "Der vi sover"], ["BALL", "Rund og brukes i mange spill"], ["IS", "Kald dessert"]], "Middels": [["BANAN", "Gul frukt"], ["SYKKEL", "Har to hjul og pedaler"], ["VINTER", "Årstiden med kulde og snø"], ["SOMMER", "Årstiden med mest varme"], ["KJØKKEN", "Rommet der vi ofte lager mat"], ["VINDU", "Du kan se ut gjennom det"], ["FJELL", "Høyt landskap"], ["STRAND", "Sand eller stein ved sjøen"], ["POTET", "Vanlig norsk matvare"], ["GULROT", "Oransje grønnsak"], ["PARAPLY", "Brukes når det regner"], ["TELEFON", "Brukes til å ringe"], ["SKJERF", "Kan varme halsen"], ["JAKKE", "Ytterplagg"], ["FROKOST", "Dagens første måltid"], ["MIDDAG", "Et hovedmåltid"], ["KOFFERT", "Brukes når du reiser"], ["FERIE", "Fri fra jobb eller skole"], ["KLOKKE", "Viser tiden"], ["NØKKEL", "Kan åpne en lås"], ["KAMERA", "Tar bilder"], ["AVIS", "Har nyheter på papir eller skjerm"], ["BUTIKK", "Sted der du handler"], ["HAGE", "Område med planter ved huset"], ["GARASJE", "Her kan bilen stå"], ["TRAPPE", "Brukes mellom etasjer"], ["PUTE", "Har du ofte under hodet"], ["TEPPE", "Kan varme deg i sofaen"], ["LYKKE", "En god følelse"], ["VENNSKAP", "Forhold mellom gode venner"]], "Vanskelig": [["SJOKOLADE", "Søtsak laget av kakao"], ["BIBLIOTEK", "Sted med mange bøker"], ["FJERNKONTROLL", "Brukes til å styre TV-en"], ["KJØLESKAP", "Holder maten kald"], ["OPPVASKMASKIN", "Vasker tallerkener og bestikk"], ["SOMMERFERIE", "Lang ferie i den varme årstiden"], ["BURSDAGSKAKE", "Søtsak som ofte serveres på bursdag"], ["FOTBALLBANE", "Sted der fotballkamper spilles"], ["HANDLEKURV", "Du legger varer i den i butikken"], ["REGNJAKKE", "Ytterplagg for vått vær"], ["TANNBØRSTE", "Brukes til å rengjøre tennene"], ["BRANNBIL", "Utrykningskjøretøy for brannvesenet"], ["FLYPLASS", "Sted der fly tar av og lander"], ["BENSINSTASJON", "Sted for drivstoff og ofte kiosk"], ["HOVEDSTAD", "Den viktigste byen i et land"], ["FJELLTUR", "Tur i høyt terreng"], ["VINTERJAKKE", "Varmt ytterplagg"], ["JULEGAVE", "Pakke som ofte åpnes på julaften"], ["PÅSKEEGG", "Fylles ofte med godteri i påsken"], ["SOLNEDGANG", "Når solen forsvinner under horisonten"], ["HAVUTSIKT", "Utsikt mot sjøen"], ["KJÆLEDYR", "Et dyr man har hjemme"], ["SPILLEKVELD", "En kveld med spill"], ["FAMILIEMORO", "Moro sammen med familien"], ["KRYSSORD", "Ordoppgave i ruter"], ["BOKSTAVER", "Tegnene vi bygger ord av"], ["HEMMELIGHET", "Noe som ikke skal fortelles til alle"], ["EVENTYR", "Fortelling med fantasi"], ["NORGEKART", "Kart over Norge"], ["FERIEMINNE", "Et minne fra en ferie"]]};
+let game=[],idx=0,turn=0,scores=[],n=2,locked=false;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function scramble(w){let a=w.split(""),s=w; for(let k=0;k<20 && s===w;k++)s=shuffle([...a]).join(""); return s}
+function startGame(){
+ n=+document.getElementById('count').value; let level=document.getElementById('level').value, rounds=+document.getElementById('rounds').value;
+ let pool=level==="Blandet"?Object.values(BANK).flat():[...BANK[level]];
+ game=shuffle(pool.map(x=>({word:x[0],hint:x[1]}))).slice(0,Math.min(rounds,pool.length));
+ idx=0;turn=0;scores=Array(n).fill(0);locked=false; closeResult(); renderPlayers();show();
+}
+function renderPlayers(){
+ let el=document.getElementById('players');el.innerHTML="";
+ scores.forEach((s,i)=>el.innerHTML+=`<div class="player ${i===turn?'active':''}">🎯 Spiller ${i+1}<div class="score">${s} poeng</div></div>`);
+ document.getElementById('turn').textContent=`Spiller ${turn+1} sin tur`;
+}
+function show(){
+ if(idx>=game.length)return finish();
+ locked=false; let q=game[idx];document.getElementById('mixed').textContent=scramble(q.word);
+ document.getElementById('hint').textContent="💡 "+q.hint;document.getElementById('answer').value="";
+ document.getElementById('msg').textContent="";document.getElementById('progress').textContent=`Ord ${idx+1} av ${game.length}`;
+ document.getElementById('answer').focus();renderPlayers();
+}
+function norm(s){return s.trim().toUpperCase().replace(/\s+/g," ")}
+function check(){
+ if(locked||!game.length)return; locked=true;let q=game[idx],ok=norm(document.getElementById('answer').value)===norm(q.word);
+ if(ok){scores[turn]++;document.getElementById('msg').textContent="✅ Riktig! +1 poeng"}else document.getElementById('msg').textContent=`❌ Riktig svar: ${q.word}`;
+ renderPlayers();setTimeout(next,1100);
+}
+function skip(){if(locked||!game.length)return;locked=true;document.getElementById('msg').textContent=`💡 Riktig svar: ${game[idx].word}`;setTimeout(next,1200)}
+function next(){idx++;turn=(turn+1)%n;show()}
+function finish(){
+ let max=Math.max(...scores),wins=scores.map((s,i)=>s===max?i+1:null).filter(Boolean);
+ document.getElementById('resultTitle').textContent=wins.length>1?"🤝 Uavgjort!":"🏆 Vi har en vinner!";
+ document.getElementById('result').innerHTML=(wins.length>1?`Spiller ${wins.join(" og ")} deler seieren.`:`Spiller ${wins[0]} vant!`)+"<br><br>"+scores.map((s,i)=>`Spiller ${i+1}: <b>${s} poeng</b>`).join("<br>");
+ document.getElementById('overlay').style.display="flex";
+}
+function closeResult(){document.getElementById('overlay').style.display="none"}
+document.getElementById('answer').addEventListener('keydown',e=>{if(e.key==="Enter")check()});
+startGame();
+</script></body></html>
