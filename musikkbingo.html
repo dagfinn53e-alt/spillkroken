@@ -141,7 +141,7 @@ let score=0;
 let seconds=180;
 let timerId=null;
 let gameOver=false;
-let numberOfPlayers=1;
+let numberOfPlayers=2;
 let currentPlayer=0;
 let playerScores=[0];
 
@@ -303,6 +303,12 @@ function finishGame(title){
   document.getElementById("resultMessage").style.display="flex";
 }
 function closeResult(){document.getElementById("resultMessage").style.display="none"}
+
+window.addEventListener("load", function(){
+  if (typeof selectPlayers === "function") selectPlayers(2);
+  if (typeof updateActiveBoard === "function") updateActiveBoard();
+});
+
 </script>
 </body>
 </html>
