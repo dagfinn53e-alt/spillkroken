@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Musikkbingo – Spillglede</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#111827,#4c1d95,#7c2d12);color:white;text-align:center}
+.container{max-width:1000px;margin:auto;padding:22px}
+h1{font-size:42px;margin:12px 0 8px}
+.small{font-size:16px;opacity:.92;line-height:1.5}
+.card{background:rgba(255,255,255,.13);border-radius:24px;padding:22px;margin:18px 0;box-shadow:0 8px 25px rgba(0,0,0,.35)}
+button{border:0;border-radius:999px;padding:13px 18px;margin:7px;font-size:17px;cursor:pointer;background:#facc15;color:#111;font-weight:bold;box-shadow:0 6px 16px rgba(0,0,0,.18)}
+button:hover{background:#fde047}
+.back{background:#2563eb;color:white}
+.hidden{display:none!important}
+.partner{max-width:760px;margin:18px auto 20px;padding:16px;display:grid;grid-template-columns:130px 1fr;gap:18px;align-items:center;text-align:left;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:22px;box-shadow:0 8px 25px rgba(0,0,0,.25)}
+.partner img{width:130px;height:130px;object-fit:cover;border-radius:16px;border:2px solid rgba(255,255,255,.65);background:white}
+.partner .eyebrow{color:#facc15;font-weight:900;font-size:18px;margin-bottom:5px}
+.partner h2{margin:0 0 6px;font-size:28px}
+.partner p{margin:0 0 12px;line-height:1.45;font-size:16px}
+.partner a{display:inline-flex;text-decoration:none;color:#111827;background:#facc15;border-radius:999px;padding:11px 18px;font-weight:900}
+.statusbar{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:14px 0 18px}
+.pill{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.30);color:white;border-radius:999px;padding:11px 16px;font-weight:900}
+.timer{background:rgba(239,68,68,.25);border-color:rgba(254,202,202,.55)}
+.bingo-area{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cell{min-height:86px;background:white;color:#111;border-radius:18px;padding:10px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 16px rgba(0,0,0,.18);border:3px solid transparent;user-select:none}
+.cell.marked{background:#22c55e;color:white;border-color:#bbf7d0}
+.cell.wrong{background:#ef4444!important;color:white!important;border-color:#fecaca!important}
+.cell.disabled{pointer-events:none;opacity:.88}
+.drawbox{background:rgba(255,255,255,.16);border-radius:22px;padding:18px;min-height:260px}
+.draw-current{font-size:28px;font-weight:900;margin:14px 0;color:#facc15;line-height:1.2}
+.answer{font-size:16px;line-height:1.45;background:rgba(0,0,0,.22);border-radius:14px;padding:12px;margin:10px 0;color:#fff}
+.answer b{color:#facc15}
+.draw-list{text-align:left;max-height:260px;overflow:auto;background:rgba(0,0,0,.18);border-radius:16px;padding:12px;line-height:1.6}
+.result-message{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:center;justify-content:center;padding:20px}
+.result-box{background:linear-gradient(135deg,#facc15,#7c3aed);color:white;border-radius:34px;padding:35px;max-width:650px;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+.result-box h2{font-size:48px;margin:0 0 12px}
+.result-box p{font-size:20px;line-height:1.5}
+.footer{opacity:.8;font-size:14px;margin-top:24px}
+@media(max-width:850px){.bingo-area{grid-template-columns:1fr}.partner{grid-template-columns:1fr;text-align:center;max-width:520px}.partner img{margin:auto}}
+@media(max-width:600px){.container{padding:14px}h1{font-size:32px}.board{gap:7px}.cell{min-height:66px;border-radius:14px;padding:7px;font-size:12px}.draw-current{font-size:23px}.result-box h2{font-size:36px}}
+
+.playerChoice.active{background:#22c55e;color:white;transform:scale(1.05)}
+#turn{background:rgba(34,197,94,.30);border-color:rgba(187,247,208,.55)}
+.scoreboard{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:10px 0}
+.scorechip{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:9px 14px;font-weight:900}
+.scorechip.active{background:#22c55e;color:white;border-color:#bbf7d0}
+
+.two-boards{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.player-board{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.25);border-radius:20px;padding:12px}
+.player-board.active{border-color:#facc15;box-shadow:0 0 0 3px rgba(250,204,21,.18)}
+.player-board h3{margin:2px 0 10px;font-size:20px}
+.player-board .board{grid-template-columns:repeat(4,1fr)}
+@media(max-width:700px){
+  .two-boards{grid-template-columns:1fr 1fr;gap:8px}
+  .player-board{padding:7px;border-radius:14px}
+  .player-board h3{font-size:15px}
+  .player-board .board{gap:4px}
+  .player-board .cell{min-height:54px;padding:4px;font-size:10px;border-radius:10px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🎵 Musikkbingo</h1>
+<button class="back" onclick="location.href='bingo.html'">⬅️ Tilbake til Bingo</button>
+<p class="small">Du får 3 minutter. Brettet viser artister. Spillet trekker en sangtittel automatisk. Trykk på riktig artist og få poeng.</p>
+<div id="playerSetup" class="card">
+<h2>👥 Velg antall spillere</h2>
+<button class="playerChoice active" onclick="selectPlayers(1,this)">1 spiller</button>
+<button class="playerChoice" onclick="selectPlayers(2,this)">2 spillere</button>
+<p class="small">Ved 2 spillere svarer dere annenhver gang. Riktig svar gir 1 poeng.</p>
+</div>
+
+<div id="setup" class="card">
+<h2>Velg musikkrunde</h2>
+<button onclick="newGame('50/60-tallet')">🎙️ 50/60-tallet</button>
+<button onclick="newGame('70-tallet')">🕺 70-tallet</button>
+<button onclick="newGame('80-tallet')">🎹 80-tallet</button>
+<button onclick="newGame('90-tallet')">💿 90-tallet</button>
+<button onclick="newGame('2000-tallet')">📀 2000-tallet</button>
+<button onclick="newGame('Norsk nostalgi')">🇳🇴 Norsk nostalgi</button>
+<button onclick="newGame('Country')">🤠 Country</button>
+<button onclick="newGame('Soul')">🎷 Soul</button>
+<button onclick="newGame('Mix alle tider')">🎲 Mix alle tider</button>
+<p class="small"><b>Tips:</b> Feil svar blir rødt. Riktig svar blir grønt, og neste sang kommer automatisk.</p>
+</div>
+
+<div id="game" class="card hidden">
+<h2 id="gameTitle"></h2>
+<div class="statusbar">
+<div class="pill timer" id="timer">⏱️ 03:00</div>
+<div class="pill" id="turn">Spiller 1</div>
+<div class="pill" id="score">Poeng: 0</div>
+<div class="pill" id="left">Igjen: 16</div>
+</div>
+<p class="small">Trykk på artisten du mener sang låten.</p>
+<div id="scoreboard" class="scoreboard"></div>
+<div class="bingo-area">
+<div id="boardsWrap" class="two-boards">
+  <div id="playerBoard1" class="player-board active">
+    <h3>👤 Spiller 1</h3>
+    <div class="board" id="board1"></div>
+  </div>
+  <div id="playerBoard2" class="player-board">
+    <h3>👤 Spiller 2</h3>
+    <div class="board" id="board2"></div>
+  </div>
+</div>
+<div class="drawbox">
+<div>🎧 Hvem sang denne?</div>
+<div class="draw-current" id="currentDraw">Trykk start</div>
+<div class="answer hidden" id="answerBox"></div>
+<button onclick="newGame(currentMode)">🔄 Nytt spill</button>
+<div class="draw-list" id="drawList"></div>
+</div>
+</div>
+</div>
+<p class="footer">Spillglede – spill sammen og ha det moro.</p>
+</div>
+
+<div class="result-message" id="resultMessage">
+<div class="result-box">
+<h2 id="resultTitle">🏁 Tiden er ute!</h2>
+<p id="resultText"></p>
+<button onclick="closeResult();newGame(currentMode)">Spill igjen</button>
+<button onclick="closeResult()">Lukk</button>
+</div>
+</div>
+
+<script>
+const songData={"50/60-tallet": [["Elvis Presley", "Jailhouse Rock"], ["The Beatles", "Hey Jude"], ["The Rolling Stones", "Paint It Black"], ["Roy Orbison", "Oh, Pretty Woman"], ["The Beach Boys", "Good Vibrations"], ["The Supremes", "Stop! In the Name of Love"], ["The Monkees", "I'm a Believer"], ["The Archies", "Sugar Sugar"], ["Creedence Clearwater Revival", "Proud Mary"], ["Simon & Garfunkel", "Mrs. Robinson"], ["Aretha Franklin", "Respect"], ["Ben E. King", "Stand by Me"], ["The Platters", "Only You"], ["Johnny Cash", "I Walk the Line"], ["Neil Sedaka", "Oh Carol"], ["Eddie Cochran", "Summertime Blues"], ["The Animals", "House of the Rising Sun"], ["Dusty Springfield", "Son of a Preacher Man"], ["Tom Jones", "It's Not Unusual"], ["Sam Cooke", "You Send Me"]], "70-tallet": [["ABBA", "Dancing Queen"], ["Bee Gees", "Stayin' Alive"], ["Fleetwood Mac", "Go Your Own Way"], ["Elton John", "Rocket Man"], ["Eagles", "Hotel California"], ["Boney M", "Rivers of Babylon"], ["John Denver", "Take Me Home, Country Roads"], ["Stevie Wonder", "Superstition"], ["Queen", "Bohemian Rhapsody"], ["Dire Straits", "Sultans of Swing"], ["Dolly Parton", "Jolene"], ["Rod Stewart", "Sailing"], ["Smokie", "Living Next Door to Alice"], ["Nazareth", "Love Hurts"], ["Gloria Gaynor", "I Will Survive"], ["Blondie", "Heart of Glass"], ["Kenny Rogers", "The Gambler"], ["Donna Summer", "Hot Stuff"], ["Pink Floyd", "Another Brick in the Wall"], ["The Knack", "My Sharona"]], "80-tallet": [["Michael Jackson", "Billie Jean"], ["Whitney Houston", "I Wanna Dance with Somebody"], ["Tina Turner", "The Best"], ["Bruce Springsteen", "Born in the U.S.A."], ["Bryan Adams", "Summer of '69"], ["a-ha", "Take On Me"], ["U2", "With or Without You"], ["Bonnie Tyler", "Total Eclipse of the Heart"], ["Madonna", "Like a Virgin"], ["Cyndi Lauper", "Girls Just Want to Have Fun"], ["Phil Collins", "In the Air Tonight"], ["Bon Jovi", "Livin' on a Prayer"], ["Europe", "The Final Countdown"], ["Roxette", "The Look"], ["George Michael", "Faith"], ["Lionel Richie", "Hello"], ["Prince", "Purple Rain"], ["Toto", "Africa"], ["Survivor", "Eye of the Tiger"], ["Starship", "Nothing's Gonna Stop Us Now"]], "90-tallet": [["Nirvana", "Smells Like Teen Spirit"], ["Oasis", "Wonderwall"], ["R.E.M.", "Losing My Religion"], ["Celine Dion", "My Heart Will Go On"], ["Spice Girls", "Wannabe"], ["Backstreet Boys", "I Want It That Way"], ["Aqua", "Barbie Girl"], ["Cher", "Believe"], ["Bryan Adams", "Everything I Do"], ["Whitney Houston", "I Will Always Love You"], ["No Doubt", "Don't Speak"], ["Metallica", "Nothing Else Matters"], ["Ace of Base", "The Sign"], ["Mariah Carey", "Hero"], ["Shania Twain", "You're Still the One"], ["Bon Jovi", "Always"], ["Roxette", "It Must Have Been Love"], ["Guns N' Roses", "November Rain"], ["Seal", "Kiss from a Rose"], ["Vengaboys", "Boom, Boom, Boom, Boom!!"]], "2000-tallet": [["Coldplay", "Yellow"], ["U2", "Beautiful Day"], ["Robbie Williams", "Feel"], ["Beyoncé", "Crazy in Love"], ["Amy Winehouse", "Rehab"], ["The Killers", "Mr. Brightside"], ["Lady Gaga", "Poker Face"], ["Rihanna", "Umbrella"], ["Adele", "Chasing Pavements"], ["Kings of Leon", "Use Somebody"], ["Green Day", "Boulevard of Broken Dreams"], ["Katy Perry", "I Kissed a Girl"], ["Shakira", "Whenever, Wherever"], ["Outkast", "Hey Ya!"], ["James Blunt", "You're Beautiful"], ["Duffy", "Mercy"], ["Norah Jones", "Don't Know Why"], ["Avril Lavigne", "Complicated"], ["Eminem", "Lose Yourself"], ["Linkin Park", "In the End"]], "Norsk nostalgi": [["DDE", "Vinsjan på Kaia"], ["Vazelina Bilopphøggers", "Hu Maggi"], ["Vamp", "Liten Fuggel"], ["Åge Aleksandersen", "Lys og varme"], ["Mods", "Tore Tang"], ["Jahn Teigen", "Optimist"], ["Postgirobygget", "Idyll"], ["deLillos", "Neste sommer"], ["Di Derre", "Jenter"], ["Hellbillies", "Den finast eg veit"], ["Ole Paus", "Mitt lille land"], ["Marius Müller", "Den du veit"], ["Kurt Nilsen", "She's So High"], ["Lillebjørn Nilsen", "Barn av regnbuen"], ["CC Cowboys", "Tigergutt"], ["DumDum Boys", "Splitter pine"]], "Country": [["Kenny Rogers", "The Gambler"], ["Dolly Parton", "Jolene"], ["Skeeter Davis", "The End of the World"], ["Freddy Fender", "Wasted Days and Wasted Nights"], ["Hank Williams", "Jambalaya"], ["Buck Owens", "Act Naturally"], ["LeAnn Rimes", "Blue"], ["Johnny Cash", "Ring of Fire"], ["Alan Jackson", "Chattahoochee"], ["Tammy Wynette", "Stand by Your Man"], ["Carrie Underwood", "Before He Cheats"], ["Chris Stapleton", "Tennessee Whiskey"], ["Merle Haggard", "Okie from Muskogee"], ["Willie Nelson", "On the Road Again"], ["Shania Twain", "You're Still the One"], ["Garth Brooks", "Friends in Low Places"]], "Soul": [["Percy Sledge", "When a Man Loves a Woman"], ["Otis Redding", "Dock of the Bay"], ["Wilson Pickett", "In the Midnight Hour"], ["Sam Cooke", "You Send Me"], ["The Platters", "Only You"], ["Ben E. King", "Stand by Me"], ["Little Willie John", "Talk To Me"], ["Aretha Franklin", "Respect"], ["Marvin Gaye", "Let's Get It On"], ["Al Green", "Let's Stay Together"], ["James Brown", "I Got You"], ["Diana Ross", "Ain't No Mountain High Enough"], ["The Temptations", "My Girl"], ["Four Tops", "Reach Out I'll Be There"], ["Barry White", "You're the First, the Last, My Everything"], ["Lionel Richie", "Hello"]], "Mix alle tider": [["Elvis Presley", "Jailhouse Rock"], ["The Beatles", "Hey Jude"], ["The Rolling Stones", "Paint It Black"], ["Roy Orbison", "Oh, Pretty Woman"], ["The Beach Boys", "Good Vibrations"], ["The Supremes", "Stop! In the Name of Love"], ["The Monkees", "I'm a Believer"], ["The Archies", "Sugar Sugar"], ["Creedence Clearwater Revival", "Proud Mary"], ["Simon & Garfunkel", "Mrs. Robinson"], ["Aretha Franklin", "Respect"], ["Ben E. King", "Stand by Me"], ["The Platters", "Only You"], ["Johnny Cash", "I Walk the Line"], ["Neil Sedaka", "Oh Carol"], ["Eddie Cochran", "Summertime Blues"], ["The Animals", "House of the Rising Sun"], ["Dusty Springfield", "Son of a Preacher Man"], ["Tom Jones", "It's Not Unusual"], ["Sam Cooke", "You Send Me"], ["ABBA", "Dancing Queen"], ["Bee Gees", "Stayin' Alive"], ["Fleetwood Mac", "Go Your Own Way"], ["Elton John", "Rocket Man"], ["Eagles", "Hotel California"], ["Boney M", "Rivers of Babylon"], ["John Denver", "Take Me Home, Country Roads"], ["Stevie Wonder", "Superstition"], ["Queen", "Bohemian Rhapsody"], ["Dire Straits", "Sultans of Swing"], ["Dolly Parton", "Jolene"], ["Rod Stewart", "Sailing"], ["Smokie", "Living Next Door to Alice"], ["Nazareth", "Love Hurts"], ["Gloria Gaynor", "I Will Survive"], ["Blondie", "Heart of Glass"], ["Kenny Rogers", "The Gambler"], ["Donna Summer", "Hot Stuff"], ["Pink Floyd", "Another Brick in the Wall"], ["The Knack", "My Sharona"], ["Michael Jackson", "Billie Jean"], ["Whitney Houston", "I Wanna Dance with Somebody"], ["Tina Turner", "The Best"], ["Bruce Springsteen", "Born in the U.S.A."], ["Bryan Adams", "Summer of '69"], ["a-ha", "Take On Me"], ["U2", "With or Without You"], ["Bonnie Tyler", "Total Eclipse of the Heart"], ["Madonna", "Like a Virgin"], ["Cyndi Lauper", "Girls Just Want to Have Fun"], ["Phil Collins", "In the Air Tonight"], ["Bon Jovi", "Livin' on a Prayer"], ["Europe", "The Final Countdown"], ["Roxette", "The Look"], ["George Michael", "Faith"], ["Lionel Richie", "Hello"], ["Prince", "Purple Rain"], ["Toto", "Africa"], ["Survivor", "Eye of the Tiger"], ["Starship", "Nothing's Gonna Stop Us Now"], ["Nirvana", "Smells Like Teen Spirit"], ["Oasis", "Wonderwall"], ["R.E.M.", "Losing My Religion"], ["Celine Dion", "My Heart Will Go On"], ["Spice Girls", "Wannabe"], ["Backstreet Boys", "I Want It That Way"], ["Aqua", "Barbie Girl"], ["Cher", "Believe"], ["Bryan Adams", "Everything I Do"], ["Whitney Houston", "I Will Always Love You"], ["No Doubt", "Don't Speak"], ["Metallica", "Nothing Else Matters"], ["Ace of Base", "The Sign"], ["Mariah Carey", "Hero"], ["Shania Twain", "You're Still the One"], ["Bon Jovi", "Always"], ["Roxette", "It Must Have Been Love"], ["Guns N' Roses", "November Rain"], ["Seal", "Kiss from a Rose"], ["Vengaboys", "Boom, Boom, Boom, Boom!!"], ["Coldplay", "Yellow"], ["U2", "Beautiful Day"], ["Robbie Williams", "Feel"], ["Beyoncé", "Crazy in Love"], ["Amy Winehouse", "Rehab"], ["The Killers", "Mr. Brightside"], ["Lady Gaga", "Poker Face"], ["Rihanna", "Umbrella"], ["Adele", "Chasing Pavements"], ["Kings of Leon", "Use Somebody"], ["Green Day", "Boulevard of Broken Dreams"], ["Katy Perry", "I Kissed a Girl"], ["Shakira", "Whenever, Wherever"], ["Outkast", "Hey Ya!"], ["James Blunt", "You're Beautiful"], ["Duffy", "Mercy"], ["Norah Jones", "Don't Know Why"], ["Avril Lavigne", "Complicated"], ["Eminem", "Lose Yourself"], ["Linkin Park", "In the End"], ["DDE", "Vinsjan på Kaia"], ["Vazelina Bilopphøggers", "Hu Maggi"], ["Vamp", "Liten Fuggel"], ["Åge Aleksandersen", "Lys og varme"], ["Mods", "Tore Tang"], ["Jahn Teigen", "Optimist"], ["Postgirobygget", "Idyll"], ["deLillos", "Neste sommer"], ["Di Derre", "Jenter"], ["Hellbillies", "Den finast eg veit"], ["Ole Paus", "Mitt lille land"], ["Marius Müller", "Den du veit"], ["Kurt Nilsen", "She's So High"], ["Lillebjørn Nilsen", "Barn av regnbuen"], ["CC Cowboys", "Tigergutt"], ["DumDum Boys", "Splitter pine"], ["Skeeter Davis", "The End of the World"], ["Freddy Fender", "Wasted Days and Wasted Nights"], ["Hank Williams", "Jambalaya"], ["Buck Owens", "Act Naturally"], ["LeAnn Rimes", "Blue"], ["Johnny Cash", "Ring of Fire"], ["Alan Jackson", "Chattahoochee"], ["Tammy Wynette", "Stand by Your Man"], ["Carrie Underwood", "Before He Cheats"], ["Chris Stapleton", "Tennessee Whiskey"], ["Merle Haggard", "Okie from Muskogee"], ["Willie Nelson", "On the Road Again"], ["Garth Brooks", "Friends in Low Places"], ["Percy Sledge", "When a Man Loves a Woman"], ["Otis Redding", "Dock of the Bay"], ["Wilson Pickett", "In the Midnight Hour"], ["Little Willie John", "Talk To Me"], ["Marvin Gaye", "Let's Get It On"], ["Al Green", "Let's Stay Together"], ["James Brown", "I Got You"], ["Diana Ross", "Ain't No Mountain High Enough"], ["The Temptations", "My Girl"], ["Four Tops", "Reach Out I'll Be There"], ["Barry White", "You're the First, the Last, My Everything"]]};
+let currentMode="70-tallet";
+let boardArtists=[];
+let playerBoards=[[],[]];
+let drawnSongs=[];
+let currentAnswer="";
+let score=0;
+let seconds=180;
+let timerId=null;
+let gameOver=false;
+let numberOfPlayers=1;
+let currentPlayer=0;
+let playerScores=[0];
+
+function selectPlayers(n,btn){
+  numberOfPlayers=n;
+  currentPlayer=0;
+  playerScores=Array(n).fill(0);
+  document.querySelectorAll(".playerChoice").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+function renderScores(){
+  let sb=document.getElementById("scoreboard");
+  sb.innerHTML=playerScores.map((p,i)=>
+    '<span class="scorechip '+(i===currentPlayer?'active':'')+'">Spiller '+(i+1)+': '+p+' poeng</span>'
+  ).join("");
+  document.getElementById("turn").innerText=numberOfPlayers===1?"1 spiller":"🎯 Spiller "+(currentPlayer+1)+" sin tur";
+  document.getElementById("score").innerText=numberOfPlayers===1?"Poeng: "+playerScores[0]:"Totalt: "+playerScores.reduce((a,b)=>a+b,0);
+}
+
+function shuffle(a){
+  let c=[...a];
+  for(let i=c.length-1;i>0;i--){
+    let j=Math.floor(Math.random()*(i+1));
+    [c[i],c[j]]=[c[j],c[i]];
+  }
+  return c;
+}
+function artists(pool){return [...new Set(pool.map(x=>x[0]))]}
+function formatTime(s){let m=Math.floor(s/60),r=s%60;return String(m).padStart(2,'0')+":"+String(r).padStart(2,'0')}
+function rankText(p){
+  if(p<=4)return "Musikk-nybegynner 🎧";
+  if(p<=8)return "Musikkvenn 🎵";
+  if(p<=12)return "Musikk-kjenner 🏆";
+  if(p<=15)return "Musikkekspert ⭐⭐⭐⭐";
+  return "Musikkmester 👑";
+}
+
+function newGame(m){
+  clearInterval(timerId);
+  currentMode=m||currentMode;
+  drawnSongs=[];
+  currentAnswer="";
+  score=0;
+  currentPlayer=0;
+  playerScores=Array(numberOfPlayers).fill(0);
+  seconds=180;
+  gameOver=false;
+
+  let pool=shuffle(songData[currentMode]);
+  let allArtists=artists(pool);
+  playerBoards[0]=shuffle(allArtists).slice(0,16);
+  playerBoards[1]=shuffle(allArtists).slice(0,16);
+  boardArtists=[...new Set([...playerBoards[0],...playerBoards[1]])];
+
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("playerSetup").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+  document.getElementById("gameTitle").innerText="🎵 "+currentMode+" – Hvem sang denne?";
+  document.getElementById("currentDraw").innerText="Klar?";
+  document.getElementById("answerBox").classList.add("hidden");
+  document.getElementById("answerBox").innerHTML="";
+  document.getElementById("drawList").innerHTML="";
+  renderScores();
+  document.getElementById("left").innerText="Igjen: 16";
+  document.getElementById("timer").innerText="⏱️ 03:00";
+
+  renderBoard();
+  drawNext();
+  timerId=setInterval(tick,1000);
+}
+
+function renderBoard(){
+  [0,1].forEach(pi=>{
+    let b=document.getElementById("board"+(pi+1));
+    b.innerHTML="";
+    playerBoards[pi].forEach(a=>{
+      let d=document.createElement("div");
+      d.className="cell";
+      d.innerText=a;
+      d.dataset.artist=a;
+      d.onclick=()=>chooseAnswer(a,d,pi);
+      b.appendChild(d);
+    });
+  });
+  updateActiveBoard();
+}
+
+function updateActiveBoard(){
+  document.getElementById("playerBoard1").classList.toggle("active",currentPlayer===0);
+  document.getElementById("playerBoard2").classList.toggle("active",currentPlayer===1 && numberOfPlayers===2);
+  document.getElementById("playerBoard2").style.display=numberOfPlayers===2?"block":"none";
+  [0,1].forEach(pi=>{
+    document.querySelectorAll("#board"+(pi+1)+" .cell").forEach(c=>{
+      c.style.pointerEvents=(pi===currentPlayer && (pi===0 || numberOfPlayers===2) && !c.classList.contains("disabled"))?"auto":"none";
+      c.style.opacity=(pi===currentPlayer && (pi===0 || numberOfPlayers===2))?"1":".72";
+    });
+  });
+}
+
+function drawNext(){
+  if(gameOver)return;
+  let boardSet=new Set(playerBoards[currentPlayer]);
+  let possible=songData[currentMode].filter(x=>boardSet.has(x[0])&&!drawnSongs.includes(x[1]));
+  if(!possible.length){finishGame("🎉 Alle sangene er tatt!");return}
+  let n=possible[Math.floor(Math.random()*possible.length)];
+  currentAnswer=n[0];
+  drawnSongs.push(n[1]);
+  document.getElementById("currentDraw").innerText="🎵 "+n[1];
+  document.getElementById("answerBox").classList.add("hidden");
+  document.getElementById("answerBox").innerHTML="";
+  document.getElementById("drawList").innerHTML=drawnSongs.map((x,i)=>`${i+1}. ${x}`).reverse().join("<br>");
+  document.getElementById("left").innerText="Igjen: "+(16-score);
+  document.querySelectorAll(".cell").forEach(c=>c.classList.remove("wrong"));
+}
+
+function chooseAnswer(artist,cell,playerIndex){
+  if(gameOver||!currentAnswer||playerIndex!==currentPlayer)return;
+  if(artist===currentAnswer){
+    score++;
+    playerScores[currentPlayer]++;
+    document.getElementById("left").innerText="Igjen: "+(16-score);
+    cell.classList.add("marked","disabled");
+    document.getElementById("answerBox").innerHTML="✅ Riktig, Spiller "+(currentPlayer+1)+"! Det var <b>"+currentAnswer+"</b>.";
+    document.getElementById("answerBox").classList.remove("hidden");
+    if(numberOfPlayers>1) currentPlayer=(currentPlayer+1)%numberOfPlayers;
+    renderScores();
+    updateActiveBoard();
+    setTimeout(drawNext,800);
+  }else{
+    cell.classList.add("wrong");
+    document.getElementById("answerBox").innerHTML="❌ Ikke helt. Prøv en annen artist.";
+    document.getElementById("answerBox").classList.remove("hidden");
+    setTimeout(()=>cell.classList.remove("wrong"),650);
+  }
+}
+
+function tick(){
+  seconds--;
+  document.getElementById("timer").innerText="⏱️ "+formatTime(seconds);
+  if(seconds<=0)finishGame("🏁 Tiden er ute!");
+}
+
+function finishGame(title){
+  if(gameOver)return;
+  gameOver=true;
+  clearInterval(timerId);
+  document.querySelectorAll(".cell").forEach(c=>c.classList.add("disabled"));
+  document.getElementById("resultTitle").innerText=title;
+  if(numberOfPlayers===1){
+    document.getElementById("resultText").innerHTML="Du fikk <b>"+playerScores[0]+"</b> poeng.<br><br>"+rankText(playerScores[0]);
+  }else{
+    let best=Math.max(...playerScores);
+    let winners=playerScores.map((p,i)=>p===best?i+1:null).filter(Boolean);
+    let winnerText=winners.length===1?"🏆 Spiller "+winners[0]+" vinner!":"🤝 Uavgjort!";
+    document.getElementById("resultText").innerHTML=
+      winnerText+"<br><br>Spiller 1: <b>"+playerScores[0]+" poeng</b><br>Spiller 2: <b>"+playerScores[1]+" poeng</b>";
+  }
+  document.getElementById("resultMessage").style.display="flex";
+}
+function closeResult(){document.getElementById("resultMessage").style.display="none"}
+</script>
+</body>
+</html>
