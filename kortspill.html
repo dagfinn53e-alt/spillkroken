@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kortspill – Spillglede</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#74411f,#2b160d 72%);color:#fff;min-height:100vh}
+header{text-align:center;padding:28px 15px 18px} h1{font-size:clamp(38px,7vw,78px);margin:0;color:#ffd85b;text-shadow:0 4px 0 #5b270c,0 7px 15px #000}
+.sub{font-size:clamp(16px,2.2vw,24px);font-weight:700;margin-top:8px}
+.wrap{max-width:1180px;margin:auto;padding:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.card{border:5px solid #e8b640;border-radius:25px;background:linear-gradient(145deg,#f6e2a5,#c88c3e);padding:18px;box-shadow:0 12px 25px #0008;color:#30180d;text-align:center;position:relative;overflow:hidden;min-height:300px}
+.card:before{content:"";position:absolute;inset:8px;border:2px solid #6b3517;border-radius:17px;pointer-events:none}
+.icon{height:150px;display:flex;justify-content:center;align-items:center;gap:8px}
+.playcard{width:82px;height:118px;background:#fff;border:4px solid #222;border-radius:10px;box-shadow:4px 5px 5px #0005;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900}
+.red{color:#d51f2b;transform:rotate(8deg)} .black{color:#111;transform:rotate(-8deg)}
+h2{font-size:31px;margin:5px 0}.desc{font-weight:700;min-height:44px}
+button,.btn{display:inline-block;border:3px solid #5a2a10;border-radius:30px;padding:12px 28px;font-size:19px;font-weight:900;text-decoration:none;cursor:pointer}
+.go{background:linear-gradient(#46c95c,#16872b);color:white;box-shadow:0 5px 0 #075c18}
+.soon{background:#6d6257;color:#eee;cursor:default}
+.back{display:block;width:max-content;margin:25px auto 40px;background:#ffd85b;color:#32190d}
+@media(max-width:700px){.wrap{grid-template-columns:1fr}.card{min-height:275px}}
+</style>
+</head>
+<body>
+<header><h1>🃏 KORTSPILL</h1><div class="sub">Velg et kortspill – flere kommer etter hvert!</div></header>
+<main class="wrap">
+<section class="card">
+ <div class="icon"><div class="playcard black">K♠</div><div class="playcard red">A♥</div></div>
+ <h2>7-kabalen</h2><div class="desc">Den klassiske kabalen for én spiller.</div>
+ <a class="btn go" href="kabal.html">SPILL NÅ</a>
+</section>
+<section class="card">
+ <div class="icon"><div class="playcard red">7♦</div><div class="playcard black">7♣</div></div>
+ <h2>Hopp i havet</h2><div class="desc">Samle fire like kort.</div>
+ <span class="btn soon">KOMMER SNART</span>
+</section>
+<section class="card">
+ <div class="icon"><div class="playcard black">A♣</div><div class="playcard red">K♦</div></div>
+ <h2>Krig</h2><div class="desc">Høyeste kort vinner stikket.</div>
+ <span class="btn soon">KOMMER SNART</span>
+</section>
+<section class="card">
+ <div class="icon"><div class="playcard black">J♠</div><div class="playcard red">Q♥</div></div>
+ <h2>Flere kortspill</h2><div class="desc">Vi fyller på med flere morsomme spill.</div>
+ <span class="btn soon">KOMMER SNART</span>
+</section>
+</main>
+<a class="btn back" href="index.html">← TIL SPILLGLEDE</a>
+</body></html>
