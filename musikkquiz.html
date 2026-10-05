@@ -234,9 +234,36 @@ button:focus{
 
 
 .playerBtn.active{background:#22c55e;color:white;transform:scale(1.05)}
-#multiScores{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
-.scoreChip{padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.16);font-weight:900}
-.scoreChip.turnNow{background:#22c55e;color:white;box-shadow:0 0 0 2px #facc15}
+#multiScores{
+  display:grid;
+  grid-template-columns:repeat(var(--players,1),minmax(0,1fr));
+  gap:14px;
+  max-width:850px;
+  margin:18px auto;
+}
+.playerBoard{
+  min-width:0;
+  padding:18px 10px;
+  border-radius:20px;
+  background:rgba(255,255,255,.16);
+  border:2px solid rgba(255,255,255,.28);
+  font-weight:900;
+}
+.playerBoard .playerName{display:block;font-size:18px;margin-bottom:7px}
+.playerBoard .playerPoints{display:block;font-size:27px;color:#facc15}
+.playerBoard.turnNow{
+  background:#166534;
+  border-color:#facc15;
+  box-shadow:0 0 0 3px rgba(250,204,21,.22);
+  transform:translateY(-3px);
+}
+.playerBoard.turnNow .playerPoints{color:white}
+@media(max-width:650px){
+  #multiScores{gap:8px}
+  .playerBoard{padding:12px 5px;border-radius:15px}
+  .playerBoard .playerName{font-size:14px}
+  .playerBoard .playerPoints{font-size:20px}
+}
 </style>
 </head>
 
@@ -876,8 +903,13 @@ startQuiz=function(){
 };
 
 function renderMultiScores(){
-  document.getElementById("multiScores").innerHTML=playerScores.map((x,i)=>
-    '<span class="scoreChip '+(i===currentPlayer?'turnNow':'')+'">Spiller '+(i+1)+': '+x+' poeng</span>'
+  const box=document.getElementById("multiScores");
+  box.style.setProperty("--players",numberOfPlayers);
+  box.innerHTML=playerScores.map((x,i)=>
+    '<div class="playerBoard '+(i===currentPlayer?'turnNow':'')+'">'+
+      '<span class="playerName">'+(i===currentPlayer?'🎯 ':'')+'Spiller '+(i+1)+'</span>'+
+      '<span class="playerPoints">'+x+' poeng</span>'+
+    '</div>'
   ).join("");
 }
 
