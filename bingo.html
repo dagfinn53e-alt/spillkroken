@@ -1,18 +1,59 @@
-<!doctype html><html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bingo – Spillglede</title>
-<style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:radial-gradient(circle at top,#75431f,#29140b 72%);color:white;min-height:100vh}h1{text-align:center;color:#ffd85b;font-size:clamp(42px,8vw,76px);margin:15px 0 0;text-shadow:0 4px #54240b}.sub{text-align:center;font-weight:bold}.box{max-width:800px;margin:15px auto;padding:15px}.top,.actions{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}.ball{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle at 35% 30%,white,#ffe36d,#d98b18);border:5px solid #6b310d;color:#32170b;font-size:38px;font-weight:900;display:flex;align-items:center;justify-content:center}.btn{padding:10px 18px;border:3px solid #63300e;border-radius:25px;background:linear-gradient(#ffe477,#e7aa31);font-weight:900;color:#351a0b;text-decoration:none;cursor:pointer}.green{background:linear-gradient(#59d86a,#138631);color:white}.head,.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:600px;margin:8px auto}.head div{text-align:center;color:#ffd85b;font-size:42px;font-weight:900}.cell{aspect-ratio:1;border:3px solid #71370f;border-radius:12px;background:#fff2c8;color:#35170a;font-size:clamp(22px,5vw,38px);font-weight:900}.cell.mark{background:#38ae50;color:white}.cell.hit{outline:4px solid #65db78}.free{background:#ffc94d}.msg,.history{text-align:center;font-weight:900;margin:14px}.history{line-height:1.8}.n{display:inline-flex;width:34px;height:34px;border-radius:50%;border:2px solid #e7ba4c;align-items:center;justify-content:center;margin:2px}.win{display:none;position:fixed;inset:0;background:#000c;align-items:center;justify-content:center}.win.show{display:flex}.winbox{background:#ffe29a;color:#32170b;border:6px solid #6b310d;border-radius:25px;padding:30px;text-align:center}.winbox h2{font-size:44px;margin:0 0 10px}@media(max-width:600px){.box{padding:6px}.head,.grid{gap:3px}.cell{border-width:2px}.head div{font-size:32px}}</style></head>
-<body><h1>🎱 BINGO</h1><div class="sub">75-talls Bingo – få en hel rekke, kolonne eller diagonal</div><div class="box">
-<div class="top"><div class="ball" id="ball">–</div><div><b>Trukket: <span id="count">0</span> / 75</b><br><span id="call">Klar til start</span></div><button class="btn green" onclick="draw()">🎱 Trekk tall</button></div>
-<div class="head"><div>B</div><div>I</div><div>N</div><div>G</div><div>O</div></div><div class="grid" id="grid"></div>
-<div class="msg" id="msg">Trekk et tall. Klikk på tallet på brettet hvis du har det.</div><div class="actions"><button class="btn" onclick="check()">🎉 BINGO!</button><button class="btn" onclick="start()">🔄 Nytt spill</button><a class="btn" href="index.html">🏠 Spillglede</a></div>
-<div class="history"><b>Trukne tall:</b><br><span id="hist">Ingen ennå</span></div></div>
-<div class="win" id="win"><div class="winbox"><h2>🎉 BINGO!</h2><p id="result"></p><button class="btn green" onclick="start()">Spill igjen</button></div></div>
+<!doctype html>
+<html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bingo – Spillglede</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at 55% 0,#075397,#03182f 65%);color:#fff;min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 18px;background:#061b36cc;border-bottom:2px solid #118be0;flex-wrap:wrap}
+.brand{font-size:25px;font-weight:900}.logo{font-size:clamp(40px,6vw,70px);font-weight:1000;letter-spacing:3px;text-shadow:0 4px 0 #00152b}.logo span:nth-child(1){color:#f22}.logo span:nth-child(2){color:#21a7ff}.logo span:nth-child(3){color:#18c95b}.logo span:nth-child(4){color:#ffbd20}.logo span:nth-child(5){color:#b738e4}
+.btn{border:2px solid #24a9ff;border-radius:15px;background:linear-gradient(#1675c6,#07549a);color:white;font-weight:900;padding:10px 15px;cursor:pointer;text-decoration:none;font-size:15px}
+.green{background:linear-gradient(#29d852,#07912b);border-color:#62ff7c}.layout{display:grid;grid-template-columns:minmax(560px,1.55fr) minmax(330px,.85fr);gap:13px;padding:13px;max-width:1500px;margin:auto}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card{border:4px solid var(--c);border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 8px 20px #0008}.ct{background:var(--c);text-align:center;font-weight:900;font-size:21px;padding:6px}
+.bhead,.bgrid{display:grid;grid-template-columns:repeat(5,1fr)}.bhead div{padding:5px;text-align:center;font-size:26px;font-weight:1000}.bhead div:nth-child(1){background:#ef2525}.bhead div:nth-child(2){background:#1678e7}.bhead div:nth-child(3){background:#13a94b}.bhead div:nth-child(4){background:#f2ad14}.bhead div:nth-child(5){background:#a42bcc}
+.cell{height:55px;border:1px solid #9ba8b6;background:#f8f8f8;color:#0b1726;font-size:24px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}.cell.drawn{background:#ffe4e4}.cell.marked:after{content:"";position:absolute;width:38px;height:38px;border-radius:50%;background:#ef2525dd}.cell span{z-index:2}.cell.marked span{color:white}.free{background:#fff0b2!important}.free span{color:#d89000!important;font-size:28px}
+.side{display:flex;flex-direction:column;gap:12px}.drawbox,.panel{background:#06284c;border:2px solid #1788cf;border-radius:18px;padding:12px}.drawrow{display:flex;align-items:center;justify-content:center;gap:16px}.ball{width:135px;height:135px;border-radius:50%;background:radial-gradient(circle at 35% 30%,white 0 30%,#f5f5f5 31% 55%,#e92727 56% 100%);border:4px solid #ff5a5a;color:#102036;font-size:45px;font-weight:1000;display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px #1eaaff}
+.recent{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.mini{width:38px;height:38px;border-radius:50%;background:#eee;color:#142033;font-weight:900;display:flex;align-items:center;justify-content:center;border:3px solid #399be0}
+.nums{display:grid;grid-template-columns:repeat(10,1fr);gap:5px}.num{aspect-ratio:1;border-radius:50%;background:#e8edf2;color:#122033;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:13px}.num.on{background:#ef2929;color:white}
+.bottom{max-width:1500px;margin:0 auto 18px;padding:0 13px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.settings{background:#06284c;border:2px solid #1788cf;border-radius:17px;padding:11px}.settings b{display:block;margin-bottom:7px}.choices{display:flex;gap:7px;flex-wrap:wrap}.choice{background:#0b4d84;border:2px solid #267eb8;color:white;border-radius:11px;padding:8px 12px;font-weight:900;cursor:pointer}.choice.active{outline:3px solid #42b8ff;background:#1175c5}.status{text-align:center;font-size:18px;font-weight:900;color:#ffe15a;margin:8px}
+#win{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:20}#win.show{display:flex}.winbox{background:linear-gradient(#fff0a6,#e6a832);color:#231305;border:6px solid #fff;border-radius:25px;padding:30px;text-align:center;max-width:480px}.winbox h2{font-size:48px;margin:0}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.bottom{grid-template-columns:1fr}.cell{height:48px}.ball{width:110px;height:110px}}
+@media(max-width:580px){header{justify-content:center}.layout{padding:6px}.cards{grid-template-columns:1fr}.cell{height:48px}.nums{grid-template-columns:repeat(10,1fr)}.num{font-size:11px}.card.hideMobile{display:none}}
+</style></head>
+<body>
+<header><a class="btn" href="index.html">🏠 Spillglede</a><div class="logo"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span></div><div><button class="btn" onclick="newRound()">↻ Ny runde</button></div></header>
+<div class="layout"><section class="cards" id="cards"></section>
+<aside class="side"><div class="drawbox"><div class="drawrow"><div class="ball" id="ball">–</div><button class="btn green" onclick="draw()">Trekk nytt tall</button></div><b>Sist trukne tall:</b><div class="recent" id="recent">Ingen ennå</div></div>
+<div class="panel"><b>Trukne tall</b><div class="nums" id="nums"></div></div></aside></div>
+<div class="status" id="status">4 spillere – marker tallene manuelt. Mål: 1 rekke.</div>
+<div class="bottom"><div class="settings"><b>Automatisk Bingo-løp</b><div class="choices"><button class="choice active" id="stageBtn">Mål: 1 rekke</button></div></div>
+<div class="settings"><b>👥 4 spillere</b><div style="font-weight:900;line-height:1.5">Spiller 1 = Kort 1 &nbsp; • &nbsp; Spiller 2 = Kort 2<br>Spiller 3 = Kort 3 &nbsp; • &nbsp; Spiller 4 = Kort 4</div></div>
+<div class="settings" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;font-weight:900;font-size:18px">Bingo registreres automatisk<br><span style="color:#ffe15a">1 → 2 → 3 rekker → fullt brett</span></div></div></div>
+<div id="win"><div class="winbox"><h2>🎉 BINGO!</h2><p id="wintext"></p><button class="btn green" onclick="document.getElementById('win').classList.remove('show')">Fortsett samme runde</button></div></div>
 <script>
-let b=[],pool=[],drawn=[],marked=new Set();const L=['B','I','N','G','O'];
-function pick(a,z,n){let x=[];for(let i=a;i<=z;i++)x.push(i);x.sort(()=>Math.random()-.5);return x.slice(0,n).sort((a,b)=>a-b)}
-function start(){b=[];for(let c=0;c<5;c++){let x=pick(c*15+1,c*15+15,5);for(let r=0;r<5;r++)b[r*5+c]=x[r]}b[12]='FREE';pool=Array.from({length:75},(_,i)=>i+1).sort(()=>Math.random()-.5);drawn=[];marked=new Set([12]);ball.textContent='–';count.textContent=0;call.textContent='Klar til start';hist.textContent='Ingen ennå';msg.textContent='Trekk et tall. Klikk på tallet på brettet hvis du har det.';win.classList.remove('show');render()}
-function render(){grid.innerHTML='';b.forEach((v,i)=>{let e=document.createElement('button');e.className='cell'+(i===12?' free mark':'')+(drawn.includes(v)?' hit':'')+(marked.has(i)&&i!==12?' mark':'');e.textContent=i===12?'GRATIS':v;e.onclick=()=>mark(i);grid.appendChild(e)})}
-function draw(){if(!pool.length)return;let n=pool.pop();drawn.push(n);let l=L[Math.floor((n-1)/15)];ball.textContent=l+n;call.textContent=l+' '+n+' er trukket';count.textContent=drawn.length;hist.innerHTML=drawn.slice().reverse().map(x=>'<span class="n">'+x+'</span>').join('');msg.textContent='Se om '+n+' finnes på brettet.';render()}
-function mark(i){if(i===12)return;if(!drawn.includes(b[i])){msg.textContent='Dette tallet er ikke trukket ennå.';return}marked.has(i)?marked.delete(i):marked.add(i);render()}
-function bingo(){for(let r=0;r<5;r++)if([0,1,2,3,4].every(c=>marked.has(r*5+c)))return true;for(let c=0;c<5;c++)if([0,1,2,3,4].every(r=>marked.has(r*5+c)))return true;return [0,6,12,18,24].every(i=>marked.has(i))||[4,8,12,16,20].every(i=>marked.has(i))}
-function check(){if(bingo()){result.textContent='Du fikk Bingo etter '+drawn.length+' trukne tall!';win.classList.add('show')}else msg.textContent='Ikke Bingo ennå – fortsett å trekke tall.'}start();
+let cardCount=4,stage=1,boards=[],pool=[],drawn=[],marked=[],announced=[];
+const colors=['#0877df','#e01f2e','#0aaf46','#a62dcc'], letters=['B','I','N','G','O'];
+function rand(min,max,n){let a=[];for(let i=min;i<=max;i++)a.push(i);for(let i=a.length-1;i;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,n).sort((a,b)=>a-b)}
+function makeBoard(){let b=[];for(let c=0;c<5;c++){let a=rand(c*15+1,c*15+15,5);for(let r=0;r<5;r++)b[r*5+c]=a[r]}b[12]='FREE';return b}
+function newRound(){stage=1;announced=[];boards=Array.from({length:cardCount},makeBoard);marked=boards.map(()=>new Set([12]));pool=Array.from({length:75},(_,i)=>i+1);for(let i=74;i;i--){let j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}drawn=[];ball.textContent='–';recent.textContent='Ingen ennå';status.textContent='4 spillere – marker tallene manuelt. Mål: 1 rekke.';win.classList.remove('show');updateStage();render()}
+function render(){cards.innerHTML='';boards.forEach((b,bi)=>{let c=document.createElement('div');c.className='card';c.style.setProperty('--c',colors[bi]);let h='<div class="ct">SPILLER '+(bi+1)+'</div><div class="bhead">'+letters.map(x=>'<div>'+x+'</div>').join('')+'</div><div class="bgrid">';b.forEach((v,i)=>{let cls='cell'+(drawn.includes(v)?' drawn':'')+(marked[bi].has(i)?' marked':'')+(i===12?' free':'');h+='<div class="'+cls+'" onclick="mark('+bi+','+i+')"><span>'+(i===12?'★':v)+'</span></div>'});c.innerHTML=h+'</div>';cards.appendChild(c)});
+nums.innerHTML='';for(let n=1;n<=75;n++){let d=document.createElement('div');d.className='num'+(drawn.includes(n)?' on':'');d.textContent=n;nums.appendChild(d)}}
+function draw(){if(!pool.length)return;let n=pool.pop();drawn.push(n);ball.textContent=n;recent.innerHTML=drawn.slice(-7).reverse().map(x=>'<div class="mini">'+x+'</div>').join('');status.textContent=letters[Math.floor((n-1)/15)]+' '+n+' er trukket.';render()}
+function mark(bi,i){if(i===12)return;let v=boards[bi][i];if(!drawn.includes(v)){status.textContent=v+' er ikke trukket ennå.';return}marked[bi].has(i)?marked[bi].delete(i):marked[bi].add(i);render();checkAuto()}
+function lines(s){let z=0;for(let r=0;r<5;r++)if([0,1,2,3,4].every(c=>s.has(r*5+c)))z++;return z}
+function full(s){return Array.from({length:25},(_,i)=>i).every(i=>s.has(i))}
+function updateStage(){let t=stage===4?'Mål: Fullt brett':'Mål: '+stage+' rekke'+(stage>1?'r':'');if(document.getElementById('stageBtn'))stageBtn.textContent=t}
+function checkAuto(){
+ let winner=-1;
+ for(let i=0;i<marked.length;i++){
+   if(stage<4 && lines(marked[i])>=stage){winner=i;break}
+   if(stage===4 && full(marked[i])){winner=i;break}
+ }
+ if(winner<0)return;
+ let text=stage===4?'FULLT BRETT!':'BINGO – '+stage+' REKKE'+(stage>1?'R':'')+'!';
+ let next=stage===1?'Nå fortsetter spillet automatisk mot 2 rekker.':stage===2?'Nå fortsetter spillet automatisk mot 3 rekker.':stage===3?'Nå fortsetter spillet automatisk mot fullt brett.':'Hele kortet er fullt!';
+ wintext.textContent='Spiller '+(winner+1)+': '+text+' '+next;
+ win.classList.add('show');
+ if(stage<4){stage++;updateStage()}
+}
+
+newRound();
 </script></body></html>
