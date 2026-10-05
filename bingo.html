@@ -17,9 +17,40 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 #win{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:20}#win.show{display:flex}.winbox{background:linear-gradient(#fff0a6,#e6a832);color:#231305;border:6px solid #fff;border-radius:25px;padding:30px;text-align:center;max-width:480px}.winbox h2{font-size:48px;margin:0}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.bottom{grid-template-columns:1fr}.cell{height:48px}.ball{width:110px;height:110px}}
 @media(max-width:580px){header{justify-content:center}.layout{padding:6px}.cards{grid-template-columns:1fr}.cell{height:48px}.nums{grid-template-columns:repeat(10,1fr)}.num{font-size:11px}.card.hideMobile{display:none}}
+
+.gamechooser{max-width:1050px;margin:22px auto;padding:0 14px}
+.gamechooser h2{text-align:center;font-size:30px;margin:10px 0 16px}
+.gamechoices{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.gamechoice{display:block;text-decoration:none;color:white;border-radius:24px;padding:28px 20px;text-align:center;font-weight:900;border:4px solid rgba(255,255,255,.35);box-shadow:0 8px 22px #0007}
+.gamechoice .icon{font-size:64px;display:block;margin-bottom:8px}
+.gamechoice .name{font-size:30px;display:block}
+.gamechoice .desc{font-size:17px;display:block;margin-top:8px;color:#fff}
+.normalbingo{background:linear-gradient(135deg,#0877df,#063a75)}
+.musicbingo{background:linear-gradient(135deg,#7c2d12,#6d28d9)}
+.gamechoice:hover{transform:translateY(-2px);border-color:#fff}
+#normalGame{display:none}
+@media(max-width:650px){.gamechoices{grid-template-columns:1fr}.gamechoice{padding:20px}.gamechoice .icon{font-size:50px}.gamechoice .name{font-size:25px}}
 </style></head>
 <body>
-<header><a class="btn" href="index.html">🏠 Spillglede</a><div class="logo"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span></div><div><button class="btn" onclick="newRound()">↻ Ny runde</button></div></header>
+<div id="gameChooser" class="gamechooser">
+  <h2>🎉 Velg Bingo</h2>
+  <div class="gamechoices">
+    <a href="#" class="gamechoice normalbingo" id="openNormal">
+      <span class="icon">🎱</span>
+      <span class="name">Vanlig Bingo</span>
+      <span class="desc">4 spillere – 1, 2, 3 rekker og fullt brett</span>
+    </a>
+    <a href="musikkbingo.html" class="gamechoice musicbingo">
+      <span class="icon">🎵</span>
+      <span class="name">Musikkbingo</span>
+      <span class="desc">1–2 spillere – hvem sang denne?</span>
+    </a>
+  </div>
+  <div style="text-align:center;margin-top:18px"><a class="btn" href="index.html">🏠 Tilbake til Spillglede</a></div>
+</div>
+<div id="normalGame">
+
+<header><button class="btn" id="backChoices">⬅️ Velg Bingo</button><div class="logo"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span></div><div><button class="btn" onclick="newRound()">↻ Ny runde</button></div></header>
 <div class="layout"><section class="cards" id="cards"></section>
 <aside class="side"><div class="drawbox"><div class="drawrow"><div class="ball" id="ball">–</div><button class="btn green" onclick="draw()">Trekk nytt tall</button></div><b>Sist trukne tall:</b><div class="recent" id="recent">Ingen ennå</div></div>
 <div class="panel"><b>Trukne tall</b><div class="nums" id="nums"></div></div></aside></div>
@@ -28,6 +59,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 <div class="settings"><b>👥 4 spillere</b><div style="font-weight:900;line-height:1.5">Spiller 1 = Kort 1 &nbsp; • &nbsp; Spiller 2 = Kort 2<br>Spiller 3 = Kort 3 &nbsp; • &nbsp; Spiller 4 = Kort 4</div></div>
 <div class="settings" style="display:flex;align-items:center;justify-content:center"><div style="text-align:center;font-weight:900;font-size:18px">Bingo registreres automatisk<br><span style="color:#ffe15a">1 → 2 → 3 rekker → fullt brett</span></div></div></div>
 <div id="win"><div class="winbox"><h2>🎉 BINGO!</h2><p id="wintext"></p><button class="btn green" onclick="document.getElementById('win').classList.remove('show')">Fortsett samme runde</button></div></div>
+</div>
 <script>
 let cardCount=4,stage=1,boards=[],pool=[],drawn=[],marked=[],announced=[];
 const colors=['#0877df','#e01f2e','#0aaf46','#a62dcc'], letters=['B','I','N','G','O'];
@@ -55,5 +87,17 @@ function checkAuto(){
  if(stage<4){stage++;updateStage()}
 }
 
+document.getElementById("openNormal").addEventListener("click",function(e){
+  e.preventDefault();
+  document.getElementById("gameChooser").style.display="none";
+  document.getElementById("normalGame").style.display="block";
+  newRound();
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+document.getElementById("backChoices").addEventListener("click",function(){
+  document.getElementById("normalGame").style.display="none";
+  document.getElementById("gameChooser").style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+});
 newRound();
 </script></body></html>
