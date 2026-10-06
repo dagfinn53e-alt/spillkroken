@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kodeknekkeren – Spillglede</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;color:#142744;background:linear-gradient(145deg,#eaf7ff,#fff5cf 55%,#eee8ff);min-height:100vh}
+.wrap{max-width:760px;margin:auto;padding:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.back,button{border:0;border-radius:14px;padding:12px 16px;font-size:17px;font-weight:900;cursor:pointer}
+.back{background:#17345d;color:white;text-decoration:none}
+h1{text-align:center;font-size:clamp(34px,8vw,58px);margin:14px 0 3px;color:#17345d}
+.sub{text-align:center;font-weight:800;margin:0 0 16px}
+.panel{background:#fffdf6;border:3px solid #e3b84b;border-radius:24px;padding:16px;box-shadow:0 10px 28px #18304b22}
+.levels{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:12px}
+.level{background:#e6edf5;color:#17345d}.level.active{background:#70dc88;border:2px solid #28723a}
+.help{background:#ffd85a;color:#17345d}
+.info{background:#edf5ff;border-radius:16px;padding:11px;text-align:center;font-weight:800;line-height:1.45;margin-bottom:14px}
+.code-input{display:flex;justify-content:center;gap:8px;margin:16px 0}
+.digit{width:58px;height:64px;border:3px solid #8da7c1;border-radius:14px;text-align:center;font-size:30px;font-weight:900;background:white;color:#17345d}
+.actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+.try{background:#55c276;color:#092d15}.new{background:#17345d;color:white}
+.msg{text-align:center;min-height:32px;font-size:19px;font-weight:900;margin:13px 0}
+.history{margin-top:15px}.history h2{text-align:center;margin:8px 0 10px}
+.row{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;align-items:center;background:white;border:2px solid #d7e1eb;border-radius:14px;padding:9px 12px;margin:7px 0;font-weight:900}
+.guess{font-size:23px;letter-spacing:.18em;text-align:center}
+.clues{font-size:14px;line-height:1.45}
+.legend{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;font-weight:800;font-size:14px;margin-top:12px}
+.overlay{position:fixed;inset:0;background:#10213ddd;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}
+.modal{max-width:560px;width:100%;background:#fffdf5;border:4px solid #f1c84b;border-radius:25px;padding:24px;text-align:left;max-height:90vh;overflow:auto}
+.modal h2{text-align:center;font-size:30px;margin:0 0 14px}
+.modal p,.modal li{font-size:17px;line-height:1.5}
+.close{display:block;margin:16px auto 0;background:#17345d;color:white}
+@media(max-width:480px){
+.wrap{padding:8px}.panel{padding:11px}.digit{width:48px;height:56px;font-size:25px}
+.row{grid-template-columns:1fr;font-size:14px}.guess{font-size:22px}.back,button{font-size:15px;padding:10px 12px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><a class="back" href="hjernetrim.html">← Hjernetrim</a><button class="help" onclick="showHelp()">❓ Bruksanvisning</button></div>
+<h1>🔐 KODEKNEKKEREN</h1>
+<p class="sub">Finn den hemmelige tallkoden!</p>
+
+<div class="panel">
+<div class="levels">
+<button class="level active" data-level="easy">🟢 Lett</button>
+<button class="level" data-level="medium">🟡 Middels</button>
+<button class="level" data-level="hard">🔴 Vanskelig</button>
+</div>
+<div id="info" class="info"></div>
+<div id="inputs" class="code-input"></div>
+<div class="actions"><button class="try" onclick="submitGuess()">🔍 Prøv koden</button><button class="new" onclick="newGame()">↻ Ny kode</button></div>
+<div id="msg" class="msg"></div>
+<div class="legend"><span>🟢 Riktig tall + plass</span><span>🟡 Riktig tall, feil plass</span><span>⚪ Finnes ikke</span></div>
+<div class="history"><h2>Dine forsøk</h2><div id="history"></div></div>
+</div>
+</div>
+
+<div id="helpOverlay" class="overlay">
+<div class="modal">
+<h2>❓ Slik spiller du</h2>
+<p>Spillet har laget en hemmelig tallkode. Målet er å finne hele koden.</p>
+<ol>
+<li>Skriv ett tall i hver rute.</li>
+<li>Trykk <b>🔍 Prøv koden</b>.</li>
+<li>Du får ledetråder som viser hvor nær du er.</li>
+</ol>
+<p><b>🟢 Grønn:</b> Ett tall er riktig og står på riktig plass.<br>
+<b>🟡 Gul:</b> Ett tall finnes i koden, men står på feil plass.<br>
+<b>⚪ Hvit:</b> Ett tall finnes ikke i koden.</p>
+<p><b>Eksempel:</b> Den hemmelige koden er <b>4271</b> og du prøver <b>4218</b>. Da får du 2 grønne, 1 gul og 1 hvit. Ledetrådene forteller antallet – ikke hvilket enkelt tall som fikk hvilken farge.</p>
+<p>🟢 <b>Lett:</b> 3 tall, ingen like tall.<br>
+🟡 <b>Middels:</b> 4 tall, ingen like tall.<br>
+🔴 <b>Vanskelig:</b> 4 tall, like tall kan forekomme.</p>
+<button class="close" onclick="hideHelp()">Lukk</button>
+</div>
+</div>
+
+<div id="winOverlay" class="overlay">
+<div class="modal" style="text-align:center">
+<h2>🎉 Koden er knekket!</h2>
+<p id="winText"></p>
+<button class="close" onclick="hideWin();newGame()">Spill igjen</button>
+</div>
+</div>
+
+<script>
+let level="easy", secret=[], attempts=0, length=3, duplicates=false;
+
+function settings(){
+ if(level==="easy"){length=3;duplicates=false}
+ else if(level==="medium"){length=4;duplicates=false}
+ else{length=4;duplicates=true}
+}
+function makeSecret(){
+ settings(); secret=[];
+ while(secret.length<length){
+  let n=Math.floor(Math.random()*10);
+  if(duplicates || !secret.includes(n)) secret.push(n);
+ }
+}
+function buildInputs(){
+ const box=document.getElementById("inputs"); box.innerHTML="";
+ for(let i=0;i<length;i++){
+  const inp=document.createElement("input");
+  inp.className="digit"; inp.inputMode="numeric"; inp.maxLength=1; inp.pattern="[0-9]";
+  inp.addEventListener("input",()=>{
+   inp.value=inp.value.replace(/\D/g,"").slice(0,1);
+   if(inp.value && inp.nextElementSibling) inp.nextElementSibling.focus();
+  });
+  inp.addEventListener("keydown",e=>{
+   if(e.key==="Backspace"&&!inp.value&&inp.previousElementSibling) inp.previousElementSibling.focus();
+   if(e.key==="Enter") submitGuess();
+  });
+  box.appendChild(inp);
+ }
+}
+function newGame(){
+ makeSecret(); attempts=0; buildInputs();
+ document.getElementById("history").innerHTML="";
+ document.getElementById("msg").textContent="";
+ const names={easy:"🟢 Lett",medium:"🟡 Middels",hard:"🔴 Vanskelig"};
+ document.getElementById("info").innerHTML=`${names[level]} · Finn en kode med <b>${length} tall</b>${duplicates?" · Like tall kan forekomme":" · Ingen like tall"}`;
+ setTimeout(()=>document.querySelector(".digit")?.focus(),50);
+}
+function scoreGuess(g){
+ let green=0,yellow=0;
+ let s=secret.slice(), x=g.slice();
+ for(let i=0;i<length;i++) if(x[i]===s[i]){green++;s[i]=null;x[i]=null}
+ for(let i=0;i<length;i++){
+  if(x[i]===null)continue;
+  let j=s.indexOf(x[i]);
+  if(j!==-1){yellow++;s[j]=null}
+ }
+ return {green,yellow,white:length-green-yellow};
+}
+function submitGuess(){
+ const inputs=[...document.querySelectorAll(".digit")];
+ if(inputs.some(x=>x.value==="")){document.getElementById("msg").textContent="⚠️ Fyll inn alle rutene først.";return}
+ const g=inputs.map(x=>+x.value);
+ if(!duplicates && new Set(g).size!==g.length){document.getElementById("msg").textContent="⚠️ På dette nivået kan du ikke bruke samme tall flere ganger.";return}
+ attempts++;
+ const r=scoreGuess(g);
+ const row=document.createElement("div"); row.className="row";
+ row.innerHTML=`<div class="guess">${g.join("")}</div><div class="clues">🟢 ${r.green} riktig plass &nbsp; 🟡 ${r.yellow} feil plass &nbsp; ⚪ ${r.white} finnes ikke</div>`;
+ document.getElementById("history").prepend(row);
+ if(r.green===length){
+  document.getElementById("msg").textContent="🎉 Riktig kode!";
+  document.getElementById("winText").innerHTML=`Du fant <b>${secret.join("")}</b> på <b>${attempts} forsøk</b>.`;
+  document.getElementById("winOverlay").style.display="flex";
+ }else{
+  document.getElementById("msg").textContent="Se på ledetrådene og prøv igjen.";
+  inputs.forEach(x=>x.value="");inputs[0].focus();
+ }
+}
+document.querySelectorAll(".level").forEach(b=>b.onclick=()=>{
+ level=b.dataset.level;
+ document.querySelectorAll(".level").forEach(x=>x.classList.toggle("active",x===b));
+ newGame();
+});
+function showHelp(){document.getElementById("helpOverlay").style.display="flex"}
+function hideHelp(){document.getElementById("helpOverlay").style.display="none"}
+function hideWin(){document.getElementById("winOverlay").style.display="none"}
+newGame();
+</script>
+</body>
+</html>
