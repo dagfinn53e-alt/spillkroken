@@ -8,15 +8,28 @@ header{text-align:center;padding:12px}h1{margin:0;color:#ffd85b;font-size:clamp(
 .sheet{max-width:1000px;margin:15px auto 30px;padding:0 8px;overflow-x:auto}table{border-collapse:separate;border-spacing:2px;width:100%;min-width:620px;background:#4b260f;border:4px solid #d6a33b;border-radius:14px}
 th,td{padding:8px;text-align:center;background:#fff4cf;color:#35190b;font-weight:900}th{background:#d99c32}.cat{text-align:left}.score{cursor:pointer}.score.available{background:#d7f8dc;box-shadow:inset 0 0 0 2px #58b96a}.score.used{background:#eee;color:#555}.currentHead{background:#45c45d!important;color:white!important}.sum td{background:#ffe082}.total td{background:#f1bd43;font-size:18px}
 #win{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;z-index:10}#win.show{display:flex}.winbox{background:linear-gradient(#fff0a6,#dfa02f);color:#32170b;border:6px solid #6b310d;border-radius:25px;padding:28px;text-align:center;max-width:520px}.winbox h2{font-size:40px;margin:0 0 10px}
-@media(max-width:600px){.die{width:64px;height:64px;font-size:42px}.turn{font-size:19px}}</style></head><body>
-<header><h1>🎲 YATZY</h1><div class="players"><span>Antall spillere:</span><button class="btn pbtn" onclick="setPlayers(1,this)">1</button><button class="btn pbtn" onclick="setPlayers(2,this)">2</button><button class="btn pbtn" onclick="setPlayers(3,this)">3</button><button class="btn pbtn active" onclick="setPlayers(4,this)">4</button></div>
+@media(max-width:600px){
+.die{width:58px;height:58px;font-size:38px;border-width:3px}
+.turn{font-size:19px}
+.sheet{padding:0 4px;overflow-x:hidden}
+table{min-width:0;width:100%;border-width:3px;border-spacing:1px}
+th,td{padding:6px 3px;font-size:14px}
+.cat{width:48%;font-size:14px}
+.score{width:26%}
+.total td{font-size:15px}
+header{padding:8px}
+h1{font-size:38px}
+.players,.controls,.dice{margin:7px;gap:6px}
+.btn{padding:8px 12px}
+}</style></head><body>
+<header><h1>🎲 YATZY</h1><div class="players"><span>Antall spillere:</span><button class="btn pbtn" onclick="setPlayers(1,this)">1</button><button class="btn pbtn active" onclick="setPlayers(2,this)">2</button></div>
 <div class="controls"><button class="btn" onclick="newGame()">🔄 Nytt spill</button><a class="btn" href="index.html">🏠 Spillglede</a></div></header>
 <div class="turn" id="turn">Spiller 1 sin tur</div><div class="dice" id="dice"></div><button class="btn roll" id="roll" onclick="rollDice()">🎲 KAST TERNINGENE</button><div class="info" id="info">Kast 1 av 3</div>
 <div class="sheet"><table id="sheet"></table></div>
 <div id="win"><div class="winbox"><h2>🏆 Spillet er ferdig!</h2><div id="result"></div><button class="btn" onclick="newGame()">🎲 Spill igjen</button> <a class="btn" href="index.html">🏠 Spillglede</a></div></div>
 <script>
 const cats=['Enere','Toere','Treere','Firere','Femmere','Seksere','Ett par','To par','Tre like','Fire like','Liten straight','Stor straight','Hus','Sjanse','Yatzy'];
-let nPlayers=4,player=0,d=[1,1,1,1,1],held=[0,0,0,0,0],rolls=0,scores=[];
+let nPlayers=2,player=0,d=[1,1,1,1,1],held=[0,0,0,0,0],rolls=0,scores=[];
 function fresh(){return Array.from({length:nPlayers},()=>Array(15).fill(null))}
 function setPlayers(n,e){nPlayers=n;document.querySelectorAll('.pbtn').forEach(x=>x.classList.remove('active'));e.classList.add('active');newGame()}
 function newGame(){player=0;rolls=0;held=[0,0,0,0,0];d=[1,1,1,1,1];scores=fresh();win.classList.remove('show');renderDice();renderSheet();update()}
