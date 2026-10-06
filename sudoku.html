@@ -1,0 +1,49 @@
+<!doctype html><html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sudoku – Spillglede</title><style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(145deg,#c9efff,#fff8dc,#e7f6c9);color:#123f86}.w{max-width:720px;margin:auto;padding:14px}h1{text-align:center;font-size:48px;margin:8px}
+button{border:0;border-radius:18px;padding:11px 15px;font-weight:900;cursor:pointer;background:#fff;color:#123f86}.back{background:#123f86;color:#fff}.levels,.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px}.active,.new{background:#168fe0!important;color:#fff!important}
+.info{display:flex;justify-content:space-between;font-weight:900;margin:10px}.board{width:min(92vw,580px);margin:auto;display:grid;grid-template-columns:repeat(9,1fr);border:4px solid #173b72;background:#173b72;gap:1px}
+.cell{aspect-ratio:1;border-radius:0;padding:0;font-size:clamp(20px,5vw,33px);background:#fffdf6}.given{background:#eef3f8;color:#172d50}.sel{background:#fff0a8!important}.peer{background:#edf7ff}.bad{background:#ffd5d5!important;color:#b51d1d}
+.cell:nth-child(3n){border-right:3px solid #173b72}.cell:nth-child(9n){border-right:0}.cell:nth-child(n+19):nth-child(-n+27),.cell:nth-child(n+46):nth-child(-n+54){border-bottom:3px solid #173b72}
+.nums{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;max-width:580px;margin:14px auto}.nums button{font-size:24px;padding:11px 0}.msg{text-align:center;font-weight:900;min-height:28px}.win{position:fixed;inset:0;background:#1238;display:none;place-items:center}.win.show{display:grid}.card{background:#fff;border-radius:28px;padding:30px;text-align:center}
+</style></head><body><div class="w">
+<button id="backBtn" class="back">‹ Hjernetrim</button><h1>🔢 Sudoku</h1><p style="text-align:center;font-weight:700">9×9 – bruk tallene 1 til 9 én gang i hver rad, kolonne og 3×3-boks.</p>
+<div class="levels"><button data-l="lett">Lett</button><button data-l="middels" class="active">Middels</button><button data-l="vanskelig">Vanskelig</button></div>
+<div class="info"><span>❤️ Feil: <b id="err">0</b>/3</span><span>⏱️ <b id="time">00:00</b></span></div>
+<div id="board" class="board"></div><div id="nums" class="nums"></div>
+<div class="actions"><button id="erase">⌫ Slett</button><button id="hint">💡 Hint</button><button id="check">✓ Sjekk</button><button id="newBtn" class="new">↻ Nytt spill</button></div>
+<div id="msg" class="msg">Velg en tom rute og trykk et tall.</div></div>
+<div id="win" class="win"><div class="card"><h2>🎉 Sudoku løst!</h2><p id="result"></p><button id="winNew" class="new">Nytt Sudoku</button></div></div>
+<script>
+const P={
+lett:["530070000600195000098000060800060003400803001700020006060000280000419005000080079","534678912672195348198342567859761423426853791713924856961537284287419635345286179"],
+middels:["000260701680070090190004500820100040004602900050003028009300074040050036703018000","435269781682571493197834562826195347374682915951743628519326874248957136763418259"],
+vanskelig:["000000907000420180000705026100904000050000040000507009920108000034059000507000000","483651927659423187271795326162934875795812643348567219926178534834259761517346298"]};
+const B=document.getElementById("board"), N=document.getElementById("nums"), M=document.getElementById("msg"), E=document.getElementById("err"), T=document.getElementById("time"), W=document.getElementById("win"), R=document.getElementById("result");
+let level="middels", sol="", g=[], given=[], sel=-1, errors=0, start=0, timer=null, stopped=false;
+function newGame(){
+ clearInterval(timer); W.classList.remove("show"); const q=P[level]; g=q[0].split(""); sol=q[1]; given=g.map(v=>v!=="0"); sel=-1; errors=0; stopped=false; E.textContent="0"; start=Date.now(); render(); tick(); timer=setInterval(tick,1000); M.textContent="Velg en tom rute og trykk et tall.";
+}
+function render(){
+ B.innerHTML="";
+ g.forEach((v,i)=>{const b=document.createElement("button");b.type="button";b.className="cell"+(given[i]?" given":"");b.textContent=v==="0"?"":v;b.addEventListener("click",()=>{if(!stopped){sel=i;render();}});B.appendChild(b);});
+ if(sel>=0){[...B.children].forEach((b,i)=>{const r=Math.floor(i/9),c=i%9,Rr=Math.floor(sel/9),Cc=sel%9;if(i===sel)b.classList.add("sel");else if(r===Rr||c===Cc||(Math.floor(r/3)===Math.floor(Rr/3)&&Math.floor(c/3)===Math.floor(Cc/3)))b.classList.add("peer");});}
+}
+function put(n){
+ if(stopped||sel<0||given[sel])return;
+ if(String(n)!==sol[sel]){errors++;E.textContent=String(errors);const b=B.children[sel];b.classList.add("bad");setTimeout(()=>{if(b)b.classList.remove("bad");},400);M.textContent="❌ Det tallet passer ikke der.";if(errors>=3){stopped=true;clearInterval(timer);M.textContent="Tre feil – spillet er stoppet. Trykk Nytt spill.";}return;}
+ g[sel]=String(n);render();M.textContent="✅ Riktig!";done();
+}
+function done(){if(g.join("")===sol){stopped=true;clearInterval(timer);R.textContent="Tid: "+T.textContent+" · Feil: "+errors;W.classList.add("show");}}
+function tick(){const s=Math.floor((Date.now()-start)/1000);T.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+for(let n=1;n<=9;n++){const b=document.createElement("button");b.type="button";b.textContent=String(n);b.addEventListener("click",()=>put(n));N.appendChild(b);}
+document.querySelectorAll("[data-l]").forEach(b=>b.addEventListener("click",()=>{level=b.dataset.l;document.querySelectorAll("[data-l]").forEach(x=>x.classList.toggle("active",x===b));newGame();}));
+document.getElementById("erase").addEventListener("click",()=>{if(sel>=0&&!given[sel]&&!stopped){g[sel]="0";render();}});
+document.getElementById("hint").addEventListener("click",()=>{if(stopped)return;const empty=g.map((v,i)=>v==="0"?i:-1).filter(i=>i>=0);if(!empty.length)return;const i=(sel>=0&&g[sel]==="0")?sel:empty[0];g[i]=sol[i];sel=i;render();M.textContent="💡 Ett riktig tall er satt inn.";done();});
+document.getElementById("check").addEventListener("click",()=>{if(stopped)return;const left=g.filter(v=>v==="0").length;M.textContent=left?"✓ Alt som er fylt inn er riktig. "+left+" tomme ruter igjen.":"✓ Ferdig!";done();});
+document.getElementById("newBtn").addEventListener("click",newGame);
+document.getElementById("winNew").addEventListener("click",newGame);
+document.getElementById("backBtn").addEventListener("click",()=>location.href="hjernetrim.html");
+document.addEventListener("keydown",e=>{if(e.key>="1"&&e.key<="9")put(Number(e.key));});
+newGame();
+</script></body></html>
