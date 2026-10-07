@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ord-Memory – Spillglede</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#51321f,#21140e);color:#fff;text-align:center;min-height:100vh}
+.wrap{max-width:920px;margin:auto;padding:14px}h1{font-size:clamp(32px,7vw,54px);margin:10px 0 4px;color:#ffd76a}
+.sub{margin:0 0 14px;color:#ffe9ba}.controls,.stats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+button,select,a.btn{border:0;border-radius:12px;padding:10px 14px;font-weight:bold;font-size:15px;cursor:pointer;text-decoration:none}
+button,select{background:#fff;color:#382116}.btn{background:#ffd76a;color:#382116}
+.turn{font-weight:bold;font-size:18px;margin:10px}.board{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-width:700px;margin:14px auto}
+.card{aspect-ratio:1.28/1;perspective:700px;cursor:pointer}.inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:.35s}
+.card.open .inner,.card.done .inner{transform:rotateY(180deg)}.face{position:absolute;inset:0;border-radius:15px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;border:3px solid #e2b84e;box-shadow:0 4px 10px #0007;padding:5px}
+.back{background:linear-gradient(135deg,#244f86,#16365f);font-size:34px}.front{background:#fff;color:#302117;transform:rotateY(180deg);font-weight:bold;font-size:clamp(14px,3vw,22px)}
+.card.done .front{background:#dff7df;border-color:#61b761}.player{padding:7px 12px;border-radius:10px;background:#ffffff22}.active{background:#ffd76a;color:#2c1b12}
+.overlay{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px}.box{background:#fff;color:#2d1c13;border-radius:20px;padding:24px;max-width:430px;width:100%}
+.overlay.show{display:flex}.help{max-width:650px;margin:8px auto;color:#f7e8ce;font-size:14px}
+@media(max-width:560px){.board{grid-template-columns:repeat(4,1fr);gap:6px}.face{border-width:2px;border-radius:10px}.back{font-size:25px}.front{font-size:clamp(11px,3.4vw,16px);padding:3px}.wrap{padding:8px}}
+</style>
+</head><body>
+<div class="wrap">
+<h1>🔤 ORD-MEMORY</h1>
+<p class="sub">Finn ordet som hører sammen på norsk og engelsk 🇳🇴 🇬🇧</p>
+<div class="controls">
+<label>Spillere <select id="players"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+<label>Par <select id="pairs"><option>6</option><option selected>8</option><option>12</option></select></label>
+<button id="newGame">🔄 Nytt spill</button>
+<a class="btn" href="memory.html">⬅ Memory</a>
+</div>
+<div id="scores" class="stats"></div><div id="turn" class="turn"></div>
+<div class="help">Snu to kort. Et norsk ord og det riktige engelske ordet gir ett par. Finner du et par, får du poeng og spiller igjen. Bommer du, går turen videre.</div>
+<div id="board" class="board"></div>
+</div>
+<div id="overlay" class="overlay"><div class="box"><h2 id="result"></h2><button id="again">🎮 Spill igjen</button></div></div>
+<script>
+const words=[
+["HUND","DOG"],["KATT","CAT"],["HUS","HOUSE"],["BIL","CAR"],["BOK","BOOK"],["EPLE","APPLE"],
+["SOL","SUN"],["MÅNE","MOON"],["VANN","WATER"],["BRØD","BREAD"],["FISK","FISH"],["FUGL","BIRD"],
+["HEST","HORSE"],["BLOMST","FLOWER"],["TRE","TREE"],["STOL","CHAIR"],["BORD","TABLE"],["DØR","DOOR"],
+["VINDU","WINDOW"],["SKO","SHOE"],["HÅND","HAND"],["ØYE","EYE"],["MELK","MILK"],["OST","CHEESE"]
+];
+let deck=[],first=null,lock=false,current=0,score=[],found=0,nPlayers=2,nPairs=8;
+const $=id=>document.getElementById(id);
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function start(){
+ nPlayers=+$("players").value;nPairs=+$("pairs").value;score=Array(nPlayers).fill(0);current=0;found=0;first=null;lock=false;
+ let chosen=shuffle([...words]).slice(0,nPairs);
+ deck=shuffle(chosen.flatMap((p,i)=>[{text:p[0],pair:i},{text:p[1],pair:i}]));
+ render();update();
+}
+function render(){
+ $("board").innerHTML="";
+ deck.forEach((c,i)=>{
+  let d=document.createElement("div");d.className="card";d.dataset.i=i;
+  d.innerHTML='<div class="inner"><div class="face back">?</div><div class="face front">'+c.text+'</div></div>';
+  d.onclick=()=>flip(d,i);$("board").appendChild(d);
+ });
+}
+function flip(el,i){
+ if(lock||el.classList.contains("open")||el.classList.contains("done"))return;
+ el.classList.add("open");
+ if(first===null){first={el,i};return}
+ lock=true;
+ if(deck[first.i].pair===deck[i].pair){
+  setTimeout(()=>{first.el.classList.add("done");el.classList.add("done");score[current]++;found++;first=null;lock=false;update();if(found===nPairs)finish()},450);
+ }else{
+  setTimeout(()=>{first.el.classList.remove("open");el.classList.remove("open");first=null;current=(current+1)%nPlayers;lock=false;update()},850);
+ }
+}
+function update(){
+ $("scores").innerHTML=score.map((s,i)=>'<div class="player '+(i===current?'active':'')+'">Spiller '+(i+1)+': '+s+'</div>').join("");
+ $("turn").textContent="Tur: Spiller "+(current+1);
+}
+function finish(){
+ let m=Math.max(...score),w=score.map((v,i)=>v===m?i+1:null).filter(Boolean);
+ $("result").textContent=nPlayers===1?"🎉 Du fant alle "+nPairs+" par!":w.length>1?"🤝 Uavgjort mellom spiller "+w.join(" og ")+"!":"🏆 Spiller "+w[0]+" vant med "+m+" par!";
+ $("overlay").classList.add("show");
+}
+$("newGame").onclick=start;$("again").onclick=()=>{$("overlay").classList.remove("show");start()};
+start();
+</script></body></html>
