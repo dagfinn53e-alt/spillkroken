@@ -1,0 +1,61 @@
+<!doctype html><html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fotballquiz – Spillglede</title><style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Arial,sans-serif;text-align:center;color:#fff;background:radial-gradient(circle at top,#23814a,#0d321d 72%)}.wrap{max-width:850px;margin:auto;padding:12px}
+h1{font-size:clamp(38px,7vw,60px);margin:10px 0 2px;color:#ffe36c;text-shadow:0 3px #173a23}.sub{margin:0 0 13px;font-weight:bold}
+.panel{max-width:720px;margin:10px auto;padding:14px;background:#ffffff17;border:3px solid #e2c64e;border-radius:22px}.controls,.players{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+select,button,a{border:0;border-radius:12px;padding:10px 13px;font-weight:bold;font-size:15px}button{cursor:pointer;background:#ffe36c;color:#15391f}a{background:#fff;color:#15391f;text-decoration:none}
+.p{padding:8px 12px;border-radius:10px;background:#ffffff25}.p.active{background:#ffe36c;color:#173a23}.q{font-size:clamp(21px,4vw,30px);font-weight:bold;min-height:95px;display:flex;align-items:center;justify-content:center}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ans{min-height:62px;background:#fff;color:#173a23;border:3px solid #d5b746;font-size:17px}.ans.correct{background:#b7edb7}.ans.wrong{background:#ffbaba}.feedback{min-height:52px;padding:10px;font-weight:bold}.prog{font-weight:bold}
+.overlay{position:fixed;inset:0;background:#000c;display:none;align-items:center;justify-content:center;padding:20px}.overlay.show{display:flex}.box{background:#fff;color:#173a23;padding:25px;border-radius:20px;max-width:430px;width:100%}
+@media(max-width:520px){.answers{grid-template-columns:1fr}.wrap{padding:7px}.panel{padding:9px}.ans{min-height:52px}h1{font-size:37px}}
+</style></head><body><div class="wrap"><h1>⚽ FOTBALLQUIZ</h1><p class="sub">Spillere • klubber • fotballhistorie</p>
+<div class="panel controls"><label>Spillere <select id="players"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></label>
+<label>Spørsmål <select id="count"><option>10</option><option>20</option><option selected>30</option></select></label><button id="start">🔄 Ny quiz</button><a href="norsk-quiz.html">⬅ Quiz</a></div>
+<div id="playerStatus" style="font-weight:bold;margin:8px">Valgt: 2 spillere</div><div id="ps" class="players"></div><div class="panel"><div id="prog" class="prog"></div><div id="q" class="q"></div><div id="answers" class="answers"></div><div id="fb" class="feedback"></div></div></div>
+<div id="over" class="overlay"><div class="box"><h2 id="result"></h2><button id="again">🎮 Spill igjen</button></div></div>
+<script>
+const Q=[
+["Hvilken klubb spilte Alan Shearer flest ligakamper for?",["Newcastle United","Blackburn Rovers","Southampton","Manchester United"],0,"Shearer spilte klart flest ligakamper for Newcastle United."],
+["Spilte Eric Cantona for Liverpool?",["JA","NEI"],1,"Cantona spilte blant annet for Leeds United og Manchester United, men ikke Liverpool."],
+["Hvilken av disse klubbene spilte Zlatan Ibrahimović for?",["Inter","Arsenal","Liverpool","Borussia Dortmund"],0,"Zlatan spilte for Inter fra 2006 til 2009."],
+["Spilte David Beckham for Real Madrid?",["JA","NEI"],0,"Beckham spilte for Real Madrid fra 2003 til 2007."],
+["Hvilken engelsk klubb spilte Thierry Henry flest kamper for?",["Arsenal","Chelsea","Liverpool","Manchester City"],0,"Henry er særlig kjent for sine mange sesonger i Arsenal."],
+["Spilte Diego Maradona for Barcelona?",["JA","NEI"],0,"Maradona spilte for Barcelona før han gikk til Napoli."],
+["Hvilken klubb spilte Steven Gerrard nesten hele sin engelske seniorkarriere for?",["Liverpool","Everton","Chelsea","Leeds United"],0,"Gerrard var Liverpool-spiller fra debuten i 1998 til 2015."],
+["Spilte Cristiano Ronaldo for Juventus?",["JA","NEI"],0,"Ronaldo spilte for Juventus fra 2018 til 2021."],
+["Hvilken klubb spilte Dennis Bergkamp for før Arsenal?",["Inter","Juventus","Roma","Lazio"],0,"Bergkamp kom til Arsenal fra Inter i 1995."],
+["Spilte Wayne Rooney for Everton?",["JA","NEI"],0,"Rooney startet seniorkarrieren i Everton og vendte senere tilbake."],
+["Hvilken klubb spilte Ole Gunnar Solskjær for i England?",["Manchester United","Liverpool","Arsenal","Chelsea"],0,"Solskjær spilte for Manchester United fra 1996 til 2007."],
+["Spilte Luis Suárez for Liverpool?",["JA","NEI"],0,"Suárez spilte for Liverpool fra 2011 til 2014."],
+["Hvilken klubb spilte Paolo Maldini hele sin seniorkarriere for?",["AC Milan","Inter","Juventus","Roma"],0,"Maldini tilbrakte hele seniorkarrieren i AC Milan."],
+["Spilte Ronaldo Nazário for AC Milan?",["JA","NEI"],0,"Den brasilianske Ronaldo spilte for AC Milan fra 2007 til 2008."],
+["Hvilken klubb spilte Francesco Totti hele sin seniorkarriere for?",["Roma","Lazio","Napoli","Fiorentina"],0,"Totti spilte hele seniorkarrieren for Roma."],
+["Spilte Andrés Iniesta for Real Madrid?",["JA","NEI"],1,"Iniesta var Barcelona-spiller i Europa og spilte aldri for Real Madrid."],
+["Hvilken klubb spilte Didier Drogba flest kamper for i England?",["Chelsea","Arsenal","Liverpool","Tottenham"],0,"Drogba hadde to perioder i Chelsea."],
+["Spilte Zlatan Ibrahimović for Manchester United?",["JA","NEI"],0,"Zlatan spilte for Manchester United fra 2016 til 2018."],
+["Hvilken klubb spilte Roy Keane flest kamper for?",["Manchester United","Nottingham Forest","Celtic","Arsenal"],0,"Keane spilte størstedelen av karrieren i Manchester United."],
+["Spilte Fernando Torres for Chelsea?",["JA","NEI"],0,"Torres gikk fra Liverpool til Chelsea i 2011."],
+["Hvilken klubb spilte Xavi Hernández hele sin europeiske seniorkarriere for?",["Barcelona","Real Madrid","Valencia","Atlético Madrid"],0,"Xavi spilte hele sin europeiske seniorkarriere for Barcelona."],
+["Spilte Peter Schmeichel for Manchester City?",["JA","NEI"],0,"Schmeichel avsluttet spillerkarrieren i Manchester City i 2003."],
+["Hvilken klubb spilte Frank Lampard flest kamper for?",["Chelsea","West Ham","Manchester City","Liverpool"],0,"Lampard spilte klart flest kamper for Chelsea."],
+["Spilte Roberto Baggio for både Juventus og AC Milan?",["JA","NEI"],0,"Baggio representerte både Juventus og AC Milan i Serie A."],
+["Hvilken klubb spilte Ryan Giggs hele sin seniorkarriere for?",["Manchester United","Manchester City","Liverpool","Leeds United"],0,"Giggs spilte hele seniorkarrieren for Manchester United."],
+["Spilte Samuel Eto'o for Inter?",["JA","NEI"],0,"Eto'o var med på Inters trippeltriumf i 2009–10."],
+["Hvilken klubb spilte Kenny Dalglish for etter Celtic?",["Liverpool","Everton","Arsenal","Manchester United"],0,"Dalglish gikk fra Celtic til Liverpool i 1977."],
+["Spilte Ruud Gullit for Chelsea?",["JA","NEI"],0,"Gullit spilte for Chelsea og ble senere spiller-manager der."],
+["Hvilken klubb spilte George Best størstedelen av karrieren for?",["Manchester United","Liverpool","Celtic","Tottenham"],0,"George Best er først og fremst kjent fra Manchester United."],
+["Spilte Gary Lineker for Barcelona?",["JA","NEI"],0,"Lineker spilte for Barcelona fra 1986 til 1989."]
+];
+let qs=[],idx=0,cur=0,scores=[],n=2,locked=false;const $=x=>document.getElementById(x);
+function sh(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function begin(){n=+$("players").value;scores=Array(n).fill(0);cur=0;idx=0;locked=false;qs=sh([...Q]).slice(0,+$("count").value);draw()}
+function draw(){if(idx>=qs.length)return finish();locked=false;let x=qs[idx],opts=x[1].map((v,i)=>({v,ok:i===x[2]}));opts=opts.length>2?sh(opts):opts;$("prog").textContent="Spørsmål "+(idx+1)+" av "+qs.length;$("q").textContent=x[0];$("fb").textContent="";$("answers").innerHTML="";opts.forEach(o=>{let b=document.createElement("button");b.className="ans";b.textContent=o.v;b.onclick=()=>answer(b,o.ok,x[3],x[1][x[2]]);$("answers").appendChild(b)});players()}
+function players(){$("playerStatus").textContent="Valgt: "+n+(n===1?" spiller":" spillere");$("ps").innerHTML=scores.map((s,i)=>'<div class="p '+(i===cur?'active':'')+'">Spiller '+(i+1)+': '+s+'</div>').join("")}
+function answer(b,ok,ex,correct){if(locked)return;locked=true;document.querySelectorAll(".ans").forEach(x=>x.disabled=true);if(ok){b.classList.add("correct");scores[cur]++;$("fb").textContent="✅ "+ex}else{b.classList.add("wrong");[...document.querySelectorAll(".ans")].find(x=>x.textContent===correct)?.classList.add("correct");$("fb").textContent="❌ "+ex}players();setTimeout(()=>{cur=(cur+1)%n;idx++;draw()},1800)}
+function finish(){let m=Math.max(...scores),w=scores.map((v,i)=>v===m?i+1:null).filter(Boolean);$("result").textContent=n===1?"⚽ Du fikk "+scores[0]+" av "+qs.length+" poeng!":w.length>1?"🤝 Uavgjort mellom spiller "+w.join(" og ")+"!":"🏆 Spiller "+w[0]+" vant med "+m+" poeng!";$("over").classList.add("show")}
+$("start").onclick=begin;
+$("players").onchange=begin;
+$("count").onchange=begin;
+$("again").onclick=()=>{$("over").classList.remove("show");begin()};
+begin();
+</script></body></html>
