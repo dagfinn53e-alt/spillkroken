@@ -18,6 +18,7 @@ linear-gradient(transparent 38%,#fff 38% 62%,transparent 62%),#012169}
 .fGB i{position:absolute;inset:0;background:
 linear-gradient(90deg,transparent 46%,#c8102e 46% 54%,transparent 54%),
 linear-gradient(transparent 44%,#c8102e 44% 56%,transparent 56%)}
+.fNL{background:linear-gradient(#ae1c28 0 33.33%,#fff 33.33% 66.66%,#21468b 66.66%)}
 .fUS{background:repeating-linear-gradient(#b22234 0 7.69%,#fff 7.69% 15.38%)}.fUS:before{content:"★ ★ ★";position:absolute;left:0;top:0;width:43%;height:54%;background:#3c3b6e;color:#fff;font-size:9px;padding-top:7px}
 .fCA{background:linear-gradient(90deg,#d80621 0 25%,#fff 25% 75%,#d80621 75%)}
 .fCA:after{content:"🍁";position:absolute;left:35%;top:15%;font-size:34px;line-height:1}
@@ -29,7 +30,7 @@ linear-gradient(transparent 44%,#c8102e 44% 56%,transparent 56%)}
 <button class="btn" id="new">🔄 Nytt spill</button><button class="btn" id="help">❓ Bruksanvisning</button><a class="btn" href="memory.html">← Memory</a></div>
 <div id="modal" class="modal"><div class="box"><h2>❓ Slik spiller du</h2><ol><li>Hvert par består av <b>ett flagg</b> og <b>navnet på landet</b>.</li><li>Eksempel: 🇳🇴 hører sammen med <b>NORGE</b>.</li><li>Trykk på to kort. Riktig par gir 1 poeng og samme spiller fortsetter.</li><li>Feil par betyr at neste spiller får turen.</li><li>Flest par vinner.</li></ol><button class="btn" id="close">👍 Lukk</button></div></div>
 <script>
-const all=[['NO','NO','NORGE'],['SE','SE','SVERIGE'],['DK','DK','DANMARK'],['FI','FI','FINLAND'],['IS','IS','ISLAND'],['DE','DE','TYSKLAND'],['FR','FR','FRANKRIKE'],['ES','ES','SPANIA'],['IT','IT','ITALIA'],['GB','GB','STORBRITANNIA'],['US','US','USA'],['CA','CA','CANADA']];
+const all=[['NO','NO','NORGE'],['SE','SE','SVERIGE'],['DK','DK','DANMARK'],['FI','FI','FINLAND'],['IS','IS','ISLAND'],['DE','DE','TYSKLAND'],['FR','FR','FRANKRIKE'],['ES','ES','SPANIA'],['IT','IT','ITALIA'],['NL','NL','NEDERLAND'],['US','US','USA'],['CA','CA','CANADA']];
 let np=2,n=8,player=0,pts=[],cards=[],first=null,lock=false,moves=0,found=0;
 function sh(a){for(let i=a.length-1;i;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){player=0;pts=Array(np).fill(0);first=null;lock=false;moves=found=0;let chosen=sh([...all]).slice(0,n);cards=sh(chosen.flatMap(x=>[{id:x[0],v:x[1],type:'flag',open:false,matched:false},{id:x[0],v:x[2],type:'country',open:false,matched:false}]));render();message('Finn et flagg og landet som hører til.')}
