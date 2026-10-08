@@ -1,0 +1,51 @@
+<!doctype html><html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Labyrinten – STORE GANGER TEST</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#203349;background:linear-gradient(140deg,#e6f3ff,#fff4dd);min-height:100vh}.wrap{max-width:1050px;margin:auto;padding:14px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.back{background:#24445f;color:white;padding:12px 17px;text-decoration:none;border-radius:13px;font-weight:bold}h1{text-align:center;font-size:clamp(32px,5vw,52px);margin:10px 0 4px}.lead{text-align:center;margin:5px 0 15px}.levels{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}.levels button,.tools button{font:inherit;font-weight:bold;border:0;border-radius:13px;padding:12px 18px;cursor:pointer;background:white;color:#24445f;box-shadow:0 2px 8px #0001}.levels button.active{background:#24445f;color:white}.status{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:13px}.status span{background:white;border-radius:12px;padding:9px 15px;font-weight:bold}.game{display:flex;justify-content:center}.maze{width:min(97vw,800px);aspect-ratio:1;background:white;border:5px solid #24445f;border-radius:15px;box-shadow:0 10px 30px #17395324;touch-action:none;cursor:pointer}canvas{display:block;width:100%;height:100%}.msg{text-align:center;font-weight:bold;min-height:27px;margin:12px}.controls{display:grid;grid-template-columns:repeat(3,64px);justify-content:center;gap:5px;margin:10px auto}.controls button{height:57px;border:0;border-radius:13px;background:#ffce6c;font-size:27px;font-weight:bold;cursor:pointer;touch-action:manipulation}.controls .empty{visibility:hidden}.tools{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:12px}.guide{max-width:800px;margin:12px auto 18px;background:#fff;border:2px solid #c5dce9;border-radius:16px;padding:14px 20px;box-shadow:0 4px 12px #0001}.guide h2{font-size:21px;margin:0 0 8px}.guide p{margin:7px 0;line-height:1.45}.foot{text-align:center;font-size:13px;color:#667789;margin:12px}button:focus-visible{outline:3px solid #ec9443}@media(max-width:650px){.wrap{padding:9px}.controls button{height:55px}}
+</style></head><body><main class="wrap"><div class="top"><a class="back" href="index.html">← Spillglede</a><b>🎮 SPILLGLEDE</b></div><h1>🌀 Labyrinten</h1><p class="lead">Finn veien fra <b>grønn start</b> til <b>gullstjernen</b>! Ingen tidsbegrensning.</p>
+<section class="guide" aria-label="Spilleveiledning"><h2>📖 Slik spiller du</h2><p><b>Målet:</b> Før den grønne prikken gjennom gangene til ⭐ gullstjernen. Du kan bare gå der det ikke er vegger.</p><p><b>Styring:</b> Bruk piltastene på tastaturet, de gule pilknappene under brettet eller sveip med fingeren på mobil og nettbrett.</p><p><b>Vanskelighetsgrad:</b> Velg Lett (25 × 25), Middels (50 × 50) eller Vanskelig (100 × 100).</p><p><b>Zoom:</b> Trykk «Zoom inn» eller «Zoom ut» for å endre størrelsen. Brettet følger den grønne prikken. «Finn spilleren» sentrerer visningen på nytt.</p><p><b>Knapper:</b> «Start på nytt» begynner samme labyrint fra start. «Ny labyrint» lager en ny. Når du kommer i mål, kan du velge «Neste brett».</p><p>😊 Spill i ditt eget tempo – det er ingen tidsbegrensning!</p></section>
+<div class="levels"><button data-level="0" class="active">🟢 Lett 25×25</button><button data-level="1">🟡 Middels 50×50</button><button data-level="2">🔴 Vanskelig 100×100</button></div>
+<div class="status"><span id="stage">Brett 1</span><span id="moves">Trekk: 0</span><span>⏳ Ingen tidtaking</span></div>
+<div class="tools"><button id="zoomout">➖ Zoom ut</button><button id="zoomin">➕ Zoom inn</button><button id="follow">🎯 Finn spilleren</button></div><div class="game"><div class="maze"><canvas id="canvas" width="900" height="900" aria-label="Labyrintspill. Bruk piltaster, knappene eller dra fingeren på brettet."></canvas></div></div>
+<p id="msg" class="msg" aria-live="polite">Bruk piltastene, knappene eller dra på brettet.</p>
+<div class="controls"><span class="empty"></span><button data-dir="0" aria-label="Opp">↑</button><span class="empty"></span><button data-dir="3" aria-label="Venstre">←</button><button data-dir="2" aria-label="Ned">↓</button><button data-dir="1" aria-label="Høyre">→</button></div>
+<div class="tools"><button id="again">🔄 Start på nytt</button><button id="new">🎲 Ny labyrint</button><button id="next" hidden>➡️ Neste brett</button></div><p class="foot">Nå med større ganger og tydeligere vegger. Brettet følger spilleren automatisk. Bruk zoomknappene for oversikt. Hver ny labyrint er forskjellig. Fungerer på PC, mobil og nettbrett.</p></main>
+<script>
+"use strict";
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),msg=document.getElementById('msg');
+const dirs=[[0,-1,1,4],[1,0,2,8],[0,1,4,1],[-1,0,8,2]];
+let level=0,round=[1,1,1],n=25,cells=[],player=0,moves=0,won=false,seed=0,zoom=1,camX=0,camY=0;
+function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296}
+function build(){n=[25,50,100][level];seed=(Date.now()^Math.floor(Math.random()*1000000000))>>>0;cells=Array(n*n).fill(15);const visited=new Uint8Array(n*n),stack=[0];visited[0]=1;
+while(stack.length){const pos=stack[stack.length-1],x=pos%n,y=Math.floor(pos/n),opts=[];
+for(let d=0;d<4;d++){const nx=x+dirs[d][0],ny=y+dirs[d][1];if(nx>=0&&nx<n&&ny>=0&&ny<n&&!visited[ny*n+nx])opts.push([d,ny*n+nx])}
+if(!opts.length){stack.pop();continue}
+const [d,next]=opts[Math.floor(random()*opts.length)];cells[pos]&=~dirs[d][2];cells[next]&=~dirs[d][3];visited[next]=1;stack.push(next)}
+player=0;moves=0;won=false;zoom=[3,7,14][level];focusPlayer();document.getElementById('next').hidden=true;document.getElementById('stage').textContent='Brett '+round[level];document.getElementById('moves').textContent='Trekk: 0';msg.textContent='Finn veien til gullstjernen!';draw()}
+function focusPlayer(){const size=900/n;camX=Math.max(0,Math.min(900-900/zoom,((player%n)+.5)*size-450/zoom));camY=Math.max(0,Math.min(900-900/zoom,(Math.floor(player/n)+.5)*size-450/zoom))}
+function draw(){const size=900/n;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,900,900);ctx.setTransform(zoom,0,0,zoom,-camX*zoom,-camY*zoom);ctx.fillStyle='#f7fbff';ctx.fillRect(0,0,900,900);
+const grad=ctx.createLinearGradient(0,0,900,900);grad.addColorStop(0,'#e7f5ff');grad.addColorStop(1,'#fff9e8');ctx.fillStyle=grad;ctx.fillRect(0,0,900,900);
+ctx.fillStyle='#b9edc6';ctx.fillRect(3,3,size-6,size-6);ctx.fillStyle='#ffefb0';ctx.fillRect((n-1)*size+3,(n-1)*size+3,size-6,size-6);
+ctx.strokeStyle='#294d68';ctx.lineWidth=Math.max(5,12-n*.07);ctx.lineCap='round';ctx.beginPath();
+for(let i=0;i<cells.length;i++){const x=i%n,y=Math.floor(i/n),px=x*size,py=y*size,v=cells[i];
+if(v&1){ctx.moveTo(px,py);ctx.lineTo(px+size,py)}if(v&8){ctx.moveTo(px,py);ctx.lineTo(px,py+size)}
+if(x===n-1&&(v&2)){ctx.moveTo(px+size,py);ctx.lineTo(px+size,py+size)}
+if(y===n-1&&(v&4)){ctx.moveTo(px,py+size);ctx.lineTo(px+size,py+size)}}ctx.stroke();
+const gx=(n-.5)*size,gy=(n-.5)*size;ctx.font=`${size*.58}px Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('⭐',gx,gy);
+const px=((player%n)+.5)*size,py=(Math.floor(player/n)+.5)*size;ctx.beginPath();ctx.fillStyle='#1a9d68';ctx.arc(px,py,size*.33,0,Math.PI*2);ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='white';ctx.stroke();ctx.setTransform(1,0,0,1,0,0);
+}
+function move(d){if(won)return;if(cells[player]&dirs[d][2])return;player+=dirs[d][0]+dirs[d][1]*n;moves++;focusPlayer();document.getElementById('moves').textContent='Trekk: '+moves;draw();if(player===n*n-1){won=true;msg.textContent='🎉 Gratulerer! Du fant veien på '+moves+' trekk!';document.getElementById('next').hidden=false}}
+document.querySelectorAll('[data-dir]').forEach(b=>b.onclick=()=>move(+b.dataset.dir));
+document.querySelectorAll('[data-level]').forEach(b=>b.onclick=()=>{level=+b.dataset.level;document.querySelectorAll('[data-level]').forEach(x=>x.classList.toggle('active',x===b));build()});
+document.addEventListener('keydown',e=>{const map={ArrowUp:0,ArrowRight:1,ArrowDown:2,ArrowLeft:3,w:0,d:1,s:2,a:3};if(map[e.key]!==undefined){e.preventDefault();move(map[e.key])}});
+document.getElementById('again').onclick=()=>{player=0;moves=0;won=false;document.getElementById('next').hidden=true;document.getElementById('moves').textContent='Trekk: 0';msg.textContent='Prøv igjen!';focusPlayer();draw()};
+document.getElementById('new').onclick=()=>{round[level]++;build()};
+document.getElementById('next').onclick=()=>{round[level]++;build()};
+let start=null;
+canvas.addEventListener('pointerdown',e=>{start={x:e.clientX,y:e.clientY}});
+canvas.addEventListener('pointerup',e=>{if(!start)return;const dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.hypot(dx,dy)>18){move(Math.abs(dx)>Math.abs(dy)?(dx>0?1:3):(dy>0?2:0));return}
+const r=canvas.getBoundingClientRect(),x=Math.floor((camX+(e.clientX-r.left)/r.width*900/zoom)/900*n),y=Math.floor((camY+(e.clientY-r.top)/r.height*900/zoom)/900*n),px=player%n,py=Math.floor(player/n);if(x===px&&y===py-1)move(0);else if(x===px+1&&y===py)move(1);else if(x===px&&y===py+1)move(2);else if(x===px-1&&y===py)move(3)});
+document.getElementById('zoomin').onclick=()=>{zoom=Math.min(28,zoom*1.5);focusPlayer();draw()};
+document.getElementById('zoomout').onclick=()=>{zoom=Math.max(1,zoom/1.5);focusPlayer();draw()};
+document.getElementById('follow').onclick=()=>{focusPlayer();draw()};
+build();
+</script></body></html>
