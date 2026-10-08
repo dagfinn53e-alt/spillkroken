@@ -10,12 +10,12 @@ body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:radial-gr
 header{text-align:center;padding:28px 14px 18px}
 h1{margin:0;color:#ffd85b;font-size:clamp(48px,8vw,82px);text-shadow:0 4px #54240b}
 .lead{font-size:clamp(17px,2.3vw,24px);font-weight:800;color:#fff2c1;margin:8px 0}
-.grid{max-width:1120px;margin:10px auto 38px;padding:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.game{min-height:165px;border:5px solid #d6a33b;border-radius:26px;text-decoration:none;color:#35190b;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:14px;box-shadow:0 9px 0 #5b2b10,0 14px 24px #0006;transition:.15s}
+.grid{max-width:1120px;margin:10px auto 38px;padding:14px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.game{min-height:145px;border:4px solid #d6a33b;border-radius:26px;text-decoration:none;color:#35190b;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px 7px;box-shadow:0 9px 0 #5b2b10,0 14px 24px #0006;transition:.15s}
 .game:hover{transform:translateY(-4px)}
-.icon{font-size:48px;line-height:1}
-.game h2{font-size:25px;margin:8px 0 5px}
-.game p{font-size:15px;font-weight:800;margin:0;line-height:1.3}
+.icon{font-size:39px;line-height:1}
+.game h2{font-size:20px;margin:6px 0 4px}
+.game p{font-size:12px;font-weight:800;margin:0;line-height:1.3}
 .yatzy{background:linear-gradient(145deg,#fff7dc,#d9efff)}
 .ludo{background:linear-gradient(145deg,#e1ffdc,#8ee39a)}
 .cards{background:linear-gradient(145deg,#ffe2c8,#e6a269)}
@@ -25,13 +25,14 @@ h1{margin:0;color:#ffd85b;font-size:clamp(48px,8vw,82px);text-shadow:0 4px #5424
 .ordmiks{background:linear-gradient(145deg,#dfffe8,#8fe3b0)}
 .norskquiz{background:linear-gradient(145deg,#f7fbff,#b8d8ff)}
 .hjernetrim{background:linear-gradient(145deg,#fff4c9,#f2b7ff)}
+.diverse{background:linear-gradient(145deg,#e3f9ff,#9fe4ed)}
 .about-wrap{text-align:center;margin:-18px 0 24px}
 .about-btn{display:inline-block;background:#fff4c9;color:#35190b;text-decoration:none;font-weight:900;font-size:18px;padding:12px 22px;border:3px solid #d6a33b;border-radius:18px;box-shadow:0 5px 0 #5b2b10}
 .about-btn:hover{transform:translateY(-2px)}
 footer{text-align:center;padding:0 15px 28px;color:#ffe7aa;font-weight:800}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:950px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:520px){
-.grid{grid-template-columns:repeat(2,1fr);gap:9px;padding:9px}
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:9px}
 .game{min-height:128px;padding:8px 5px;border-width:3px;border-radius:19px}
 .icon{font-size:34px}
 .game h2{font-size:19px;margin:5px 0 3px}
@@ -57,6 +58,7 @@ h1{font-size:38px}
 <a class="game norskquiz" href="quiz.html"><span class="icon">❓</span><h2>Quiz</h2><p>Norsk Quiz, Fotballquiz<br>og flere quiz-spill</p></a>
 <a class="game ordmiks" href="ordmiks.html"><span class="icon">🔤</span><h2>Ordmiks</h2><p>1–4 spillere<br>Finn riktig ord fra blandede bokstaver</p></a>
 <a class="game hjernetrim" href="hjernetrim.html"><span class="icon">🧠</span><h2>Hjernetrim</h2><p>Talltrim, figurrekker<br>og flere utfordringer</p></a>
+<a class="game diverse" href="diverse-spill.html"><span class="icon">🎮</span><h2>Diverse spill</h2><p>Mahjong og flere morsomme spill</p></a>
 </div>
 <div class="about-wrap"><a class="about-btn" href="om-spillglede.html">❤️ Om Spillglede</a></div>
 <footer>Spillglede – for familie og venner ❤️</footer>
