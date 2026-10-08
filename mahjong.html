@@ -1,13 +1,103 @@
 <!doctype html><html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mahjong – Spillglede TEST</title><style>
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#e9f6ff,#fff4ce 55%,#eee7ff);color:#17304f;font-family:Arial,sans-serif;min-height:100vh}.wrap{max-width:1150px;margin:auto;padding:14px}.back{display:inline-block;background:#17345d;color:white;padding:12px 17px;text-decoration:none;border-radius:14px;font-weight:bold}h1{text-align:center;font-size:clamp(34px,6vw,58px);margin:8px 0}.intro{text-align:center;font-size:18px}.levels,.tools,.stats{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:13px auto}button{font:inherit;cursor:pointer}.levels button,.tools button{border:0;background:#fff;color:#17304f;border-radius:13px;padding:12px 17px;font-weight:bold;box-shadow:0 2px 9px #0002}.levels button.active{background:#17345d;color:white}.stats span{background:#fff9;padding:9px 15px;border-radius:12px;font-weight:bold}.guide{background:#ffffffd9;border:2px solid #cad8eb;border-radius:16px;padding:12px 18px;max-width:850px;margin:15px auto;line-height:1.5}.guide summary{font-size:19px;font-weight:bold;cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px}.guide summary::-webkit-details-marker{display:none}.guide summary:after{content:"Lukk ▲";font-size:14px;background:#17345d;color:white;border-radius:10px;padding:8px 12px}.guide:not([open]) summary:after{content:"Åpne ▼"}.guide summary:focus-visible{outline:3px solid #e9a83b;border-radius:8px}.guide p{margin:5px 0}.boardbox{overflow:auto;max-width:100%;padding:14px 4px 23px;border-radius:20px;background:#d5e5d6;box-shadow:inset 0 0 0 3px #8db59a}.board{position:relative;margin:0 auto;min-height:360px}.tile{position:absolute;display:flex;justify-content:center;align-items:center;background:linear-gradient(140deg,#fffef3,#eee8d4);border:2px solid #879a94;border-bottom:6px solid #788e86;border-right:5px solid #81958b;border-radius:9px;box-shadow:2px 4px 3px #0003;font-size:clamp(22px,3.5vw,37px);user-select:none;transition:filter .1s,outline .1s;touch-action:manipulation}.tile:not(.free){filter:brightness(.77);cursor:default}.tile.free:hover{filter:brightness(1.06)}.tile.selected{outline:5px solid #e3a42a;outline-offset:1px;background:#fff1bb}.tile.hinted{outline:5px solid #18b56c;outline-offset:1px}.message{text-align:center;font-weight:bold;min-height:27px;margin:15px auto}.small{text-align:center;font-size:13px;color:#617081;margin:15px}button:focus-visible{outline:3px solid #e9a83b}@media(max-width:650px){.wrap{padding:9px}.boardbox{padding:8px 0 16px}.tile{border-radius:6px;border-right-width:3px;border-bottom-width:4px}.guide{font-size:14px}.levels button,.tools button{padding:10px 12px}}
-</style></head><body><main class="wrap"><a class="back" href="hjernetrim.html">← Hjernetrim</a><h1>🀄 Mahjong</h1><p class="intro">Finn to like, frie brikker og fjern dem. Ingen tidsbegrensning!</p><details class="guide" open><summary>📖 Spilleveiledning</summary><p>Trykk på <b>to like brikker</b> for å fjerne dem. En brikke må være <b>fri</b>: ingen brikke oppå, og minst én side (venstre eller høyre) må være åpen.</p><p>Lyse brikker kan velges. Mørkere brikker er foreløpig låst. Bruk <b>Hint</b> hvis du står fast, eller <b>Bland brikker</b> for å få nye muligheter.</p></details><div class="levels"><button data-level="0" class="active">🟢 Lett · 36</button><button data-level="1">🟡 Middels · 72</button><button data-level="2">🔴 Vanskelig · 144</button></div><div class="themes" style="text-align:center;margin:12px auto;font-weight:bold">🎨 Brikkemotiv: <select id="theme" aria-label="Velg brikkemotiv" style="font:inherit;padding:10px;border-radius:12px;border:2px solid #17345d;background:white"><option value="classic">🀄 Klassiske symboler</option><option value="nature">🌸 Blomster og dyr</option><option value="fruit">🍎 Frukt og farger</option></select></div><div class="stats"><span id="left">Brikker igjen: –</span><span id="pairs">Par funnet: 0</span></div><div class="boardbox"><div class="board" id="board" aria-label="Mahjongbrett"></div></div><p id="message" class="message" aria-live="polite">Velg to like, frie brikker.</p><div class="tools"><button id="hint">💡 Hint</button><button id="shuffle">🔀 Bland brikker</button><button id="restart">🔄 Nytt brett</button></div><p class="small">TESTVERSJON MED NYE MOTIVER • Spillglede • Fungerer på PC, mobil og nettbrett</p></main><script>
-'use strict';const board=document.getElementById('board'),message=document.getElementById('message'),left=document.getElementById('left'),pairs=document.getElementById('pairs');const themes={classic:['🀄','🎴','☯️','🐉','🎋','🔴','🔵','🟢','🟡','⚪','⚫','🔶','🔷','💠','🔺','🔻','♠️','♣️','♥️','♦️','☀️','🌙','⭐','🌟'],nature:['🐼','🦊','🐸','🐱','🐶','🦋','🌸','🌻','🍀','🌺','🐢','🐠','🦉','🌷','🐝','🌼','🦜','🦔','🐿️','🪻','🐞','🌿','🦩','🪷'],fruit:['🍎','🍒','🍋','🍇','🍉','🍓','🍑','🍍','🥝','🍐','🍊','🥥','🫐','🥭','🍌','🍈','🍅','🥕','🌽','🍆','🫑','🥦','🍄','🫒']};let level=0,tiles=[],selected=null,found=0,highlight=[];const configs=[{w:6,h:6,layers:1},{w:8,h:8,layers:2},{w:12,h:10,layers:2}];function rand(n){return Math.floor(Math.random()*n)}function shuffle(a){for(let i=a.length-1;i>0;i--){let j=rand(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
-function start(){let c=configs[level];tiles=[];let id=0;for(let layer=0;layer<c.layers;layer++){let x0=layer?(level===1?2:3):0,y0=layer?(level===1?3:3):0,w=layer?(level===1?4:6):c.w,h=layer?(level===1?2:4):c.h;for(let y=0;y<h;y++)for(let x=0;x<w;x++)tiles.push({id:id++,x:x+x0,y:y+y0,z:layer,removed:false,sym:''})}let bag=[];for(let i=0;i<tiles.length/2;i++){let symbols=themes[document.getElementById("theme").value];let symbol=symbols[i%symbols.length];bag.push(symbol,symbol)}shuffle(bag);tiles.forEach((t,i)=>t.sym=bag[i]);selected=null;found=0;message.textContent='Velg to like, frie brikker.';ensureMove();render()}
+</style><style>
+.rank{max-width:850px;margin:15px auto;padding:15px;background:#fffdf1;border:2px solid #dfca8a;border-radius:18px}
+.rank h2{margin:0 0 10px;font-size:22px}.rank .nickrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rank input{padding:11px;border:2px solid #a7b8ce;border-radius:10px;font-size:16px;max-width:190px}
+.rank button{background:#17345d;color:white;border:0;padding:11px;border-radius:10px;font-weight:bold}
+.rank .note{font-size:13px;color:#4d5b69}.rank table{width:100%;border-collapse:collapse;margin-top:8px}
+.rank td{padding:7px;border-bottom:1px solid #d8e1e8}.rank td:last-child{text-align:right}
+</style></head><body><main class="wrap"><a class="back" href="hjernetrim.html">← Hjernetrim</a><h1>🀄 Mahjong</h1><p class="intro">Finn to like, frie brikker og fjern dem. Ingen tidsbegrensning!</p><details class="guide" open><summary>📖 Spilleveiledning</summary><p>Trykk på <b>to like brikker</b> for å fjerne dem. En brikke må være <b>fri</b>: ingen brikke oppå, og minst én side (venstre eller høyre) må være åpen.</p><p>Lyse brikker kan velges. Mørkere brikker er foreløpig låst. Bruk <b>Hint</b> hvis du står fast, eller <b>Bland brikker</b> for å få nye muligheter.</p></details><section class="rank" aria-label="Poeng og toppliste"><h2>🏆 Mahjong – poeng og toppliste</h2>
+<div class="nickrow"><label for="nickInput"><b>Nicknavn:</b></label><input id="nickInput" placeholder="Velg nicknavn" maxlength="20"><button id="nickSave">Lagre nicknavn</button><span id="nickStatus" aria-live="polite"></span></div>
+<p><b>⭐ Mine poeng: <span id="myPoints">0</span></b> · <span id="localScore">Dette brettet: 0 poeng</span></p>
+<p class="note">10 poeng per par på brettet. Når brettet er fullført, lagres en nivåbonus på topplisten (Lett 100, Middels 200, Vanskelig 400). Maks én nivåbonus per nivå per dag. Poeng for par vises bare under spillet.</p>
+<button id="refreshScores">🔄 Oppdater topplisten</button><p id="scoreStatus" class="note" aria-live="polite">Registrer nicknavn for å samle poeng.</p>
+<details open><summary><b>🏆 Topp 20 – Mahjong</b></summary><div id="scoreList">Laster …</div></details></section>
+<div class="levels"><button data-level="0" class="active">🟢 Lett · 36</button><button data-level="1">🟡 Middels · 72</button><button data-level="2">🔴 Vanskelig · 144</button></div><div class="themes" style="text-align:center;margin:12px auto;font-weight:bold">🎨 Brikkemotiv: <select id="theme" aria-label="Velg brikkemotiv" style="font:inherit;padding:10px;border-radius:12px;border:2px solid #17345d;background:white"><option value="classic">🀄 Klassiske symboler</option><option value="nature">🌸 Blomster og dyr</option><option value="fruit">🍎 Frukt og farger</option></select></div><div class="stats"><span id="left">Brikker igjen: –</span><span id="pairs">Par funnet: 0</span></div><div class="boardbox"><div class="board" id="board" aria-label="Mahjongbrett"></div></div><p id="message" class="message" aria-live="polite">Velg to like, frie brikker.</p><div class="tools"><button id="hint">💡 Hint</button><button id="shuffle">🔀 Bland brikker</button><button id="restart">🔄 Nytt brett</button></div><p class="small">TESTVERSJON MED NYE MOTIVER • Spillglede • Fungerer på PC, mobil og nettbrett</p></main><script>
+'use strict';let boardSerial=0;const board=document.getElementById('board'),message=document.getElementById('message'),left=document.getElementById('left'),pairs=document.getElementById('pairs');const themes={classic:['🀄','🎴','☯️','🐉','🎋','🔴','🔵','🟢','🟡','⚪','⚫','🔶','🔷','💠','🔺','🔻','♠️','♣️','♥️','♦️','☀️','🌙','⭐','🌟'],nature:['🐼','🦊','🐸','🐱','🐶','🦋','🌸','🌻','🍀','🌺','🐢','🐠','🦉','🌷','🐝','🌼','🦜','🦔','🐿️','🪻','🐞','🌿','🦩','🪷'],fruit:['🍎','🍒','🍋','🍇','🍉','🍓','🍑','🍍','🥝','🍐','🍊','🥥','🫐','🥭','🍌','🍈','🍅','🥕','🌽','🍆','🫑','🥦','🍄','🫒']};let level=0,tiles=[],selected=null,found=0,highlight=[];const configs=[{w:6,h:6,layers:1},{w:8,h:8,layers:2},{w:12,h:10,layers:2}];function rand(n){return Math.floor(Math.random()*n)}function shuffle(a){for(let i=a.length-1;i>0;i--){let j=rand(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+function start(){boardSerial++;let c=configs[level];tiles=[];let id=0;for(let layer=0;layer<c.layers;layer++){let x0=layer?(level===1?2:3):0,y0=layer?(level===1?3:3):0,w=layer?(level===1?4:6):c.w,h=layer?(level===1?2:4):c.h;for(let y=0;y<h;y++)for(let x=0;x<w;x++)tiles.push({id:id++,x:x+x0,y:y+y0,z:layer,removed:false,sym:''})}let bag=[];for(let i=0;i<tiles.length/2;i++){let symbols=themes[document.getElementById("theme").value];let symbol=symbols[i%symbols.length];bag.push(symbol,symbol)}shuffle(bag);tiles.forEach((t,i)=>t.sym=bag[i]);selected=null;found=0;document.getElementById('localScore').textContent='Dette brettet: 0 poeng';message.textContent='Velg to like, frie brikker.';ensureMove();render()}
 function isFree(t){if(t.removed)return false;for(const q of tiles){if(q.removed||q.id===t.id)continue;if(q.z>t.z&&Math.abs(q.x-t.x)<=0.5&&Math.abs(q.y-t.y)<=0.5)return false}const leftBlocked=tiles.some(q=>!q.removed&&q.z===t.z&&q.y===t.y&&q.x===t.x-1),rightBlocked=tiles.some(q=>!q.removed&&q.z===t.z&&q.y===t.y&&q.x===t.x+1);return !leftBlocked||!rightBlocked}
 function findPair(){const f=tiles.filter(isFree);for(let i=0;i<f.length;i++)for(let j=i+1;j<f.length;j++)if(f[i].sym===f[j].sym)return[f[i],f[j]];return null}
 function ensureMove(){if(findPair()||tiles.every(t=>t.removed))return;const remaining=tiles.filter(t=>!t.removed);for(let attempt=0;attempt<80&&!findPair();attempt++){let values=shuffle(remaining.map(t=>t.sym));remaining.forEach((t,i)=>t.sym=values[i])}if(!findPair()){let free=remaining.filter(isFree);if(free.length>=2){const other=remaining.find(t=>t.id!==free[0].id&&t.id!==free[1].id&&t.sym===free[0].sym);if(other){[free[1].sym,other.sym]=[other.sym,free[1].sym]}}}}
 function render(){let c=configs[level],width=Math.min(74,Math.max(28,(Math.min(window.innerWidth-42,1040)-24)/c.w-4)),height=width*1.22,dx=width+3,dy=height+3;board.style.width=(c.w*dx+12)+'px';board.style.height=(c.h*dy+15)+'px';board.replaceChildren();for(const t of tiles){if(t.removed)continue;let b=document.createElement('button');b.type='button';b.className='tile'+(isFree(t)?' free':'')+(selected===t.id?' selected':'')+(highlight.includes(t.id)?' hinted':'');b.style.left=(t.x*dx+t.z*5)+'px';b.style.top=(t.y*dy-t.z*6+9)+'px';b.style.width=width+'px';b.style.height=height+'px';b.style.zIndex=String(10+t.z);b.style.fontSize=Math.max(19,width*.46)+'px';b.textContent=t.sym;b.setAttribute('aria-label',isFree(t)?'Fri brikke '+t.sym:'Låst brikke '+t.sym);b.onclick=()=>pick(t.id);board.appendChild(b)}left.textContent='Brikker igjen: '+tiles.filter(t=>!t.removed).length;pairs.textContent='Par funnet: '+found}
-function pick(id){highlight=[];let t=tiles.find(t=>t.id===id);if(!isFree(t)){message.textContent='Denne brikken er låst. Velg en lys brikke.';return}if(selected===id){selected=null;render();return}if(selected===null){selected=id;message.textContent='Velg en lik brikke.';render();return}let first=tiles.find(t=>t.id===selected);if(first&&first.sym===t.sym){first.removed=true;t.removed=true;found++;selected=null;if(tiles.every(t=>t.removed)){message.textContent='🎉 Gratulerer! Du klarte hele Mahjong-brettet!'}else{ensureMove();message.textContent='✅ Riktig par! Fortsett slik.'}}else{selected=id;message.textContent='Ikke like – prøv et annet par.'}render()}
+function pick(id){highlight=[];let t=tiles.find(t=>t.id===id);if(!isFree(t)){message.textContent='Denne brikken er låst. Velg en lys brikke.';return}if(selected===id){selected=null;render();return}if(selected===null){selected=id;message.textContent='Velg en lik brikke.';render();return}let first=tiles.find(t=>t.id===selected);if(first&&first.sym===t.sym){first.removed=true;t.removed=true;found++;selected=null;document.getElementById('localScore').textContent='Dette brettet: '+(found*10)+' poeng';if(tiles.every(t=>t.removed)){message.textContent='🎉 Gratulerer! Du klarte hele Mahjong-brettet!';registrerFullfort(level,boardSerial)}else{ensureMove();message.textContent='✅ Riktig par! Fortsett slik.'}}else{selected=id;message.textContent='Ikke like – prøv et annet par.'}render()}
 function mix(){const remaining=tiles.filter(t=>!t.removed);let vals=shuffle(remaining.map(t=>t.sym));remaining.forEach((t,i)=>t.sym=vals[i]);selected=null;highlight=[];ensureMove();message.textContent='🔀 Brikkene er blandet på nytt.';render()}
 document.getElementById('hint').onclick=()=>{let p=findPair();if(!p){ensureMove();p=findPair()}if(p){highlight=p.map(t=>t.id);message.textContent='💡 De grønne markeringene viser et mulig par.';render()}else message.textContent='🎉 Alle brikkene er fjernet!'};document.getElementById('shuffle').onclick=mix;document.getElementById('restart').onclick=start;document.getElementById('theme').onchange=start;document.querySelectorAll('[data-level]').forEach(b=>b.onclick=()=>{level=Number(b.dataset.level);document.querySelectorAll('[data-level]').forEach(v=>v.classList.toggle('active',v===b));start()});window.addEventListener('resize',render);start();
+
+// Felles Spillglede-identitet med Ordjakten. Ingen passord eller e-post.
+const SPILLGLEDE_URL='https://evpqlrqxofooowyvwdcn.supabase.co';
+const SPILLGLEDE_KEY='sb_publishable_C2rRF4LjsHVKHE4uj3ByCA_V5XxXZbs';
+const AUTH_STORAGE='spillglede_auth_v1';
+const el=id=>document.getElementById(id);
+function getSession(){try{return JSON.parse(localStorage.getItem(AUTH_STORAGE)||'null')}catch{return null}}
+function saveSession(s){localStorage.setItem(AUTH_STORAGE,JSON.stringify(s))}
+async function api(path,method='GET',body=null,token=null){
+ const headers={'apikey':SPILLGLEDE_KEY,'Content-Type':'application/json'};
+ if(token)headers.Authorization='Bearer '+token;
+ const r=await fetch(SPILLGLEDE_URL+path,{method,headers,body:body===null?undefined:JSON.stringify(body)});
+ const raw=await r.text();let data;try{data=raw?JSON.parse(raw):null}catch{data={message:raw}}
+ if(!r.ok)throw Error(data?.message||data?.msg||data?.error_description||data?.error||'Feil '+r.status);
+ return data;
+}
+async function authSession(){
+ let s=getSession();
+ if(s?.access_token&&s.expires_at>Date.now()/1000+90)return s;
+ if(s?.refresh_token){try{const t=await api('/auth/v1/token?grant_type=refresh_token','POST',{refresh_token:s.refresh_token});s={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};saveSession(s);return s}catch{localStorage.removeItem(AUTH_STORAGE)}}
+ const t=await api('/auth/v1/signup','POST',{});
+ if(!t?.access_token)throw Error('Anonym innlogging er ikke aktivert i Supabase.');
+ s={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};saveSession(s);return s;
+}
+async function loadNickname(){
+ try{const s=getSession();if(!s)return;const a=await authSession();const uid=a.user?.id||JSON.parse(atob(a.access_token.split('.')[1])).sub;
+ const rows=await api('/rest/v1/spillere?id=eq.'+encodeURIComponent(uid)+'&select=nicknavn','GET',null,a.access_token);
+ if(rows?.length){el('nickInput').value=rows[0].nicknavn;el('nickInput').disabled=true;el('nickSave').hidden=true;el('nickStatus').textContent='✓ Lagret';}
+ await oppdaterToppliste();
+ }catch(e){el('nickStatus').textContent='Kunne ikke hente nicknavn: '+e.message}
+}
+el('nickSave').onclick=async()=>{
+ const nick=el('nickInput').value.trim();
+ if(!/^[\p{L}\p{N}_ -]{3,20}$/u.test(nick)){el('nickStatus').textContent='Bruk 3–20 tegn.';return}
+ el('nickSave').disabled=true;
+ try{const a=await authSession();const uid=a.user?.id||JSON.parse(atob(a.access_token.split('.')[1])).sub;
+ await api('/rest/v1/spillere','POST',{id:uid,nicknavn:nick},a.access_token);
+ el('nickInput').disabled=true;el('nickSave').hidden=true;el('nickStatus').textContent='✓ '+nick+' er lagret!';
+ await oppdaterToppliste();
+ }catch(e){el('nickStatus').textContent=/duplicate|unique|409/i.test(e.message)?'Navnet er opptatt. Velg et annet.':'Kunne ikke lagre: '+e.message}
+ finally{el('nickSave').disabled=false}
+};
+let claimBusy=false;
+async function registrerFullfort(niva,serial){
+ if(claimBusy)return;
+ claimBusy=true;
+ try{
+  if(serial!==boardSerial)return;
+  const a=await authSession();
+  const result=await api('/rest/v1/rpc/mahjong_registrer_fullfort','POST',{p_niva:niva},a.access_token);
+  el('scoreStatus').textContent=Number(result)>0?'🏆 '+result+' poeng lagret for fullført brett!':'Dagens bonus for dette nivået er allerede registrert.';
+  await oppdaterToppliste();
+ }catch(e){el('scoreStatus').textContent='Poeng ble ikke lagret: '+e.message}
+ finally{claimBusy=false}
+}
+async function oppdaterToppliste(){
+ try{
+  const a=await authSession();
+  const board=await api('/rest/v1/rpc/mahjong_toppliste','POST',{},a.access_token);
+  const nick=el('nickInput').value.trim();const list=el('scoreList');list.replaceChildren();
+  const table=document.createElement('table');
+  let myScore=0;
+  for(const player of board){
+   const tr=document.createElement('tr');
+   if(player.nicknavn===nick){tr.style.background='#e3f8d8';myScore=Number(player.poeng)}
+   for(const v of [player.plassering+'.',player.nicknavn,player.poeng+' ⭐']){
+    const td=document.createElement('td');td.textContent=v;tr.append(td)
+   }
+   table.append(tr);
+  }
+  list.append(table);
+  if(!board.length)list.textContent='Ingen registrerte poeng ennå.';
+  el('myPoints').textContent=myScore;
+ }catch(e){el('scoreList').textContent='Topplisten kunne ikke hentes: '+e.message}
+}
+el('refreshScores').onclick=oppdaterToppliste;
+loadNickname();
 </script></body></html>
