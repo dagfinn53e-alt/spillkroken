@@ -1,0 +1,98 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Futoshiki – Tallkampen | Spillglede</title><style>
+:root{font-family:system-ui,Arial,sans-serif;color:#f3f8ff;background:#07152e}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 10% 0,#305aa6 0,transparent 45%),radial-gradient(ellipse at 90% 25%,#4b2079 0,transparent 42%),#07152e;min-height:100vh}main{max-width:850px;margin:auto;padding:16px}h1{text-align:center;font-size:clamp(27px,6vw,44px);margin:13px 0 5px;text-shadow:0 0 22px #7fdfff}header p{text-align:center;color:#bed6ff;margin:0 0 20px}.panel{border:1px solid #70cfff70;border-radius:22px;padding:17px;background:#102447e9;box-shadow:0 12px 35px #0209168a;margin:13px 0}.toolbar,.actions,.digits{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;align-items:center}button,select{border:0;border-radius:12px;padding:12px 14px;font-weight:800;font-size:15px;cursor:pointer;background:#7ddfff;color:#122a4a}button:hover{filter:brightness(1.1)}button:disabled{opacity:.4;cursor:not-allowed}select{background:#f7fcff}.primary{background:#ffdb79}.secondary{background:#a8f3cb}.muted{background:#c6d3ff}.boardwrap{overflow:auto;padding:12px 0;display:flex;justify-content:center}.board{--cell:clamp(37px,9vw,65px);--sign:clamp(19px,4vw,28px);display:grid;grid-template-columns:repeat(var(--n),var(--cell) var(--sign));grid-template-rows:repeat(var(--n),var(--cell) var(--sign));width:max-content;gap:0}.cell{width:var(--cell);height:var(--cell);border:2px solid #71bcf7;border-radius:10px;background:#f3f8ff;color:#172951;font-size:clamp(19px,5vw,30px);font-weight:900;padding:0;box-shadow:inset 0 2px 8px #98b4da;touch-action:manipulation}.cell.fixed{background:#b7d2ef;color:#344b73}.cell.selected{background:#ffe5a1;border-color:#ffae27;box-shadow:0 0 15px #ffdb64}.cell.wrong{background:#ff9da6;border-color:#ff4d66}.cell.hinted{background:#b1ffd8;border-color:#20ad76}.sign{display:flex;align-items:center;justify-content:center;font-weight:900;color:#ffdc83;font-size:clamp(19px,4.5vw,29px);user-select:none}.sign.vertical{font-size:clamp(17px,4vw,25px)}.empty{visibility:hidden}.digits{margin:14px 0}.digits button{min-width:45px;font-size:20px;background:#e6f2ff}.digits .erase{background:#ffbbbd;font-size:14px}.status{text-align:center;min-height:48px;padding:11px;border-radius:12px;background:#203b67;color:#fff;font-weight:750}.progress{text-align:center;color:#ffe5a3;margin:10px}.note{color:#c8dfff;line-height:1.55}.note strong{color:#ffe59c}details summary{cursor:pointer;font-weight:800}.footer{text-align:center;color:#b3c7e9;font-size:13px;margin:18px 0}.tag{display:inline-block;border:1px solid #b4dcff;border-radius:30px;padding:5px 12px;color:#d8f1ff;font-size:13px}.intro{text-align:center}.check{background:#89f0ba}@media(max-width:440px){main{padding:9px}.panel{padding:10px}.board{--cell:clamp(33px,8.6vw,47px);--sign:clamp(14px,3.6vw,21px)}.cell{border-radius:7px}.toolbar button,.toolbar select{padding:10px 8px}}
+#toplist table{width:100%;border-collapse:collapse;margin-top:12px}#toplist td{padding:8px;border-bottom:1px solid #6688ad88}#toplist td:last-child{text-align:right}#nickDisplay{color:#ffdf8b}#retry{background:#ffdc80;display:none;margin:8px auto} </style></head><body><main><header><h1>🔢 Futoshiki – Tallkampen</h1><p>Spillglede • Fem nivåer • Poeng og Topp 5</p></header><section class="panel"><h2 style="text-align:center;margin:0 0 12px">🏆 Nicknavn og Topp 5</h2><div class="toolbar"><b>👤 Nicknavn:</b><strong id="nickDisplay">Henter …</strong><input id="nickInput" maxlength="20" placeholder="Velg nicknavn" style="display:none;padding:10px;border-radius:10px"><button id="nickSave" style="display:none">Lagre</button><button id="refresh">🔄 Oppdater Topp 5</button></div><p class="progress">⭐ Mine poeng: <b id="mine">–</b></p><p id="scoreStatus" class="note" style="text-align:center">Henter poeng …</p><button id="retry" style="display:none">Prøv å lagre poeng igjen</button><details open><summary>🏆 Topp 5 – Futoshiki</summary><div id="toplist">Laster …</div></details></section><section class="panel"><div class="intro"><span class="tag">🧠 Logikk • Ingen tidspress</span></div><div class="toolbar" style="margin-top:15px"><label for="level"><b>Velg nivå:</b></label><select id="level"><option value="0">1 – Lett (4 × 4)</option><option value="1">2 – Middels (4 × 4)</option><option value="2">3 – Vanskelig (5 × 5)</option><option value="3">4 – Ekspert (5 × 5)</option><option value="4">5 – Super ekspert (6 × 6)</option></select><button id="new" class="primary">🔄 Ny oppgave</button></div><p class="progress" id="progress"></p><div class="boardwrap"><div id="board" class="board" role="group" aria-label="Futoshiki spillebrett"></div></div><div class="digits" id="digits"></div><div class="actions"><button id="hint" class="primary">💡 Hint (3 igjen)</button><button id="check" class="check">✓ Sjekk svar</button><button id="clear" class="muted">Visk ut valgt</button></div><p id="status" class="status" aria-live="polite">Velg en hvit rute og trykk på et tall.</p><p class="note" style="text-align:center">💡 Maks <strong>3 hint</strong> per oppgave. Poengene lagres i Supabase én gang per nivå per dag.</p></section><section class="panel"><details open><summary>📖 Slik spiller du</summary><p class="note">Fyll inn tallene fra <strong>1 til brettets størrelse</strong>. Hver rad og hver kolonne skal inneholde hvert tall <strong>nøyaktig én gang</strong>. Tegnene viser hvilket tall som er størst:</p><p class="note" style="text-align:center;font-size:19px"><strong>3 &gt; 2</strong> &nbsp; og &nbsp; <strong>2 &lt; 3</strong></p><p class="note">Mellom ruter som står over hverandre, betyr <strong>∨</strong> at tallet <strong>øverst</strong> er størst, mens <strong>∧</strong> betyr at tallet <strong>nederst</strong> er størst. Trykk på en rute, og velg et tall. <strong>Hint</strong> fyller ut én rute og reduserer den mulige poengsummen.</p></details></section><p class="footer">✨ Spillglede • Topp 5 og poeng • Fremdriften lagres på denne enheten ✨</p></main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id),key='spillglede_futoshiki_test_v1';let level=0,n=4,solution=[],values=[],fixed=[],horiz=[],vert=[],hints=0,done=false,selected=null,seed=0;const names=['Lett','Middels','Vanskelig','Ekspert','Super ekspert'];const points=[100,200,400,400,400];const configs=[{n:4,g:7,e:.68},{n:4,g:5,e:.57},{n:5,g:8,e:.49},{n:5,g:5,e:.37},{n:6,g:8,e:.32}];function rand(max){return Math.floor(Math.random()*max)}function shuffle(a){for(let i=a.length-1;i>0;i--){let j=rand(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}function create(){const c=configs[level];n=c.n;const digits=shuffle(Array.from({length:n},(_,i)=>i+1));const rows=shuffle(Array.from({length:n},(_,i)=>i));const cols=shuffle(Array.from({length:n},(_,i)=>i));solution=Array.from({length:n},(_,r)=>Array.from({length:n},(_,col)=>digits[(rows[r]+cols[col])%n]));values=Array.from({length:n},()=>Array(n).fill(0));fixed=Array.from({length:n},()=>Array(n).fill(false));let coords=shuffle(Array.from({length:n*n},(_,i)=>[Math.floor(i/n),i%n]));coords.slice(0,c.g).forEach(([r,col])=>{fixed[r][col]=true;values[r][col]=solution[r][col]});horiz=Array.from({length:n},()=>Array(n-1).fill(''));vert=Array.from({length:n-1},()=>Array(n).fill(''));for(let r=0;r<n;r++)for(let col=0;col<n-1;col++)if(Math.random()<c.e)horiz[r][col]=solution[r][col]>solution[r][col+1]?'>':'<';for(let r=0;r<n-1;r++)for(let col=0;col<n;col++)if(Math.random()<c.e)vert[r][col]=solution[r][col]>solution[r+1][col]?'∨':'∧';hints=0;done=false;selected=null;save();render();$('status').textContent='Ny oppgave! Velg en rute og fyll inn tall.'}function save(){try{localStorage.setItem(key,JSON.stringify({level,n,solution,values,fixed,horiz,vert,hints,done,selected}))}catch{}}function load(){try{let d=JSON.parse(localStorage.getItem(key));if(!d||!Array.isArray(d.solution)||!Array.isArray(d.values)||!configs[d.level]||d.solution.length!==configs[d.level].n)return false;({level,n,solution,values,fixed,horiz,vert,hints,done,selected}=d);hints=Math.max(0,Math.min(3,hints||0));$('level').value=level;return true}catch{return false}}function validCell(r,c){let v=values[r][c];if(!v)return true;for(let j=0;j<n;j++){if(j!==c&&values[r][j]===v)return false;if(j!==r&&values[j][c]===v)return false}if(c<n-1&&horiz[r][c]&&values[r][c+1]&&!(horiz[r][c]==='>'?v>values[r][c+1]:v<values[r][c+1]))return false;if(c>0&&horiz[r][c-1]&&values[r][c-1]&&!(horiz[r][c-1]==='>'?values[r][c-1]>v:values[r][c-1]<v))return false;if(r<n-1&&vert[r][c]&&values[r+1][c]&&!(vert[r][c]==='∨'?v>values[r+1][c]:v<values[r+1][c]))return false;if(r>0&&vert[r-1][c]&&values[r-1][c]&&!(vert[r-1][c]==='∨'?values[r-1][c]>v:values[r-1][c]<v))return false;return true}function render(){const b=$('board');b.replaceChildren();b.style.setProperty('--n',n);for(let r=0;r<2*n;r++)for(let c=0;c<2*n;c++){let e;if(r%2===0&&c%2===0){const rr=r/2,cc=c/2;e=document.createElement('button');e.className='cell'+(fixed[rr][cc]?' fixed':'')+(selected?.[0]===rr&&selected?.[1]===cc?' selected':'');e.textContent=values[rr][cc]||'';e.disabled=done;e.setAttribute('aria-label',`Rad ${rr+1}, kolonne ${cc+1}, ${values[rr][cc]||'tom'}`);e.onclick=()=>{selected=[rr,cc];render()}}else{e=document.createElement('span');e.className='sign';if(r%2===0&&c%2===1)e.textContent=c/2<n-1?horiz[r/2][(c-1)/2]:'';else if(r%2===1&&c%2===0){e.classList.add('vertical');e.textContent=r/2<n-1?vert[(r-1)/2][c/2]:''}else e.textContent=''}b.append(e)}const digits=$('digits');digits.replaceChildren();for(let v=1;v<=n;v++){let bt=document.createElement('button');bt.textContent=v;bt.disabled=done;bt.onclick=()=>enter(v);digits.append(bt)}const erase=document.createElement('button');erase.className='erase';erase.textContent='⌫';erase.disabled=done;erase.onclick=()=>enter(0);digits.append(erase);$('hint').disabled=done||hints>=3;$('hint').textContent=`💡 Hint (${3-hints} igjen)`;$('check').disabled=done;$('clear').disabled=done;let count=values.flat().filter(Boolean).length;$('progress').textContent=`${names[level]} • ${count} av ${n*n} ruter fylt • Mulig poengsum: ${Math.round(points[level]*(4-hints)/4)}`;if(done)$('status').textContent='🎉 Gratulerer! Du løste oppgaven! (Testpoeng: '+Math.round(points[level]*(4-hints)/4)+')'}function enter(v){if(done)return;if(!selected){$('status').textContent='Velg en rute først.';return}const [r,c]=selected;if(fixed[r][c]){$('status').textContent='Denne ruten er låst. Velg en annen.';return}values[r][c]=v;save();render();if(values.flat().every(Boolean)&&checkBoard())complete()}function checkBoard(){for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(!values[r][c]||!validCell(r,c))return false;return true}function complete(){done=true;save();render();registerPoints(level+1,hints)}function check(){if(done)return;let bad=0,empty=0;for(let r=0;r<n;r++)for(let c=0;c<n;c++){if(!values[r][c])empty++;else if(!validCell(r,c))bad++}if(bad){$('status').textContent=`⚠️ ${bad} ruter bryter med reglene. Sjekk rader, kolonner og tegn.`}else if(empty){$('status').textContent=`Så langt riktig etter reglene! ${empty} ruter mangler.`}else complete()}function hint(){if(done||hints>=3)return;let candidates=[];for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(!fixed[r][c]&&values[r][c]!==solution[r][c])candidates.push([r,c]);if(!candidates.length){$('status').textContent='Ingen ruter trenger hint akkurat nå.';return}let [r,c]=candidates[rand(candidates.length)];values[r][c]=solution[r][c];hints++;selected=[r,c];save();render();$('status').textContent=`💡 Hint brukt! Rute ${r+1},${c+1} er fylt ut. ${3-hints} hint igjen.`;if(values.flat().every(Boolean)&&checkBoard())complete()}$('level').onchange=e=>{level=+e.target.value;create()};$('new').onclick=()=>{if(confirm('Starte en ny oppgave? Den nåværende oppgaven erstattes.'))create()};$('hint').onclick=hint;$('check').onclick=check;$('clear').onclick=()=>enter(0);
+const SB='https://evpqlrqxofooowyvwdcn.supabase.co',APIKEY='sb_publishable_C2rRF4LjsHVKHE4uj3ByCA_V5XxXZbs',AUTHKEY='spillglede_auth_v1';
+let scoreBusy=false,pending=null;
+function getStored(){try{return JSON.parse(localStorage.getItem(AUTHKEY)||'null')}catch{return null}}
+async function req(path,method='GET',payload=null,token=null){
+ const headers={'apikey':APIKEY,'Content-Type':'application/json'};
+ if(token)headers.Authorization='Bearer '+token;
+ const response=await fetch(SB+path,{method,headers,body:payload===null?undefined:JSON.stringify(payload)});
+ const raw=await response.text();let data;
+ try{data=raw?JSON.parse(raw):null}catch{data={message:raw}}
+ if(!response.ok)throw Error(data?.message||data?.msg||data?.error_description||data?.error||'HTTP '+response.status);
+ return data;
+}
+async function getAuth(){
+ let a=getStored();
+ if(a?.access_token&&a.expires_at>Date.now()/1000+90)return a;
+ if(a?.refresh_token){
+  try{const t=await req('/auth/v1/token?grant_type=refresh_token','POST',{refresh_token:a.refresh_token});
+   a={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};
+   localStorage.setItem(AUTHKEY,JSON.stringify(a));return a
+  }catch(e){console.warn('Kunne ikke fornye sesjonen',e)}
+ }
+ const t=await req('/auth/v1/signup','POST',{});
+ if(!t?.access_token)throw Error('Kunne ikke starte anonym Spillglede-innlogging');
+ a={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};
+ localStorage.setItem(AUTHKEY,JSON.stringify(a));return a;
+}
+function userId(a){return a.user?.id||JSON.parse(atob(a.access_token.split('.')[1])).sub}
+async function loadNick(){
+ try{
+  const a=await getAuth();
+  const rows=await req('/rest/v1/spillere?id=eq.'+encodeURIComponent(userId(a))+'&select=nicknavn','GET',null,a.access_token);
+  if(rows?.length){
+   $('nickDisplay').textContent=rows[0].nicknavn;
+   $('nickInput').style.display='none';$('nickSave').style.display='none';
+  }else{
+   $('nickDisplay').textContent='Ikke registrert';
+   $('nickInput').style.display='inline-block';$('nickSave').style.display='inline-block';
+   $('scoreStatus').textContent='Bruk samme nettleser som de andre spillene, eller registrer et nicknavn.';
+  }
+ }catch(e){$('nickDisplay').textContent='Kunne ikke hente';$('scoreStatus').textContent=e.message}
+}
+$('nickSave').onclick=async()=>{
+ const nick=$('nickInput').value.trim();
+ if(!/^[\p{L}\p{N}_ -]{3,20}$/u.test(nick)){$('scoreStatus').textContent='Nicknavn må ha 3–20 tegn.';return}
+ $('nickSave').disabled=true;
+ try{
+  const a=await getAuth();
+  await req('/rest/v1/spillere','POST',{id:userId(a),nicknavn:nick},a.access_token);
+  await loadNick();await loadScores();
+  if(pending)await registerPoints(pending.niva,pending.hint);
+ }catch(e){$('scoreStatus').textContent='Kunne ikke lagre nicknavn: '+e.message}
+ finally{$('nickSave').disabled=false}
+};
+async function loadScores(){
+ try{
+  const a=await getAuth();
+  const top=await req('/rest/v1/rpc/futoshiki_toppliste','POST',{},a.access_token);
+  const list=$('toplist');list.replaceChildren();
+  if(!top.length)list.textContent='Ingen poeng registrert ennå.';
+  else{
+   const table=document.createElement('table');
+   top.forEach(p=>{
+    const tr=document.createElement('tr');
+    [p.plassering+'.',p.nicknavn,Number(p.poeng).toLocaleString('nb-NO')+' ⭐'].forEach(v=>{
+     const td=document.createElement('td');td.textContent=v;tr.append(td);
+    });table.append(tr)
+   });list.append(table);
+  }
+  const mine=await req('/rest/v1/rpc/futoshiki_mine_poeng','POST',{},a.access_token);
+  $('mine').textContent=Number(mine||0).toLocaleString('nb-NO');
+  if(!$('scoreStatus').dataset.claim)$('scoreStatus').textContent='Topplisten er oppdatert.';
+ }catch(e){$('toplist').textContent='Kunne ikke hente Topp 5: '+e.message}
+}
+async function registerPoints(niva,hint){
+ pending={niva,hint};
+ if(scoreBusy)return;scoreBusy=true;
+ try{
+  const a=await getAuth();
+  const rows=await req('/rest/v1/spillere?id=eq.'+encodeURIComponent(userId(a))+'&select=nicknavn','GET',null,a.access_token);
+  if(!rows?.length)throw Error('Nicknavn må registreres før poeng kan lagres.');
+  const award=await req('/rest/v1/rpc/futoshiki_registrer_fullfort','POST',{p_niva:niva,p_hint:hint},a.access_token);
+  $('scoreStatus').textContent=Number(award)>0?'🏆 '+award+' poeng lagret!':'Dagens poeng for dette nivået er allerede registrert.';
+  $('scoreStatus').dataset.claim='yes';
+  $('retry').style.display='none';pending=null;
+  await loadScores();
+ }catch(e){$('scoreStatus').textContent='Poeng ikke lagret: '+e.message;$('retry').style.display='block'}
+ finally{scoreBusy=false}
+}
+$('retry').onclick=()=>{if(pending)registerPoints(pending.niva,pending.hint)};
+$('refresh').onclick=loadScores;
+function initScores(){loadNick();loadScores();if(done){$('scoreStatus').textContent='Oppgaven er løst. Fullfør en ny oppgave for å registrere poeng.'}}
+
+if(!load())create();else render();initScores();})();
+</script></body></html>
