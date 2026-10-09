@@ -1,0 +1,104 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KenKen – Tallmesteren | Spillglede</title><style>
+:root{font-family:system-ui,Arial,sans-serif;color:#f4f8ff;background:#08172e}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 12% 0,#3455a2 0,transparent 43%),radial-gradient(ellipse at 92% 20%,#58358d 0,transparent 43%),#08172e}main{max-width:890px;margin:auto;padding:18px}h1{text-align:center;font-size:clamp(28px,6vw,44px);margin:12px 0 3px;text-shadow:0 0 20px #65d6ff}header p{text-align:center;color:#c8dcff}.back{display:inline-block;color:#12264a;background:#a8eaff;padding:11px 17px;border-radius:14px;text-decoration:none;font-weight:800}.panel{background:#13284ceF;border:1px solid #74c9ff80;border-radius:22px;padding:18px;margin:15px 0;box-shadow:0 12px 35px #0006}.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px}select,button{font:inherit;border:0;border-radius:12px;padding:11px 14px;font-weight:800;cursor:pointer}select{background:white;color:#193257}button{background:linear-gradient(#d5f6ff,#78d9f9);color:#18365c;box-shadow:0 3px 0 #33718c}button:disabled{opacity:.4;cursor:not-allowed}.yellow{background:linear-gradient(#ffefae,#f7c862);box-shadow:0 3px 0 #8b6b2e}.green{background:linear-gradient(#b2ffd6,#4dd4a4);box-shadow:0 3px 0 #20835d}.note{text-align:center;color:#d8eaff;line-height:1.55}.stats{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:14px auto}.stat{border:1px solid #8acfff77;border-radius:13px;padding:9px 14px;background:#0b1e3e}.board{--n:4;display:grid;grid-template-columns:repeat(var(--n),1fr);width:min(100%,560px);margin:20px auto 15px;border:4px solid #0a1c39;background:#0a1c39;box-shadow:0 12px 28px #0008}.cell{position:relative;aspect-ratio:1;min-width:0;border:1px solid #6d93ba;background:#eaf5ff;color:#193453;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:clamp(18px,4.8vw,34px);cursor:pointer;user-select:none}.cell.selected{background:#b8f6ec}.cell.fixed{background:#c9e3ff}.cell .clue{position:absolute;left:4px;top:2px;font-size:clamp(9px,2.2vw,14px);color:#24497d;font-weight:900}.cell .val{margin-top:7px}.digits{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}.digits button{min-width:48px;font-size:20px}.status{font-size:17px;text-align:center;min-height:28px;color:#ffe18e;font-weight:750}.legend{background:#0b2040;padding:13px;border-radius:15px;color:#dceeff;line-height:1.6}details summary{cursor:pointer;font-weight:800}.small{font-size:13px;color:#b9d6ff}.win{color:#8bffd5!important}.cage0{background:#eff7ff}.cage1{background:#fff0d6}.cage2{background:#e5faec}.cage3{background:#f5e8ff}.cage4{background:#ffe9ef}.cage5{background:#e1f3ff}@media(max-width:470px){main{padding:9px}.panel{padding:11px}.board{margin:14px auto}.digits button{min-width:40px;padding:9px}.cell .clue{left:2px;top:1px}}
+#toplist table{width:100%;border-collapse:collapse}#toplist td{padding:9px;border-bottom:1px solid #ffffff30}#toplist td:last-child{text-align:right}#nickDisplay{color:#ffe29c}</style></head><body><main><a class="back" href="diverse-spill.html">← Tilbake til Diverse spill</a><header><h1>🧠 KenKen – Tallmesteren</h1><p>Regn, tenk og løs tallrutene! • Spillbar test</p></header><section class="panel"><h2 style="text-align:center">🏆 Nicknavn og Topp 5</h2><div class="bar"><b>👤 Nicknavn:</b><strong id="nickDisplay">Henter …</strong><input id="nickInput" maxlength="20" placeholder="Velg nicknavn" style="display:none;padding:10px;border-radius:10px"><button id="nickSave" style="display:none">Lagre</button><button id="refresh">🔄 Oppdater Topp 5</button></div><p class="note">⭐ Mine poeng: <b id="mine">–</b></p><p id="scoreStatus" class="note" aria-live="polite">Henter poeng …</p><button id="retry" style="display:none">💾 Prøv å lagre poeng igjen</button><details open><summary>🏆 Topp 5 – KenKen</summary><div id="toplist">Laster …</div></details></section><section class="panel"><div class="bar"><label for="level"><b>Nivå:</b></label><select id="level"><option value="0">1 · Lett (3 × 3)</option><option value="1">2 · Middels (4 × 4)</option><option value="2">3 · Vanskelig (5 × 5)</option><option value="3">4 · Ekspert (6 × 6)</option><option value="4">5 · Super ekspert (6 × 6)</option></select><button id="new">🔄 Ny oppgave</button></div><div class="stats"><div class="stat">💡 Hint igjen: <b id="left">3</b></div><div class="stat">⭐ Testpoeng: <b id="points">100</b></div><div class="stat">🧩 Utfylt: <b id="filled">0/9</b></div></div><div id="board" class="board" aria-label="KenKen-brett"></div><div class="digits" id="digits"></div><div class="bar" style="margin-top:15px"><button id="erase">⌫ Slett rute</button><button id="hint" class="yellow">💡 Hint</button><button id="check" class="green">✓ Sjekk svar</button></div><p id="status" class="status" aria-live="polite">Velg en rute og trykk på et tall.</p><p class="note small">Maks 3 hint per oppgave. 0 hint = 100 % poeng, 1 = 75 %, 2 = 50 %, 3 = 25 %.</p></section><section class="panel"><details open><summary>📖 Slik spiller du KenKen</summary><div class="legend"><p>Fyll inn tallene fra <b>1 til brettets størrelse</b>. Hver rad og kolonne skal ha hvert tall <b>én gang</b>.</p><p>Rutene er delt inn i fargede grupper. Det lille regnestykket øverst i hver gruppe forteller hva tallene i gruppen skal gi:</p><p><b>6+</b> betyr at tallene skal summere til 6. <b>6×</b> betyr at de skal ganges til 6. <b>2−</b> betyr differansen 2. <b>2÷</b> betyr at største tall delt på minste er 2.</p><p>En gruppe med bare ett tall, for eksempel <b>3</b>, betyr at ruten skal være 3. Samme tall kan forekomme i én gruppe dersom de ligger i ulike rader og kolonner.</p><p>💡 Hint fyller inn én riktig rute. Sjekk svar sier om løsningen er riktig, men viser ikke hvor eventuelle feil ligger.</p></div></details></section><section class="panel"><p class="note">🎮 Dette er en <b>testversjon</b>. Nicknavn og Topp 5 hentes fra Spillglede. Poeng kan registreres én gang per nivå per dag. Fremdriften lagres på denne enheten.</p></section></main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id),KEY='spillglede_kenken_test_v1';const sizes=[3,4,5,6,6],base=[100,200,400,400,400];let level=0,n=3,solution=[],values=[],cages=[],hints=0,done=false,selected=0;const rand=m=>Math.floor(Math.random()*m);function shuffle(a){for(let i=a.length-1;i>0;i--){let j=rand(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}function save(){try{localStorage.setItem(KEY,JSON.stringify({level,n,solution,values,cages,hints,done,selected}))}catch{}}function load(){try{const a=JSON.parse(localStorage.getItem(KEY)||'null');if(!a||!sizes.includes(a.n)||a.n!==sizes[a.level]||a.values.length!==a.n*a.n||a.solution.length!==a.n*a.n||!Array.isArray(a.cages))return false;({level,n,solution,values,cages,hints,done,selected}=a);hints=Math.min(3,Math.max(0,hints||0));$('level').value=level;return true}catch{return false}}
+function make(){level=+$('level').value;n=sizes[level];hints=0;done=false;selected=0;const row=shuffle(Array.from({length:n},(_,i)=>i)),col=shuffle(Array.from({length:n},(_,i)=>i)),symbols=shuffle(Array.from({length:n},(_,i)=>i+1));solution=Array.from({length:n*n},(_,idx)=>symbols[(row[Math.floor(idx/n)]+col[idx%n])%n]);values=Array(n*n).fill(0);cages=[];let free=new Set(Array.from({length:n*n},(_,i)=>i));const maxCage=level<2?2:level===2?3:4;while(free.size){const seed=[...free][rand(free.size)];free.delete(seed);const cells=[seed];const goal=1+rand(maxCage);while(cells.length<goal){let choices=[];for(const cell of cells){const r=Math.floor(cell/n),c=cell%n;for(const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]){const rr=r+dr,cc=c+dc,j=rr*n+cc;if(rr>=0&&rr<n&&cc>=0&&cc<n&&free.has(j)&&!choices.includes(j))choices.push(j)}}if(!choices.length)break;const next=choices[rand(choices.length)];cells.push(next);free.delete(next)}let op,target;const nums=cells.map(i=>solution[i]);if(cells.length===1){op='';target=nums[0]}else if(cells.length===2){let ops=['+','×','−'];if(Math.max(...nums)%Math.min(...nums)===0)ops.push('÷');op=ops[rand(ops.length)];target=op==='+'?nums[0]+nums[1]:op==='×'?nums[0]*nums[1]:op==='−'?Math.abs(nums[0]-nums[1]):Math.max(...nums)/Math.min(...nums)}else{op=rand(2)?'+':'×';target=op==='+'?nums.reduce((a,b)=>a+b,0):nums.reduce((a,b)=>a*b,1)}cages.push({cells,op,target})}save();render();$('status').textContent='Ny oppgave! Velg en rute og fyll inn tall.'}
+function cageValid(c){const a=c.cells.map(i=>values[i]);if(a.some(x=>!x))return false;if(c.op==='+')return a.reduce((x,y)=>x+y,0)===c.target;if(c.op==='×')return a.reduce((x,y)=>x*y,1)===c.target;if(c.op==='−')return Math.abs(a[0]-a[1])===c.target;if(c.op==='÷')return Math.max(...a)/Math.min(...a)===c.target;return a[0]===c.target}
+function valid(){for(let r=0;r<n;r++){let row=new Set, col=new Set;for(let c=0;c<n;c++){const a=values[r*n+c],b=values[c*n+r];if(!a||!b||row.has(a)||col.has(b))return false;row.add(a);col.add(b)}}return cages.every(cageValid)}
+function render(){const board=$('board');board.replaceChildren();board.style.setProperty('--n',n);const cageOf=Array(n*n).fill(-1);cages.forEach((c,k)=>c.cells.forEach(i=>cageOf[i]=k));for(let i=0;i<n*n;i++){const k=cageOf[i],c=cages[k],r=Math.floor(i/n),col=i%n;const div=document.createElement('div');div.className='cell cage'+(k%6)+(selected===i?' selected':'');div.setAttribute('role','button');div.setAttribute('tabindex','0');div.setAttribute('aria-label',`Rad ${r+1}, kolonne ${col+1}, ${values[i]||'tom'}`);const same=(dr,dc)=>{const rr=r+dr,cc=col+dc;return rr>=0&&rr<n&&cc>=0&&cc<n&&cageOf[rr*n+cc]===k};div.style.borderTop=same(-1,0)?'1px solid #8ba3b6':'3px solid #254b80';div.style.borderLeft=same(0,-1)?'1px solid #8ba3b6':'3px solid #254b80';div.style.borderRight=same(0,1)?'1px solid #8ba3b6':'3px solid #254b80';div.style.borderBottom=same(1,0)?'1px solid #8ba3b6':'3px solid #254b80';if(i===Math.min(...c.cells)){const label=document.createElement('span');label.className='clue';label.textContent=c.target+(c.op==='×'?'×':c.op==='÷'?'÷':c.op);div.append(label)}const num=document.createElement('span');num.className='val';num.textContent=values[i]||'';div.append(num);div.onclick=()=>{selected=i;save();render()};div.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selected=i;save();render()}};board.append(div)}const digits=$('digits');digits.replaceChildren();for(let v=1;v<=n;v++){const b=document.createElement('button');b.textContent=v;b.disabled=done;b.onclick=()=>put(v);digits.append(b)}$('left').textContent=3-hints;$('points').textContent=base[level]*(4-hints)/4;$('filled').textContent=values.filter(Boolean).length+'/'+(n*n);$('hint').disabled=done||hints>=3;$('erase').disabled=done;$('check').disabled=done;$('level').value=level}
+function put(v){if(done)return;values[selected]=v;save();render()}function check(){if(valid()){done=true;save();render();registerPoints(level+1,hints);$('status').classList.add('win');$('status').textContent='🎉 Gratulerer! Du løste nivå '+(level+1)+' og fikk '+base[level]*(4-hints)/4+' poeng!'}else{$('status').classList.remove('win');$('status').textContent=values.includes(0)?'Fyll ut alle rutene før du sjekker.':'Ikke helt riktig ennå. Sjekk rader, kolonner og regnestykkene!'}}function hint(){if(done||hints>=3)return;const wrong=values.map((v,i)=>v!==solution[i]?i:-1).filter(i=>i>=0);if(!wrong.length){$('status').textContent='Alle rutene stemmer allerede. Trykk Sjekk svar!';return}selected=wrong[rand(wrong.length)];values[selected]=solution[selected];hints++;save();render();$('status').textContent='💡 Én riktig rute er fylt inn. Du har '+(3-hints)+' hint igjen.'}
+$('level').onchange=make;$('new').onclick=make;$('hint').onclick=hint;$('check').onclick=check;$('erase').onclick=()=>put(0);document.addEventListener('keydown',e=>{if(/^[1-6]$/.test(e.key)&&+e.key<=n&&e.target.tagName!=='SELECT')put(+e.key);if((e.key==='Backspace'||e.key==='Delete')&&e.target.tagName!=='SELECT')put(0)});if(!load())make();else{render();$('status').textContent=done?'🎉 Denne oppgaven er løst. Velg Ny oppgave for å spille igjen.':'Fremdriften din er hentet tilbake.'}
+const SB='https://evpqlrqxofooowyvwdcn.supabase.co',APIKEY='sb_publishable_C2rRF4LjsHVKHE4uj3ByCA_V5XxXZbs',AUTHKEY='spillglede_auth_v1';
+let scoreBusy=false,pending=null;
+function getStored(){try{return JSON.parse(localStorage.getItem(AUTHKEY)||'null')}catch{return null}}
+async function req(path,method='GET',payload=null,token=null){
+ const headers={'apikey':APIKEY,'Content-Type':'application/json'};
+ if(token)headers.Authorization='Bearer '+token;
+ const response=await fetch(SB+path,{method,headers,body:payload===null?undefined:JSON.stringify(payload)});
+ const raw=await response.text();let data;
+ try{data=raw?JSON.parse(raw):null}catch{data={message:raw}}
+ if(!response.ok)throw Error(data?.message||data?.msg||data?.error_description||data?.error||'HTTP '+response.status);
+ return data;
+}
+async function getAuth(){
+ let a=getStored();
+ if(a?.access_token&&a.expires_at>Date.now()/1000+90)return a;
+ if(a?.refresh_token){
+  try{const t=await req('/auth/v1/token?grant_type=refresh_token','POST',{refresh_token:a.refresh_token});
+   a={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};
+   localStorage.setItem(AUTHKEY,JSON.stringify(a));return a
+  }catch(e){console.warn('Kunne ikke fornye sesjonen',e)}
+ }
+ const t=await req('/auth/v1/signup','POST',{});
+ if(!t?.access_token)throw Error('Kunne ikke starte anonym Spillglede-innlogging');
+ a={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};
+ localStorage.setItem(AUTHKEY,JSON.stringify(a));return a;
+}
+function userId(a){return a.user?.id||JSON.parse(atob(a.access_token.split('.')[1])).sub}
+async function loadNick(){
+ try{
+  const a=await getAuth();
+  const rows=await req('/rest/v1/spillere?id=eq.'+encodeURIComponent(userId(a))+'&select=nicknavn','GET',null,a.access_token);
+  if(rows?.length){
+   $('nickDisplay').textContent=rows[0].nicknavn;
+   $('nickInput').style.display='none';$('nickSave').style.display='none';
+  }else{
+   $('nickDisplay').textContent='Ikke registrert';
+   $('nickInput').style.display='inline-block';$('nickSave').style.display='inline-block';
+   $('scoreStatus').textContent='Bruk samme nettleser som de andre spillene, eller registrer et nicknavn.';
+  }
+ }catch(e){$('nickDisplay').textContent='Kunne ikke hente';$('scoreStatus').textContent=e.message}
+}
+$('nickSave').onclick=async()=>{
+ const nick=$('nickInput').value.trim();
+ if(!/^[\p{L}\p{N}_ -]{3,20}$/u.test(nick)){$('scoreStatus').textContent='Nicknavn må ha 3–20 tegn.';return}
+ $('nickSave').disabled=true;
+ try{
+  const a=await getAuth();
+  await req('/rest/v1/spillere','POST',{id:userId(a),nicknavn:nick},a.access_token);
+  await loadNick();await loadScores();
+  if(pending)await registerPoints(pending.niva,pending.hint);
+ }catch(e){$('scoreStatus').textContent='Kunne ikke lagre nicknavn: '+e.message}
+ finally{$('nickSave').disabled=false}
+};
+async function loadScores(){
+ try{
+  const a=await getAuth();
+  const top=await req('/rest/v1/rpc/kenken_toppliste','POST',{},a.access_token);
+  const list=$('toplist');list.replaceChildren();
+  if(!top.length)list.textContent='Ingen poeng registrert ennå.';
+  else{
+   const table=document.createElement('table');
+   top.forEach(p=>{
+    const tr=document.createElement('tr');
+    [p.plassering+'.',p.nicknavn,Number(p.poeng).toLocaleString('nb-NO')+' ⭐'].forEach(v=>{
+     const td=document.createElement('td');td.textContent=v;tr.append(td);
+    });table.append(tr)
+   });list.append(table);
+  }
+  const mine=await req('/rest/v1/rpc/kenken_mine_poeng','POST',{},a.access_token);
+  $('mine').textContent=Number(mine||0).toLocaleString('nb-NO');
+  if(!$('scoreStatus').dataset.claim)$('scoreStatus').textContent='Topplisten er oppdatert.';
+ }catch(e){$('toplist').textContent='Kunne ikke hente Topp 5: '+e.message}
+}
+async function registerPoints(niva,hint){
+ pending={niva,hint};
+ if(scoreBusy)return;scoreBusy=true;
+ try{
+  const a=await getAuth();
+  const rows=await req('/rest/v1/spillere?id=eq.'+encodeURIComponent(userId(a))+'&select=nicknavn','GET',null,a.access_token);
+  if(!rows?.length)throw Error('Nicknavn må registreres før poeng kan lagres.');
+  const award=await req('/rest/v1/rpc/kenken_registrer_fullfort','POST',{p_niva:niva,p_hint:hint},a.access_token);
+  $('scoreStatus').textContent=Number(award)>0?'🏆 '+award+' poeng lagret!':'Dagens poeng for dette nivået er allerede registrert.';
+  $('scoreStatus').dataset.claim='yes';
+  $('retry').style.display='none';pending=null;
+  await loadScores();
+ }catch(e){$('scoreStatus').textContent='Poeng ikke lagret: '+e.message;$('retry').style.display='block'}
+ finally{scoreBusy=false}
+}
+$('retry').onclick=()=>{if(pending)registerPoints(pending.niva,pending.hint)};
+$('refresh').onclick=loadScores;
+function initScores(){loadNick();loadScores();}
+
+
+initScores();})();</script></body></html>
