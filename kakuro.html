@@ -7,8 +7,94 @@
 .leader details{margin-top:15px}.leader summary{cursor:pointer;padding:7px}.leader table{width:100%;border-collapse:collapse}
 .leader td{padding:8px;border-bottom:1px solid #ffffff30}.leader td:last-child{text-align:right}
 #scoreStatus,#nickStatus{font-size:14px;color:#bdefff}#retryScore{background:#6be3b4}
+
+/* Spillglede: friskere Kakuro-design */
+body{background:radial-gradient(ellipse at 12% 15%,#294f9b 0%,transparent 40%),radial-gradient(ellipse at 90% 65%,#167c9b 0%,transparent 40%),linear-gradient(145deg,#07122d,#132d60 65%,#071c36)}
+.wrap{max-width:1020px}h1{letter-spacing:1px;text-shadow:0 5px 22px #50dfff80}.sub{font-size:17px}.leader{background:linear-gradient(135deg,#12265d,#063f6a 70%,#102858);border:2px solid #60d9ff;border-radius:24px;box-shadow:0 15px 35px #0008,0 0 22px #47c9ff33}.panel{background:linear-gradient(150deg,#ffffff,#e7f3ff);border:3px solid #b5e9ff;box-shadow:0 20px 50px #0008,0 0 20px #58d5ff44}.tools select{border:2px solid #a1c9ff}.cell.entry{box-shadow:inset 0 0 8px #5eaaff22}.actions button,#digits button{transition:transform .15s,filter .15s}.actions button:hover,#digits button:hover{transform:translateY(-2px)}
 </style></head><body><div class="wrap"><a class="back" href="diverse-spill.html">← Diverse spill</a><h1>🔢 Kakuro</h1><p class="sub">Tallkryss • Logikk og hoderegning</p><section class="leader"><h2>🏆 Mine poeng og Topp 5</h2><div class="nickrow"><label for="nickInput">👤 Nicknavn:</label><input id="nickInput" maxlength="20" placeholder="Ditt nicknavn"><button id="nickSave">Lagre nicknavn</button><span id="nickStatus"></span></div><p><b>⭐ Mine poeng: <span id="myPoints">–</span></b></p><button id="refreshScores">🔄 Oppdater topplisten</button><p id="scoreStatus" aria-live="polite">Kobler til poengsystemet …</p><button id="retryScore" hidden>💾 Prøv å lagre poeng igjen</button><details open><summary><b>🏆 Topp 5 – Kakuro</b></summary><div id="scoreList">Laster …</div></details></section><section class="panel"><div class="tools"><label for="level"><b>Nivå:</b></label><select id="level"><option value="0">1 · Lett</option><option value="1">2 · Middels</option><option value="2">3 · Vanskelig</option><option value="3">4 · Ekspert</option><option value="4">5 · Super ekspert</option></select><button id="new">🔄 Ny oppgave</button></div><div id="meta" class="meta"></div><div id="board" class="board" aria-label="Kakuro-brett"></div><div class="digits" id="digits"></div><div class="actions"><button id="erase">⌫ Slett tall</button><button class="hint" id="hint">💡 Hint</button><button class="check" id="check">✓ Sjekk løsning</button></div><div class="status" id="status" aria-live="polite">Velg en hvit rute og trykk på et tall.</div><details class="guide"><summary>📖 Slik spiller du</summary><p>Fyll de hvite rutene med tall fra 1 til 9. Tallet <b>øverst til høyre</b> i en mørk rute er summen <b>nedover</b>. Tallet <b>nederst til venstre</b> er summen <b>mot høyre</b>. Samme tall kan ikke brukes to ganger i én rekke. Trykk på en hvit rute og velg tall fra knappene, eller bruk tastaturet. <b>Hint</b> fyller ut én rute. Du vinner når alle rutene er riktig utfylt.</p></details><p class="small">Spillglede • Poeng gis én gang per nivå per dag • Fremdriften lagres på denne enheten.</p></section></div><script>
 (()=>{'use strict';const $=id=>document.getElementById(id),level=$('level'),board=$('board'),status=$('status'),meta=$('meta');const specs=[{n:5,blacks:[[0,0],[0,1],[0,2],[0,3],[0,4],[1,0],[2,0],[3,0],[4,0]],extra:[]},{n:6,blacks:[],extra:[[1,3],[3,1],[4,4]]},{n:7,blacks:[],extra:[[1,4],[2,2],[3,5],[4,3],[5,1]]},{n:8,blacks:[],extra:[[1,4],[2,2],[2,6],[3,5],[4,3],[5,1],[5,6],[6,4]]},{n:9,blacks:[],extra:[[1,4],[1,7],[2,2],[2,6],[3,5],[4,3],[4,7],[5,1],[5,6],[6,4],[7,2],[7,6]]}];let grid=[],sol=[],sel=null,lv=0,done=false;const key='spillglede_kakuro_test_v2';function rnd(a){return a[Math.floor(Math.random()*a.length)]}function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}function generate(l){const spec=specs[l],n=spec.n;let blocked=Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>r===0||c===0));for(const [r,c]of spec.extra)blocked[r][c]=true; // remove singleton runs to ensure legitimate clues
 let changed=true;while(changed){changed=false;for(let r=1;r<n;r++)for(let c=1;c<n;c++)if(!blocked[r][c]){let h=0,v=0;for(let x=c; x<n&&!blocked[r][x];x++)h++;for(let x=c-1;x>=0&&!blocked[r][x];x--)h++;for(let y=r;y<n&&!blocked[y][c];y++)v++;for(let y=r-1;y>=0&&!blocked[y][c];y--)v++;if(h<2||v<2){blocked[r][c]=true;changed=true}}} // build valid solution using a Latin square, each row/column unique
-const nums=shuffle([1,2,3,4,5,6,7,8,9]);const ro=shuffle([...Array(n-1).keys()]),co=shuffle([...Array(n-1).keys()]);const values=Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>blocked[r][c]?0:nums[(ro[r-1]+co[c-1])%9]));const cells=Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>({type:blocked[r][c]?'block':'entry',value:0,down:0,right:0})));for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(blocked[r][c]){let sum=0,count=0;for(let x=c+1;x<n&&!blocked[r][x];x++){sum+=values[r][x];count++}if(count>=2)cells[r][c].right=sum;sum=0;count=0;for(let y=r+1;y<n&&!blocked[y][c];y++){sum+=values[y][c];count++}if(count>=2)cells[r][c].down=sum;if(cells[r][c].right||cells[r][c].down)cells[r][c].type='clue'}return {cells,values}}function save(){localStorage.setItem(key,JSON.stringify({lv,grid,sol,done}))}function load(){try{const v=JSON.parse(localStorage.getItem(key));if(v&&v.grid&&v.sol&&v.grid.length===specs[v.lv].n){lv=v.lv;grid=v.grid;sol=v.sol;done=!!v.done;level.value=lv;return true}}catch{}return false}function fresh(){lv=+level.value;const x=generate(lv);grid=x.cells;sol=x.values;sel=null;done=false;status.textContent='Velg en hvit rute og fyll inn tallene.';save();render()}function render(){const n=grid.length;const size=Math.min(52,Math.floor((Math.min(window.innerWidth-34,650)-(n-1)*3)/n));board.style.setProperty('--size',Math.max(30,size)+'px');board.style.gridTemplateColumns=`repeat(${n},var(--size))`;board.replaceChildren();let filled=0,total=0;for(let r=0;r<n;r++)for(let c=0;c<n;c++){const o=grid[r][c],d=document.createElement('div');d.className='cell '+(o.type==='entry'?'entry':o.type);if(o.type==='entry'){total++;if(o.value)filled++;d.textContent=o.value||'';if(sel&&sel[0]===r&&sel[1]===c)d.classList.add('selected');d.tabIndex=0;d.setAttribute('role','button');d.setAttribute('aria-label',`Rad ${r+1}, kolonne ${c+1}, ${o.value||'tom'}`);d.onclick=()=>{sel=[r,c];render()};d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sel=[r,c];render()}}}else if(o.type==='clue'){if(o.down){const x=document.createElement('span');x.className='down';x.textContent=o.down;d.append(x)}if(o.right){const x=document.createElement('span');x.className='right';x.textContent=o.right;d.append(x)}}board.append(d)}meta.textContent=`${['Lett','Middels','Vanskelig','Ekspert','Super ekspert'][lv]} · ${filled} av ${total} ruter fylt ut`;if(done){status.textContent='🎉 Gratulerer! Du løste Kakuro!';status.classList.add('success')}else status.classList.remove('success')}function setNum(v){if(done||!sel)return;const [r,c]=sel;grid[r][c].value=v;save();render();if(allValid(true)){finish()}}function runs(){const arr=[];for(let r=0;r<grid.length;r++)for(let c=0;c<grid.length;c++){const o=grid[r][c];if(o.type!=='clue')continue;for(const [direction,target]of [['right',o.right],['down',o.down]])if(target){const list=[];let rr=r+(direction==='down'),cc=c+(direction==='right');while(rr<grid.length&&cc<grid.length&&grid[rr][cc].type==='entry'){list.push(grid[rr][cc]);rr+=direction==='down';cc+=direction==='right'}arr.push({target,list})}}return arr}function allValid(complete){for(const {target,list}of runs()){const vals=list.map(x=>x.value).filter(Boolean);if(new Set(vals).size!==vals.length)return false;if(vals.reduce((a,b)=>a+b,0)>target)return false;if(vals.length===list.length&&vals.reduce((a,b)=>a+b,0)!==target)return false;if(complete&&vals.length!==list.length)return false}return true}function finish(){if(done)return;done=true;save();render();registrerFullfort(lv+1)}function check(){const all=grid.flat().filter(x=>x.type==='entry');if(all.some(x=>!x.value)){status.textContent=`Det mangler ${all.filter(x=>!x.value).length} tall. Fortsett!`;return}if(allValid(true)){finish()}else status.textContent='Noen summer eller gjentatte tall er feil. Prøv igjen!'}function hint(){if(done)return;const opts=[];for(let r=0;r<grid.length;r++)for(let c=0;c<grid.length;c++)if(grid[r][c].type==='entry'&&grid[r][c].value!==sol[r][c])opts.push([r,c]);if(!opts.length){check();return}const [r,c]=rnd(opts);grid[r][c].value=sol[r][c];sel=[r,c];save();render();status.textContent=`💡 Hint: Rute ${r+1}, ${c+1} skal være ${sol[r][c]}.`;if(allValid(true)){finish()}}$('digits').innerHTML=Array.from({length:9},(_,i)=>`<button data-n="${i+1}">${i+1}</button>`).join('');$('digits').onclick=e=>{const b=e.target.closest('button[data-n]');if(b)setNum(+b.dataset.n)};$('erase').onclick=()=>setNum(0);$('hint').onclick=hint;$('check').onclick=check;$('new').onclick=fresh;level.onchange=fresh;document.addEventListener('keydown',e=>{if(/^[1-9]$/.test(e.key))setNum(+e.key);else if(e.key==='Backspace'||e.key==='Delete')setNum(0)});window.addEventListener('resize',render);if(!load())fresh();else render();loadNickname();oppdaterToppliste();loadNickname();oppdaterToppliste();if(done)registrerFullfort(lv+1);})();
-</script></body></html>
+const nums=shuffle([1,2,3,4,5,6,7,8,9]);const ro=shuffle([...Array(n-1).keys()]),co=shuffle([...Array(n-1).keys()]);const values=Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>blocked[r][c]?0:nums[(ro[r-1]+co[c-1])%9]));const cells=Array.from({length:n},(_,r)=>Array.from({length:n},(_,c)=>({type:blocked[r][c]?'block':'entry',value:0,down:0,right:0})));for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(blocked[r][c]){let sum=0,count=0;for(let x=c+1;x<n&&!blocked[r][x];x++){sum+=values[r][x];count++}if(count>=2)cells[r][c].right=sum;sum=0;count=0;for(let y=r+1;y<n&&!blocked[y][c];y++){sum+=values[y][c];count++}if(count>=2)cells[r][c].down=sum;if(cells[r][c].right||cells[r][c].down)cells[r][c].type='clue'}return {cells,values}}function save(){localStorage.setItem(key,JSON.stringify({lv,grid,sol,done}))}function load(){try{const v=JSON.parse(localStorage.getItem(key));if(v&&v.grid&&v.sol&&v.grid.length===specs[v.lv].n){lv=v.lv;grid=v.grid;sol=v.sol;done=!!v.done;level.value=lv;return true}}catch{}return false}function fresh(){lv=+level.value;const x=generate(lv);grid=x.cells;sol=x.values;sel=null;done=false;status.textContent='Velg en hvit rute og fyll inn tallene.';save();render()}function render(){const n=grid.length;const size=Math.min(52,Math.floor((Math.min(window.innerWidth-34,650)-(n-1)*3)/n));board.style.setProperty('--size',Math.max(30,size)+'px');board.style.gridTemplateColumns=`repeat(${n},var(--size))`;board.replaceChildren();let filled=0,total=0;for(let r=0;r<n;r++)for(let c=0;c<n;c++){const o=grid[r][c],d=document.createElement('div');d.className='cell '+(o.type==='entry'?'entry':o.type);if(o.type==='entry'){total++;if(o.value)filled++;d.textContent=o.value||'';if(sel&&sel[0]===r&&sel[1]===c)d.classList.add('selected');d.tabIndex=0;d.setAttribute('role','button');d.setAttribute('aria-label',`Rad ${r+1}, kolonne ${c+1}, ${o.value||'tom'}`);d.onclick=()=>{sel=[r,c];render()};d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sel=[r,c];render()}}}else if(o.type==='clue'){if(o.down){const x=document.createElement('span');x.className='down';x.textContent=o.down;d.append(x)}if(o.right){const x=document.createElement('span');x.className='right';x.textContent=o.right;d.append(x)}}board.append(d)}meta.textContent=`${['Lett','Middels','Vanskelig','Ekspert','Super ekspert'][lv]} · ${filled} av ${total} ruter fylt ut`;if(done){status.textContent='🎉 Gratulerer! Du løste Kakuro!';status.classList.add('success')}else status.classList.remove('success')}function setNum(v){if(done||!sel)return;const [r,c]=sel;grid[r][c].value=v;save();render();if(allValid(true)){finish()}}function runs(){const arr=[];for(let r=0;r<grid.length;r++)for(let c=0;c<grid.length;c++){const o=grid[r][c];if(o.type!=='clue')continue;for(const [direction,target]of [['right',o.right],['down',o.down]])if(target){const list=[];let rr=r+(direction==='down'),cc=c+(direction==='right');while(rr<grid.length&&cc<grid.length&&grid[rr][cc].type==='entry'){list.push(grid[rr][cc]);rr+=direction==='down';cc+=direction==='right'}arr.push({target,list})}}return arr}function allValid(complete){for(const {target,list}of runs()){const vals=list.map(x=>x.value).filter(Boolean);if(new Set(vals).size!==vals.length)return false;if(vals.reduce((a,b)=>a+b,0)>target)return false;if(vals.length===list.length&&vals.reduce((a,b)=>a+b,0)!==target)return false;if(complete&&vals.length!==list.length)return false}return true}function finish(){if(done)return;done=true;save();render();registrerFullfort(lv+1)}function check(){const all=grid.flat().filter(x=>x.type==='entry');if(all.some(x=>!x.value)){status.textContent=`Det mangler ${all.filter(x=>!x.value).length} tall. Fortsett!`;return}if(allValid(true)){finish()}else status.textContent='Noen summer eller gjentatte tall er feil. Prøv igjen!'}function hint(){if(done)return;const opts=[];for(let r=0;r<grid.length;r++)for(let c=0;c<grid.length;c++)if(grid[r][c].type==='entry'&&grid[r][c].value!==sol[r][c])opts.push([r,c]);if(!opts.length){check();return}const [r,c]=rnd(opts);grid[r][c].value=sol[r][c];sel=[r,c];save();render();status.textContent=`💡 Hint: Rute ${r+1}, ${c+1} skal være ${sol[r][c]}.`;if(allValid(true)){finish()}}$('digits').innerHTML=Array.from({length:9},(_,i)=>`<button data-n="${i+1}">${i+1}</button>`).join('');$('digits').onclick=e=>{const b=e.target.closest('button[data-n]');if(b)setNum(+b.dataset.n)};$('erase').onclick=()=>setNum(0);$('hint').onclick=hint;$('check').onclick=check;$('new').onclick=fresh;level.onchange=fresh;document.addEventListener('keydown',e=>{if(/^[1-9]$/.test(e.key))setNum(+e.key);else if(e.key==='Backspace'||e.key==='Delete')setNum(0)});window.addEventListener('resize',render);if(!load())fresh();else render();
+const URL='https://evpqlrqxofooowyvwdcn.supabase.co',KEY='sb_publishable_C2rRF4LjsHVKHE4uj3ByCA_V5XxXZbs',AUTH='spillglede_auth_v1';
+let busy=false;
+function stored(){try{return JSON.parse(localStorage.getItem(AUTH)||'null')}catch{return null}}
+async function request(path,method='GET',body=null,token=null){
+ const headers={'apikey':KEY,'Content-Type':'application/json'};
+ if(token)headers.Authorization='Bearer '+token;
+ const res=await fetch(URL+path,{method,headers,body:body===null?undefined:JSON.stringify(body)});
+ const txt=await res.text();let data;try{data=JSON.parse(txt)}catch{data={message:txt}}
+ if(!res.ok)throw Error(data?.message||data?.msg||data?.error_description||data?.error||'HTTP '+res.status);
+ return data;
+}
+async function auth(){
+ let a=stored();
+ if(a?.access_token&&a.expires_at>Date.now()/1000+90)return a;
+ if(a?.refresh_token){
+  try{
+   const t=await request('/auth/v1/token?grant_type=refresh_token','POST',{refresh_token:a.refresh_token});
+   a={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};localStorage.setItem(AUTH,JSON.stringify(a));return a
+  }catch(e){console.warn('Fornying av innlogging mislyktes',e)}
+ }
+ const t=await request('/auth/v1/signup','POST',{});
+ if(!t.access_token)throw Error('Anonym innlogging kunne ikke startes');
+ a={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};localStorage.setItem(AUTH,JSON.stringify(a));return a;
+}
+function id(a){return a.user?.id||JSON.parse(atob(a.access_token.split('.')[1])).sub}
+async function loadNickname(){
+ try{
+  const a=await auth();
+  const rows=await request('/rest/v1/spillere?id=eq.'+encodeURIComponent(id(a))+'&select=nicknavn','GET',null,a.access_token);
+  if(rows.length){
+   $('nickInput').value=rows[0].nicknavn;
+   $('nickInput').disabled=true;$('nickSave').hidden=true;
+   $('nickStatus').textContent='✓ Spillglede-profilen er hentet';
+  }else $('nickStatus').textContent='Fant ingen profil for denne nettleseren. Bruk samme nettleser som de andre spillene.';
+ }catch(e){$('nickStatus').textContent='Kunne ikke hente profil: '+e.message}
+}
+$('nickSave').onclick=async()=>{
+ const nick=$('nickInput').value.trim();
+ if(!/^[\p{L}\p{N}_ -]{3,20}$/u.test(nick)){$('nickStatus').textContent='Bruk 3–20 tegn';return}
+ $('nickSave').disabled=true;
+ try{
+  const a=await auth();
+  await request('/rest/v1/spillere','POST',{id:id(a),nicknavn:nick},a.access_token);
+  await loadNickname();await scores();
+ }catch(e){$('nickStatus').textContent='Kunne ikke lagre: '+e.message}
+ finally{$('nickSave').disabled=false}
+};
+async function scores(){
+ try{
+  const a=await auth();
+  const data=await request('/rest/v1/rpc/kakuro_toppliste','POST',{},a.access_token);
+  const list=$('scoreList');list.replaceChildren();
+  if(!data.length)list.textContent='Ingen registrerte poeng ennå.';
+  else{
+   const table=document.createElement('table');
+   data.forEach(p=>{
+    const tr=document.createElement('tr');
+    [p.plassering+'.',p.nicknavn,Number(p.poeng).toLocaleString('nb-NO')+' ⭐'].forEach(v=>{const td=document.createElement('td');td.textContent=v;tr.append(td)});
+    table.append(tr)
+   });list.append(table)
+  }
+  const points=await request('/rest/v1/rpc/kakuro_mine_poeng','POST',{},a.access_token);
+  $('myPoints').textContent=Number(points||0).toLocaleString('nb-NO');
+  if(!$('scoreStatus').dataset.claim)$('scoreStatus').textContent='Topplisten er oppdatert.';
+ }catch(e){$('scoreList').textContent='Kunne ikke laste Topp 5: '+e.message;$('scoreStatus').textContent=e.message}
+}
+async function registrerFullfort(niva){
+ if(busy)return;busy=true;
+ try{
+  const a=await auth();
+  const rows=await request('/rest/v1/spillere?id=eq.'+encodeURIComponent(id(a))+'&select=nicknavn','GET',null,a.access_token);
+  if(!rows.length)throw Error('Nicknavn mangler på denne innloggingen');
+  const added=await request('/rest/v1/rpc/kakuro_registrer_fullfort','POST',{p_niva:niva},a.access_token);
+  $('scoreStatus').textContent=Number(added)>0?'🏆 '+added+' poeng registrert!':'Dagens poeng på dette nivået er allerede registrert.';
+  $('scoreStatus').dataset.claim='yes';$('retryScore').hidden=true;
+  await scores();
+ }catch(e){$('scoreStatus').textContent='Poeng ikke lagret: '+e.message;$('retryScore').hidden=false}
+ finally{busy=false}
+}
+$('refreshScores').onclick=scores;
+$('retryScore').onclick=()=>registrerFullfort(lv+1);
+loadNickname();scores();if(done)registrerFullfort(lv+1);
+})();</script></body></html>
