@@ -1,0 +1,107 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tallstien – Hidato | Spillglede</title><style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#213b29}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:15px;background:linear-gradient(180deg,#b8e9fa 0%,#e3f7df 38%,#9bcf89 100%)}main{max-width:920px;margin:auto}.back{display:inline-block;background:#fff8df;color:#315b38;text-decoration:none;padding:11px 18px;border:2px solid #80ad70;border-radius:20px;font-weight:800;box-shadow:0 4px 0 #6a9363}header{text-align:center;padding:10px 0}h1{font-size:clamp(30px,5vw,48px);margin:5px;color:#285a3c;text-shadow:0 2px #fff}.subtitle{margin:7px;color:#385a45;font-weight:650}.panel{border:3px solid #87b578;border-radius:27px;background:linear-gradient(#fffdf3f5,#f3ffe8f0);padding:18px;margin:15px 0;box-shadow:0 12px 30px #456c3a3b}.top,.actions{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px}.top label{font-weight:800}select,button{font:inherit}select{padding:11px;border:2px solid #8fb78c;border-radius:13px;background:white;color:#24492c;font-weight:750}button{cursor:pointer;border:0;border-radius:15px;padding:11px 15px;background:linear-gradient(#ffe7a1,#f5b84d);color:#3f3b25;font-weight:850;box-shadow:0 4px 0 #b88b43}button.secondary{background:linear-gradient(#e3fff2,#b2e7d2);box-shadow:0 4px 0 #79aa91}button:disabled{opacity:.43;cursor:not-allowed}.stats{text-align:center;margin:13px 0;color:#28523a;font-weight:800}.scene{position:relative;margin:12px auto;max-width:730px;min-height:410px;border:5px solid #8ab76f;border-radius:36px;overflow:hidden;background:radial-gradient(ellipse at 25% 20%,#bff3ad 0,transparent 43%),radial-gradient(ellipse at 80% 80%,#78b966 0,transparent 55%),linear-gradient(150deg,#d7f5bd,#95d18a 50%,#75bb83);box-shadow:inset 0 0 0 5px #ffffff55,0 8px 23px #355c3670}.scene:before{content:'🌲      🌼          🌳         🌻      🌲';position:absolute;top:8px;left:2%;right:2%;font-size:clamp(20px,4vw,35px);text-align:justify;opacity:.72;pointer-events:none}.scene:after{content:'🌷      🍄       🌿        🌸        🌲';position:absolute;bottom:8px;left:3%;right:3%;font-size:clamp(18px,4vw,30px);opacity:.8;pointer-events:none}.river{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.75}.board{position:relative;z-index:2;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));grid-template-rows:repeat(var(--n),minmax(0,1fr));gap:clamp(4px,1.4vw,12px);width:min(92%,570px);aspect-ratio:1;margin:32px auto;align-items:center;justify-items:center}.cell{width:100%;aspect-ratio:1;max-width:72px;max-height:72px;min-width:0;min-height:0;padding:0;border-radius:48% 52% 44% 56% / 54% 43% 57% 46%;border:3px solid #82765f;background:linear-gradient(145deg,#fdf5d8,#d9c6a3 67%,#b9a47e);color:#3c392c;box-shadow:inset 2px 3px 2px #fff8,0 5px 0 #847b62,0 8px 8px #23432666;font-size:clamp(13px,3vw,24px);font-weight:900;transform:translate(var(--dx),var(--dy)) rotate(var(--rot));transition:filter .15s}.cell.fixed{background:linear-gradient(145deg,#b8e5fc,#75b6d8 70%,#5590af);border-color:#477e9e;color:#163d58;box-shadow:inset 2px 3px 2px #fff8,0 5px 0 #477e9e,0 8px 8px #23432666}.cell.selected{outline:4px solid #ffbd30;outline-offset:3px;filter:brightness(1.07)}.cell.hinted{background:linear-gradient(#edffd7,#a8eaa0);border-color:#589955}.cell:disabled{opacity:1;cursor:default}.pad{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin:15px auto;max-width:720px}.pad button{min-width:41px;padding:9px 10px}.message{background:#e5f4d8;border:2px solid #a8ce91;color:#285338;border-radius:16px;text-align:center;font-weight:800;padding:12px;margin:14px 0;min-height:45px}.message.win{background:#c1f5c3}.note{text-align:center;line-height:1.55;color:#3a6546}.score{text-align:center;color:#8a5a16;font-weight:850}details{margin-top:15px}summary{cursor:pointer;font-weight:850}li{margin:8px 0}footer{text-align:center;color:#355f40;font-size:13px;padding:12px}.scene-label{position:absolute;z-index:3;top:10px;left:50%;transform:translateX(-50%);background:#fff6d6e8;border:2px solid #8fb47d;border-radius:20px;padding:5px 12px;font-size:13px;font-weight:800;white-space:nowrap}.decor{position:absolute;pointer-events:none;opacity:.8;font-size:clamp(21px,4vw,33px)}.decor.a{left:2%;top:42%}.decor.b{right:2%;top:35%}.decor.c{left:4%;bottom:20%}.decor.d{right:3%;bottom:15%}@media(max-width:550px){body{padding:8px}.panel{padding:10px}.scene{min-height:300px;border-width:3px}.board{width:94%;margin:35px auto 25px;gap:3px}.cell{border-width:2px;font-size:clamp(11px,3.2vw,18px)}.pad button{min-width:34px;padding:8px}.scene-label{font-size:11px}.decor{display:none}}
+.guide-top{margin:0 0 20px}.guide-top details{margin:0;border:2px solid #56a5a0;border-radius:18px;background:linear-gradient(135deg,#e3faff,#fff3c7);overflow:hidden;box-shadow:0 5px 12px #4a876a30}.guide-top summary{padding:15px 18px;color:#23545b;font-size:17px;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px}.guide-top summary::-webkit-details-marker{display:none}.guide-arrow{transition:transform .2s}.guide-top details[open] .guide-arrow{transform:rotate(180deg)}.guide-top ol{margin:0;padding:14px 25px 18px 43px;background:#ffffffba;line-height:1.6}.scene{border:8px solid #f6d077;outline:5px solid #77c5c7;background:radial-gradient(circle at 12% 30%,#ffe7a6 0,transparent 30%),radial-gradient(circle at 87% 15%,#d4baff 0,transparent 30%),radial-gradient(circle at 75% 80%,#8fe8dc 0,transparent 35%),linear-gradient(140deg,#d5f8aa,#90d9a1 52%,#83c7e7)!important;box-shadow:0 0 0 12px #f4bcd788,0 14px 32px #416f5088,inset 0 0 0 4px #fff9!important}.panel{background:linear-gradient(140deg,#fff9e8,#e8faff 45%,#f5eaff 100%)}@media(max-width:550px){.scene{border-width:5px;outline-width:3px;box-shadow:0 0 0 6px #f4bcd788,0 9px 18px #416f5088!important}.guide-top summary{font-size:15px;padding:13px}} .scorepanel{max-width:1000px;margin:12px auto 20px;padding:18px;border:3px solid #e7c66b;border-radius:24px;background:linear-gradient(135deg,#fff8d8,#e0fff3,#e5efff);box-shadow:0 12px 30px #42674b33}.scorepanel h2{text-align:center;margin:4px 0 12px;color:#2d6551}.scorebar{display:flex;align-items:center;flex-wrap:wrap;gap:10px}.scorebar input{padding:9px;border:2px solid #93c7a9;border-radius:10px;font-size:16px}.scorepanel button{padding:10px;border-radius:12px;background:#d7f1e5;color:#174a39;border:1px solid #80b6a0;cursor:pointer}.scorepanel table{width:100%;border-collapse:collapse}.scorepanel td{padding:8px;border-bottom:1px solid #93bda4}.scorepanel td:last-child{text-align:right}#nickDisplay{color:#226c55} </style></head><body><main><section class="scorepanel"><h2>🏆 Nicknavn og Topp 5</h2><div class="scorebar"><b>👤 Nicknavn:</b><strong id="nickDisplay">Henter …</strong><input id="nickInput" maxlength="20" placeholder="Velg nicknavn" style="display:none"><button id="nickSave" style="display:none">Lagre</button><button id="refresh">🔄 Oppdater Topp 5</button></div><p>⭐ Mine poeng: <b id="mine">–</b></p><p id="scoreStatus" aria-live="polite">Henter poeng …</p><button id="retry" style="display:none">💾 Prøv å lagre poeng igjen</button><details open><summary>🏆 Topp 5 – Tallstien</summary><div id="toplist">Laster …</div></details></section><a class="back" href="diverse-spill.html">← Tilbake til Diverse spill</a><header><h1>🌳 Tallstien – Eventyrstien</h1><p class="subtitle">Finn veien fra 1 til siste tall – vannrett, loddrett eller diagonalt!</p><p class="subtitle">🌼 Spillglede · Eventyrdesign · Spillbar test 🌼</p></header><section class="panel"><div class="guide-top"><details><summary>📖 Veiledning – trykk her for spilleregler <span class="guide-arrow">▼</span></summary><ol><li>Fyll de tomme steinene med tallene som mangler.</li><li>Hvert tall fra 1 til siste tall skal brukes <b>nøyaktig én gang</b>.</li><li>To tall som følger etter hverandre (for eksempel 7 og 8), må ligge på nabosteiner. Nabosteiner kan være vannrett, loddrett eller diagonalt i steinmønsteret.</li><li>De blå steinene er faste og kan ikke endres.</li><li>Trykk «Sjekk svar» når du er ferdig. Spillet avslører ikke hvilke ruter som er feil.</li><li>Fremdriften lagres automatisk på denne enheten.</li></ol></details></div><div class="top"><label for="level">Velg nivå:</label><select id="level"><option value="0">1 · Lett</option><option value="1">2 · Middels</option><option value="2">3 · Vanskelig</option><option value="3">4 · Ekspert</option><option value="4">5 · Super ekspert</option></select><button id="new" class="secondary">🔄 Ny oppgave</button></div><div id="stats" class="stats"></div><div class="scene" aria-label="Eventyrsti med nummererte steiner"><div class="scene-label">🌿 Finn tallveien mellom steinene 🌿</div><svg class="river" viewBox="0 0 800 600" preserveAspectRatio="none" aria-hidden="true"><path d="M-50 430 C160 280 180 610 385 425 S620 220 850 350" stroke="#8be1ea" stroke-width="88" fill="none" opacity=".42"/><path d="M-50 430 C160 280 180 610 385 425 S620 220 850 350" stroke="#ddfbff" stroke-width="8" fill="none" opacity=".55"/></svg><span class="decor a">🌲</span><span class="decor b">🌳</span><span class="decor c">🍄</span><span class="decor d">🌻</span><div id="board" class="board" aria-label="Hidato-steiner"></div></div><div id="pad" class="pad"></div><div class="actions"><button id="hint">💡 Hint (3 igjen)</button><button id="clear" class="secondary">⌫ Tøm rute</button><button id="check" class="secondary">✓ Sjekk svar</button></div><div id="message" class="message" aria-live="polite">Velg en tom stein og deretter et tall.</div><p id="points" class="score"></p><p class="note">💡 Maks 3 hint per oppgave. 0 hint = 100 % poeng · 1 = 75 % · 2 = 50 % · 3 = 25 %. I testen lagres ingen poeng på topplisten.</p></section><footer>Spillglede · Tallstien EVENTYRSTIEN TEST · Ingen Supabase i testversjonen</footer></main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id),KEY='spillglede_hidato_test_v1';const configs=[{n:4,show:.53},{n:5,show:.43},{n:6,show:.34},{n:7,show:.28},{n:8,show:.23}];let level=0,solution=[],fixed=[],values=[],selected=-1,hints=0,done=false,hinted=[];
+function shuffled(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function generate(n){/* Full-grid snake route: all consecutive cells are neighbors. Rotate/reflect for variety. */let path=[];for(let r=0;r<n;r++){let cols=[...Array(n).keys()];if(r%2)cols.reverse();for(const c of cols)path.push([r,c])}const flip=Math.random()<.5,mirror=Math.random()<.5,transpose=Math.random()<.5;path=path.map(([r,c])=>{if(flip)r=n-1-r;if(mirror)c=n-1-c;if(transpose)[r,c]=[c,r];return r*n+c});if(Math.random()<.5)path.reverse();const out=Array(n*n).fill(0);path.forEach((idx,i)=>out[idx]=i+1);return out}
+function fresh(){const cfg=configs[level],n=cfg.n;solution=generate(n);values=Array(n*n).fill(0);fixed=Array(n*n).fill(false);hinted=[];hints=0;done=false;selected=-1;let keep=new Set([solution.indexOf(1),solution.indexOf(n*n)]);const others=shuffled([...Array(n*n).keys()].filter(i=>!keep.has(i)));for(const i of others.slice(0,Math.max(0,Math.round(n*n*cfg.show)-2)))keep.add(i);for(const i of keep){fixed[i]=true;values[i]=solution[i]}save();render();$('message').textContent='Velg en tom rute og fyll inn et manglende tall.'}
+function save(){localStorage.setItem(KEY,JSON.stringify({level,solution,fixed,values,hints,done,hinted}))}
+function load(){try{let a=JSON.parse(localStorage.getItem(KEY)||'null');if(!a||!Number.isInteger(a.level)||a.level<0||a.level>4)return false;const n=configs[a.level].n;if(![a.solution,a.fixed,a.values].every(x=>Array.isArray(x)&&x.length===n*n))return false;level=a.level;solution=a.solution;fixed=a.fixed;values=a.values;hints=Math.min(3,Math.max(0,Number(a.hints)||0));done=!!a.done;hinted=Array.isArray(a.hinted)?a.hinted:[];return true}catch{return false}}
+function valid(){const n=configs[level].n,max=n*n;if(values.some(x=>!Number.isInteger(x)||x<1||x>max))return false;const positions=Array(max+1).fill(-1);for(let i=0;i<values.length;i++){if(positions[values[i]]!==-1)return false;positions[values[i]]=i}for(let x=1;x<max;x++){let a=positions[x],b=positions[x+1],dr=Math.abs(Math.floor(a/n)-Math.floor(b/n)),dc=Math.abs(a%n-b%n);if(Math.max(dr,dc)!==1)return false}return true}
+function render(){const n=configs[level].n,max=n*n;$('level').value=level;$('stats').textContent=`${['Lett','Middels','Vanskelig','Ekspert','Super ekspert'][level]} · ${n} × ${n} · ${values.filter(Boolean).length} av ${max} tall · 💡 ${3-hints} hint igjen`;const b=$('board');b.replaceChildren();b.style.setProperty('--n',n);for(let i=0;i<max;i++){const el=document.createElement('button');el.type='button';el.className='cell'+(fixed[i]?' fixed':'')+(selected===i?' selected':'')+(hinted.includes(i)?' hinted':'');el.style.setProperty('--dx',(((i*7+3)%5)-2)*2+'px');el.style.setProperty('--dy',(((i*11+2)%5)-2)*2+'px');el.style.setProperty('--rot',(((i*13+4)%7)-3)*2+'deg');el.textContent=values[i]||'';el.setAttribute('aria-label',`Rad ${Math.floor(i/n)+1}, kolonne ${i%n+1}: ${values[i]||'tom'}`);el.disabled=done||fixed[i];el.onclick=()=>{selected=i;render()};b.append(el)}const pad=$('pad');pad.replaceChildren();const used=new Set(values.filter(Boolean));for(let v=1;v<=max;v++){const btn=document.createElement('button');btn.className='secondary';btn.textContent=v;btn.disabled=done||used.has(v);btn.onclick=()=>{if(selected<0||fixed[selected]){$('message').textContent='Velg først en tom rute.';return}values[selected]=v;hinted=hinted.filter(i=>i!==selected);save();render()};pad.append(btn)}$('hint').disabled=done||hints>=3;$('hint').textContent=`💡 Hint (${3-hints} igjen)`;$('clear').disabled=done;$('check').disabled=done;$('points').textContent=`Mulige poeng: ${Math.round(([100,200,400,400,400][level])*(4-hints)/4)}`;if(done){$('message').classList.add('win');$('message').textContent='🎉 Gratulerer! Du løste Tallstien!'}else $('message').classList.remove('win')}
+$('level').onchange=e=>{const next=Number(e.target.value);if(next===level)return;level=next;fresh()};$('new').onclick=()=>{if(confirm('Vil du starte en ny oppgave på dette nivået? Fremdriften på denne oppgaven blir erstattet.'))fresh()};$('clear').onclick=()=>{if(selected<0||fixed[selected]||done)return;values[selected]=0;hinted=hinted.filter(i=>i!==selected);save();render()};$('hint').onclick=()=>{if(done||hints>=3)return;let candidates=values.map((v,i)=>!fixed[i]&&v!==solution[i]?i:-1).filter(i=>i>=0);if(!candidates.length){$('message').textContent='Ingen tomme eller feil utfylte ruter å gi hint på.';return}let i=candidates[Math.floor(Math.random()*candidates.length)],correct=solution[i];for(let j=0;j<values.length;j++){if(j!==i&&!fixed[j]&&values[j]===correct)values[j]=0}values[i]=correct;hints++;hinted.push(i);selected=i;save();render();$('message').textContent=`💡 Hint ${hints} av 3: Tallet ${correct} er plassert i en grønn rute.`};$('check').onclick=()=>{if(values.some(x=>!x)){$('message').textContent='Fyll inn alle rutene før du sjekker svaret.';return}if(!valid()){$('message').textContent='Ikke helt riktig ennå. Sjekk at alle tall er unike og at hvert nabotall ligger inntil det neste.';return}done=true;save();render();registerPoints(level+1,hints);$('message').textContent=`🎉 Gratulerer! Du klarte nivået med ${hints} hint. ${Math.round([100,200,400,400,400][level]*(4-hints)/4)} poeng!`};const SB='https://evpqlrqxofooowyvwdcn.supabase.co',APIKEY='sb_publishable_C2rRF4LjsHVKHE4uj3ByCA_V5XxXZbs',AUTHKEY='spillglede_auth_v1';
+let scoreBusy=false,pending=null;
+function getStored(){try{return JSON.parse(localStorage.getItem(AUTHKEY)||'null')}catch{return null}}
+async function req(path,method='GET',payload=null,token=null){
+ const headers={'apikey':APIKEY,'Content-Type':'application/json'};
+ if(token)headers.Authorization='Bearer '+token;
+ const response=await fetch(SB+path,{method,headers,body:payload===null?undefined:JSON.stringify(payload)});
+ const raw=await response.text();let data;
+ try{data=raw?JSON.parse(raw):null}catch{data={message:raw}}
+ if(!response.ok)throw Error(data?.message||data?.msg||data?.error_description||data?.error||'HTTP '+response.status);
+ return data;
+}
+async function getAuth(){
+ let a=getStored();
+ if(a?.access_token&&a.expires_at>Date.now()/1000+90)return a;
+ if(a?.refresh_token){
+  try{const t=await req('/auth/v1/token?grant_type=refresh_token','POST',{refresh_token:a.refresh_token});
+   a={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};
+   localStorage.setItem(AUTHKEY,JSON.stringify(a));return a
+  }catch(e){console.warn('Kunne ikke fornye sesjonen',e)}
+ }
+ const t=await req('/auth/v1/signup','POST',{});
+ if(!t?.access_token)throw Error('Kunne ikke starte anonym Spillglede-innlogging');
+ a={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};
+ localStorage.setItem(AUTHKEY,JSON.stringify(a));return a;
+}
+function userId(a){return a.user?.id||JSON.parse(atob(a.access_token.split('.')[1])).sub}
+async function loadNick(){
+ try{
+  const a=await getAuth();
+  const rows=await req('/rest/v1/spillere?id=eq.'+encodeURIComponent(userId(a))+'&select=nicknavn','GET',null,a.access_token);
+  if(rows?.length){
+   $('nickDisplay').textContent=rows[0].nicknavn;
+   $('nickInput').style.display='none';$('nickSave').style.display='none';
+  }else{
+   $('nickDisplay').textContent='Ikke registrert';
+   $('nickInput').style.display='inline-block';$('nickSave').style.display='inline-block';
+   $('scoreStatus').textContent='Bruk samme nettleser som de andre spillene, eller registrer et nicknavn.';
+  }
+ }catch(e){$('nickDisplay').textContent='Kunne ikke hente';$('scoreStatus').textContent=e.message}
+}
+$('nickSave').onclick=async()=>{
+ const nick=$('nickInput').value.trim();
+ if(!/^[\p{L}\p{N}_ -]{3,20}$/u.test(nick)){$('scoreStatus').textContent='Nicknavn må ha 3–20 tegn.';return}
+ $('nickSave').disabled=true;
+ try{
+  const a=await getAuth();
+  await req('/rest/v1/spillere','POST',{id:userId(a),nicknavn:nick},a.access_token);
+  await loadNick();await loadScores();
+  if(pending)await registerPoints(pending.niva,pending.hint);
+ }catch(e){$('scoreStatus').textContent='Kunne ikke lagre nicknavn: '+e.message}
+ finally{$('nickSave').disabled=false}
+};
+async function loadScores(){
+ try{
+  const a=await getAuth();
+  const top=await req('/rest/v1/rpc/tallstien_toppliste','POST',{},a.access_token);
+  const list=$('toplist');list.replaceChildren();
+  if(!top.length)list.textContent='Ingen poeng registrert ennå.';
+  else{
+   const table=document.createElement('table');
+   top.forEach(p=>{
+    const tr=document.createElement('tr');
+    [p.plassering+'.',p.nicknavn,Number(p.poeng).toLocaleString('nb-NO')+' ⭐'].forEach(v=>{
+     const td=document.createElement('td');td.textContent=v;tr.append(td);
+    });table.append(tr)
+   });list.append(table);
+  }
+  const mine=await req('/rest/v1/rpc/tallstien_mine_poeng','POST',{},a.access_token);
+  $('mine').textContent=Number(mine||0).toLocaleString('nb-NO');
+  if(!$('scoreStatus').dataset.claim)$('scoreStatus').textContent='Topplisten er oppdatert.';
+ }catch(e){$('toplist').textContent='Kunne ikke hente Topp 5: '+e.message}
+}
+async function registerPoints(niva,hint){
+ pending={niva,hint};
+ if(scoreBusy)return;scoreBusy=true;
+ try{
+  const a=await getAuth();
+  const rows=await req('/rest/v1/spillere?id=eq.'+encodeURIComponent(userId(a))+'&select=nicknavn','GET',null,a.access_token);
+  if(!rows?.length)throw Error('Nicknavn må registreres før poeng kan lagres.');
+  const award=await req('/rest/v1/rpc/tallstien_registrer_fullfort','POST',{p_niva:niva,p_hint:hint},a.access_token);
+  $('scoreStatus').textContent=Number(award)>0?'🏆 '+award+' poeng lagret!':'Dagens poeng for dette nivået er allerede registrert.';
+  $('scoreStatus').dataset.claim='yes';
+  $('retry').style.display='none';pending=null;
+  await loadScores();
+ }catch(e){$('scoreStatus').textContent='Poeng ikke lagret: '+e.message;$('retry').style.display='block'}
+ finally{scoreBusy=false}
+}
+$('retry').onclick=()=>{if(pending)registerPoints(pending.niva,pending.hint)};
+$('refresh').onclick=loadScores;
+function initScores(){loadNick();loadScores();}
+
+
+
+if(!load())fresh();else render();initScores();})();
+</script></body></html>
