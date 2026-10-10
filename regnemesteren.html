@@ -69,7 +69,7 @@ button,select{border-radius:13px;border:2px solid #82b5ed}
 <div class="center"><div class="emoji">➕ ✖️ ➗</div><h2>REGNEARENAEN</h2><p id="status">Kast terningen og løs regnestykkene!</p><button class="green" id="rollBtn" onclick="roll()">🎲 Kast terning</button><p id="turnText"></p></div>
 <div id="quiz" class="card hidden"><div style="font-size:13px;font-weight:900;color:#875518" id="quizClock">Nivå 1 · 10 sekunder</div><h2 id="quizQuestion" style="font-size:clamp(23px,3vw,38px)">5 + 3 = ?</h2><form id="mathForm" onsubmit="event.preventDefault();answerQuiz()" style="display:flex;gap:7px;justify-content:center;flex-wrap:wrap;width:100%"><input id="mathAnswer" type="number" inputmode="decimal" step="any" placeholder="Ditt svar" autocomplete="off" style="width:125px;max-width:45%;font-size:21px;text-align:center;padding:8px;border:2px solid #b48742;border-radius:10px"><button class="green" id="mathSubmit" type="submit">✓ Svar</button></form><p id="quizFeedback" style="font-weight:800"></p></div><div id="event" class="card hidden"><div class="eventIcon" id="eventIcon">💰</div><h2 id="eventTitle">Du fant gull!</h2><p id="eventText"></p><button class="green" id="eventBtn" onclick="nextTurn()">Fortsett ➜</button></div>
 </div></div>
-<aside class="panel"><h3>🎲 Terningen</h3><div id="die" style="font-size:54px;text-align:center">🎲</div><p class="stat" id="diceText">Lykke til!</p><p class="stat" id="progress">Oppgave 0/25</p><h3>🏆 Topp 5</h3><div id="top5"></div><p class="notice">Lagres lokalt på denne enheten.</p></aside>
+<aside class="panel"><h3>🎲 Terningen</h3><div id="die" style="font-size:54px;text-align:center">🎲</div><p class="stat" id="diceText">Lykke til!</p><p class="stat" id="progress">Oppgave 0/25</p><h3>🏆 Topp 5</h3><div id="top5"></div><p class="notice" id="topStatus">Henter Topp 5 fra Supabase …</p></aside>
 </div></div>
 <div id="hint" class="panel hidden" style="margin-top:10px"></div>
 <div class="legend"><div style="background:#1875aa"><span>💰</span>Gull</div><div style="background:#b78b24"><span>🗝️</span>Nøkkel</div><div style="background:#9a451d"><span>🎁</span>Skattekiste</div><div style="background:#ab3132"><span>🦀</span>Felle</div><div style="background:#318252"><span>🛒</span>Marked</div><div style="background:#773fa4"><span>❓</span>Overraskelse</div></div>
@@ -107,6 +107,7 @@ window.SpillgledeAccount=(()=>{
 })();
 const $=id=>document.getElementById(id);
 const SAVE='spillglede_regneskatten_v1',TOP='spillglede_regneskatten_topp5_v1';
+let cloudTop=[],cloudReady=false,cloudLoading=false;
 const N=28,icons=['🔴','🔵','🟢','🟡'];
 const spaces=Array.from({length:N},(_,i)=>i===0?'start':i===14?'chest':[3,7,11,19,25].includes(i)?'key':[5,16,23].includes(i)?'trap':[9,21].includes(i)?'market':[2,12,18,27].includes(i)?'mystery':'gold');
 const meta={start:['🏁','START','#cfa139'],chest:['🎁','SKATT','#9b451d'],key:['🗝️','NØKKEL','#bd901e'],trap:['🦀','FELLE','#b7383c'],market:['🛒','MARKED','#26845a'],mystery:['❓','MYSTISK','#7643a3'],gold:['💰','GULL','#1d78b1']};
@@ -173,12 +174,37 @@ function toggleGuide(){let hide=$('guideBody').classList.toggle('hidden');$('gui
 function changeMode(){$('count').classList.toggle('hidden',$('mode').value!=='friends')}
 function hint(){let p=state?.players[state.turn];$('hint').textContent=!p?'💡 Velg spillemåte og start spillet.':state.phase==='done'?'🏆 Skatten er funnet! Start et nytt spill for en ny jakt.':p.keys>=3?'💡 Du har 3 nøkler! Fortsett rundt brettet til du lander på 🎁 skattekisten.':`💡 ${p.name} har ${p.keys} av 3 nøkler. Land på 🗝️-feltene, eller kjøp en nøkkel på 🛒 markedet for 5 gull.`;$('hint').classList.remove('hidden')}
 function save(){if(state)localStorage.setItem(SAVE,JSON.stringify(state))}
-function startGame(){clearTimeout(botTimer);stopClock();let level=Number($('level').value);let mode=$('mode').value,count=mode==='bot'?2:Number($('count').value);state={mode,level,questions:makePool(level),questionIndex:0,turn:0,phase:'roll',round:0,usedQuestions:[],players:Array.from({length:count},(_,i)=>({name:i===0?(accountNick||'Spiller 1'):mode==='bot'&&i===1?'Datamaskinen':'Spiller '+(i+1),pos:0,keys:0,gold:0,turns:0})),winner:null};$('setup').classList.add('hidden');$('game').classList.remove('hidden');$('event').classList.add('hidden');$('quiz').classList.add('hidden');$('hint').classList.add('hidden');$('die').textContent='🎲';save();render()}
+function startGame(){cloudTop=[];cloudReady=false;clearTimeout(botTimer);stopClock();let level=Number($('level').value);let mode=$('mode').value,count=mode==='bot'?2:Number($('count').value);state={mode,level,questions:makePool(level),questionIndex:0,turn:0,phase:'roll',round:0,usedQuestions:[],players:Array.from({length:count},(_,i)=>({name:i===0?(accountNick||'Spiller 1'):mode==='bot'&&i===1?'Datamaskinen':'Spiller '+(i+1),pos:0,keys:0,gold:0,turns:0})),winner:null};$('setup').classList.add('hidden');$('game').classList.remove('hidden');$('event').classList.add('hidden');$('quiz').classList.add('hidden');$('hint').classList.add('hidden');$('die').textContent='🎲';save();render();refreshTop()}
 function newGame(){stopClock();if(state&&!confirm('Vil du starte en ny skattejakt?'))return;clearTimeout(botTimer);state=null;localStorage.removeItem(SAVE);$('setup').classList.remove('hidden');$('game').classList.add('hidden');$('hint').classList.add('hidden')}
 function renderBoard(){let h='';for(let i=0;i<N;i++){let a=i*2*Math.PI/N+Math.PI/2;let x=50+45*Math.cos(a),y=50+44*Math.sin(a),m=meta[spaces[i]],pawns=state.players.map((p,j)=>p.pos===i?icons[j]:'').join('');h+=`<div class="tile ${state.players[state.turn].pos===i?'active':''}" style="left:${x}%;top:${y}%;background:${m[2]}"><div class="symbol">${m[0]}</div><small>${m[1]}</small><div class="pawns">${pawns}</div></div>`}$('track').innerHTML=h}
-function renderTop(){let rows=[];try{rows=JSON.parse(localStorage.getItem(TOP))||[]}catch(e){}$('top5').innerHTML=rows.length?rows.map((x,i)=>`<div class="leader">${i+1}. ${esc(x.name)} – ${x.turns} kast</div>`).join(''):'<p class="notice">Ingen vinnere ennå.</p>'}
+function renderTop(){
+ let rows=cloudTop;
+ $('top5').innerHTML=rows.length?rows.map((x,i)=>`<div class="leader">${i+1}. ${esc(x.nicknavn)} – ${x.poeng} poeng</div>`).join(''):'<p class="notice">Ingen registrerte resultater på dette nivået ennå.</p>';
+}
+async function refreshTop(){
+ if(cloudLoading)return;
+ cloudLoading=true;
+ try{
+  const a=await SpillgledeAccount.auth();
+  const data=await SpillgledeAccount.request('/rest/v1/rpc/regnemesteren_toppliste','POST',{p_nivaa:state?.level||Number($('level').value)},a.access_token);
+  cloudTop=Array.isArray(data)?data:[];cloudReady=true;
+  $('topStatus').textContent='🌐 Felles Topp 5 · nivå '+(state?.level||$('level').value);
+ }catch(e){cloudReady=false;$('topStatus').textContent='⚠️ Felles toppliste ikke tilgjengelig. Kontroller SQL-oppsettet.';console.warn('Regnemesteren toppliste:',e)}
+ finally{cloudLoading=false;renderTop()}
+}
+async function submitScore(){
+ if(!state||state.submitted||state.winner!==0||!accountNick||state.mode==='friends'&&state.winner!==0)return;
+ state.submitted=true;save();
+ try{
+  const a=await SpillgledeAccount.auth(),p=state.players[0];
+  await SpillgledeAccount.request('/rest/v1/rpc/regnemesteren_registrer_resultat','POST',{
+   p_nivaa:state.level,p_poeng:p.keys*100+p.gold*3,p_oppgaver:state.questionIndex,p_kast:p.turns
+  },a.access_token);
+  await refreshTop();
+ }catch(e){state.submitted=false;save();$('topStatus').textContent='⚠️ Resultatet ble ikke sendt til Supabase: '+e.message}
+}
 function render(){if(!state)return;$('progress').textContent=`Oppgave ${state.questionIndex||0}/${QUOTAS[state.level]||25} · Nivå ${state.level||1}`;renderBoard();$('players').innerHTML=state.players.map((p,i)=>`<div class="who ${i===state.turn&&state.phase!=='done'?'turn':''}"><strong>${icons[i]} ${esc(p.name)}</strong><span>🗝️ ${p.keys}/3 &nbsp; 💰 ${p.gold} gull</span></div>`).join('');
-let p=state.players[state.turn];$('status').textContent=state.phase==='done'?`🏆 ${state.players[state.winner].name} fant skatten!`:(state.phase==='quiz'||state.phase==='quizResult')?'Løs regnestykket!':state.phase==='event'?'Se hva du fant!':`${p.name} – du har ${p.keys} nøkler`;$('turnText').textContent=state.phase==='done'?'Spillet er ferdig':state.phase==='event'?'Les kortet':`${p.name} sin tur`;$('rollBtn').disabled=state.phase!=='roll'||state.mode==='bot'&&state.turn===1;$('rollBtn').classList.toggle('hidden',state.phase!=='roll');renderTop()}
+let p=state.players[state.turn];$('status').textContent=state.phase==='done'?`🏆 ${state.players[state.winner].name} vant nivået!`:(state.phase==='quiz'||state.phase==='quizResult')?'Løs regnestykket!':state.phase==='event'?'Se hva du fant!':`${p.name} – du har ${p.keys} nøkler`;$('turnText').textContent=state.phase==='done'?'Spillet er ferdig':state.phase==='event'?'Les kortet':`${p.name} sin tur`;$('rollBtn').disabled=state.phase!=='roll'||state.mode==='bot'&&state.turn===1;$('rollBtn').classList.toggle('hidden',state.phase!=='roll');renderTop()}
 function roll(){if(!state||state.phase!=='roll'||state.mode==='bot'&&state.turn===1)return;doRoll()}
 function doRoll(){if(!state||state.phase!=='roll')return;let p=state.players[state.turn],n=Math.floor(Math.random()*6)+1;p.turns++;p.pos=(p.pos+n)%N;$('die').textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][n-1];$('diceText').textContent=p.name+' kastet '+n;state.phase='quiz';eventDone=false;save();render();askQuestion()}
 function showEvent(icon,title,message,button='Fortsett ➜'){ $('eventIcon').textContent=icon;$('eventTitle').textContent=title;$('eventText').textContent=message;$('eventBtn').textContent=button;$('event').classList.remove('hidden');save();render()}
@@ -192,11 +218,12 @@ case 'market':if(p.keys<3&&p.gold>=5){p.gold-=5;p.keys++;showEvent('🛒','Marke
 case 'mystery':n=Math.floor(Math.random()*4);if(n===0){p.gold+=4;showEvent('🧭','Gammelt sjøkart!','Du fant et kart og 4 gull!')}else if(n===1){p.keys=Math.min(3,p.keys+1);showEvent('🗝️','Hemmelig nøkkel!','En nøkkel lå gjemt under en stein.')}else if(n===2){let lost=Math.min(p.gold,3);p.gold-=lost;showEvent('🌪️','En kraftig storm!',`Du mistet ${lost} gull, men nøklene er trygge.`)}else{p.gold+=2;showEvent('🐬','En vennlig delfin!','Delfinen viser deg veien til 2 gull.')}break;
 default:n=Math.floor(Math.random()*3)+1;p.gold+=n;showEvent('💰','Gull på stranden!',`Du fant ${n} gullmynter i sanden.`)
 }}
-function nextTurn(){if(!state||state.phase==='roll')return;stopClock();$('event').classList.add('hidden');if(state.phase==='done'){if(!state.recorded){state.recorded=true;let p=state.players[state.winner];if(p.name!=='Datamaskinen'){let a=[];try{a=JSON.parse(localStorage.getItem(TOP))||[]}catch(e){}a.push({name:p.name,turns:p.turns});a.sort((a,b)=>a.turns-b.turns);localStorage.setItem(TOP,JSON.stringify(a.slice(0,5)))}save()}render();return}if(state.questionIndex>=state.questions.length){finishLevel();return}state.turn=(state.turn+1)%state.players.length;state.phase='roll';save();render();scheduleBot()}
+function nextTurn(){if(!state||state.phase==='roll')return;stopClock();$('event').classList.add('hidden');if(state.phase==='done'){if(!state.recorded){state.recorded=true;save();submitScore()}render();return}if(state.questionIndex>=state.questions.length){finishLevel();return}state.turn=(state.turn+1)%state.players.length;state.phase='roll';save();render();scheduleBot()}
 function scheduleBot(){clearTimeout(botTimer);if(state?.mode==='bot'&&state.turn===1&&state.phase==='roll'){botTimer=setTimeout(()=>{if(state?.phase==='roll')doRoll()},750)}}
-async function loadNickname(){try{accountNick=await SpillgledeAccount.loadNick();$('nickStatus').textContent=accountNick?'👤 Ditt nickname: '+accountNick:'👤 Ingen nickname funnet. Spiller 1 brukes inntil du spiller på Spillglede.';if(state&&accountNick){state.players[0].name=accountNick;save();render()}}catch(e){$('nickStatus').textContent='👤 Nickname hentes når spillet åpnes på Spillglede.'}}
+async function loadNickname(){try{accountNick=await SpillgledeAccount.loadNick();$('nickStatus').textContent=accountNick?'👤 Ditt nickname: '+accountNick:'👤 Ingen nickname funnet. Spiller 1 brukes inntil du spiller på Spillglede.';if(state&&accountNick){state.players[0].name=accountNick;save();render()}await refreshTop()}catch(e){$('nickStatus').textContent='👤 Nickname hentes når spillet åpnes på Spillglede.'}}
 try{let previous=JSON.parse(localStorage.getItem(SAVE));if(previous?.players?.length&&previous.phase&&previous.questions?.length&&previous.level){state=previous;$('setup').classList.add('hidden');$('game').classList.remove('hidden');if(state.phase==='quiz'||state.phase==='quizResult'){state.phase='event';$('event').classList.remove('hidden');$('eventIcon').textContent='🧮';$('eventTitle').textContent='Fortsett reisen';$('eventText').textContent='Regneoppgaven ble avbrutt. Fortsett til neste spiller.';$('eventBtn').textContent='Fortsett ➜';save()}else if(state.phase==='event'){// A saved event should be resolved without granting rewards twice.
  $('event').classList.remove('hidden');$('eventIcon').textContent='🗺️';$('eventTitle').textContent='Fortsett reisen';$('eventText').textContent='Forrige terningkast er ferdig. Fortsett til neste spiller.';$('eventBtn').textContent='Fortsett ➜';
 }render();scheduleBot()}}catch(e){}
 loadNickname();
+$('level').addEventListener('change',()=>{cloudTop=[];refreshTop()});
 </script></body></html>
