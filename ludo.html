@@ -16,13 +16,13 @@
 .nest{width:56%;aspect-ratio:1;background:#fff9;border:2px solid #4c3926;border-radius:50%}.center{position:absolute;left:40%;top:40%;width:20%;height:20%;background:conic-gradient(#3eb65a 0 25%,#f0cf35 0 50%,#368bd4 0 75%,#e74b3f 0);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
 .token{position:absolute;width:5.2%;aspect-ratio:1;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 5px #0008;z-index:10;transform:translate(-50%,-50%);cursor:pointer}.token.red{background:#c51e22}.token.green{background:#168b38}.token.yellow{background:#d6a900}.token.blue{background:#176ab1}.token.can{outline:4px solid #fff;animation:pulse .8s infinite alternate}@keyframes pulse{to{transform:translate(-50%,-50%) scale(1.15)}}
 .panel{background:#2b170c;border:2px solid #d59a43;border-radius:16px;padding:15px}.turn{font-size:20px;font-weight:900;text-align:center;margin-bottom:12px}.die{display:block;margin:10px auto;width:90px;height:90px;border:4px solid #e1bd75;border-radius:18px;background:#fff9e8;color:#111;font-size:55px;font-weight:900;box-shadow:0 7px 0 #8d642d;cursor:pointer}.die:disabled{opacity:.65}.info{text-align:center;min-height:58px;color:#ffe9ae;font-weight:700}.players{display:grid;gap:7px;margin:12px 0}.p{padding:9px;border-radius:10px;font-weight:800;border:2px solid transparent}.p.active{border-color:#fff}.p.red{background:#9e2727}.p.green{background:#16723a}.p.yellow{background:#947b11}.p.blue{background:#1b5d91}.new{width:100%;padding:11px;border-radius:12px;border:1px solid #f0c76d;background:#5d2c15;color:#fff;font-weight:900;cursor:pointer}
-.setup{text-align:center;margin-bottom:12px}.setup select{font-size:16px;padding:8px;border-radius:9px}
+.setup{text-align:center;margin-bottom:12px}.nickname{width:min(220px,90%);padding:9px;border-radius:9px;border:2px solid #e4ad4b;font-size:16px;margin:4px 7px;background:#fff;color:#222}.playernames{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:8px auto}.playernames label{display:flex;align-items:center;gap:5px;background:#ffffff12;padding:5px 8px;border-radius:10px}.playernames input{width:125px;max-width:34vw;border:1px solid #e4ad4b;border-radius:7px;padding:7px;font-size:15px}.scorebox{max-width:650px;margin:8px auto 14px;padding:10px;border:1px solid #e4ad4b;border-radius:12px;background:#ffffff12}.scorebox h3{margin:0 0 8px;text-align:center;color:#ffdc55}.scoreline{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #ffffff22}.scoreline:last-child{border:0}@media(max-width:760px){.scorebox{margin:6px auto 9px;padding:7px 10px}.scorebox h3{font-size:16px;margin-bottom:3px}.scoreline{padding:3px 0;font-size:13px}.playernames{margin:5px auto}.playernames label{padding:3px 6px}.playernames input{padding:5px}}@media(max-width:760px){.wrap{padding:7px}.panel{padding:9px}.p{padding:6px}.players{margin:7px 0}.info{min-height:36px}.turn{margin-bottom:4px}.sub{margin:3px 0 7px}.die{margin:5px auto}}.clear-names{background:#fff4d6;color:#41230d;border:1px solid #d59a43;border-radius:9px;padding:7px 10px;font-weight:800;cursor:pointer;margin:4px}.setup select{font-size:16px;padding:8px;border-radius:9px}
 @media(max-width:760px){.layout{grid-template-columns:1fr}.panel{max-width:650px;width:100%;margin:auto}.die{width:75px;height:75px;font-size:45px}h1{font-size:36px}.frame{padding:8px}.game{padding:9px}.logo{font-size:20px}}
 </style></head>
 <body><div class="wrap"><div class="top"><a class="back" href="index.html">← Spillglede</a><div class="logo">SPILLGLEDE 🎲</div></div>
 <div class="frame"><div class="game"><h1>LUDO</h1><div class="sub">Få alle fire brikkene dine først i mål!</div>
-<div class="setup">Antall spillere: <select id="count"><option value="2">2 spillere</option><option value="3">3 spillere</option><option value="4" selected>4 spillere</option></select></div>
-<div class="layout"><div id="board" class="board">
+<div class="setup"><label>🏅 Ditt nickname: <input id="nickname" class="nickname" maxlength="24" placeholder="Velg spillernavn"></label><div>Antall spillere: <select id="count"><option value="2">2 spillere</option><option value="3">3 spillere</option><option value="4" selected>4 spillere</option></select></div><button id="clearNames" type="button" class="clear-names">🧹 Tøm testnavn</button></div>
+<div id="playernames" class="playernames"></div><div class="scorebox"><h3>🏆 TOPP 5 – LUDO</h3><div id="scores"></div></div><div class="layout"><div id="board" class="board">
 <div class="home red"><i class="nest"></i><i class="nest"></i><i class="nest"></i><i class="nest"></i></div>
 <div class="home green"><i class="nest"></i><i class="nest"></i><i class="nest"></i><i class="nest"></i></div>
 <div class="home yellow"><i class="nest"></i><i class="nest"></i><i class="nest"></i><i class="nest"></i></div>
@@ -30,6 +30,42 @@
 <div class="panel"><div id="turn" class="turn"></div><button id="die" class="die">🎲</button><div id="info" class="info">Trykk på terningen.</div><div id="players" class="players"></div><button id="new" class="new">↻ Nytt spill</button></div>
 </div></div></div></div>
 <script>
+const nickKey="spillglede_nickname_v1", scoreKey="spillglede_brettspill_scores_v1";
+const nicknameInput=document.querySelector("#nickname");
+try{nicknameInput.value=localStorage.getItem(nickKey)||""}catch(e){}
+function nickname(){return nicknameInput.value.trim().slice(0,24)||"Spiller 1"}
+const otherNamesKey="spillglede_ludo_other_names_v1";
+let otherNames=[];
+try{otherNames=JSON.parse(localStorage.getItem(otherNamesKey)||"[]")}catch(e){}
+function playerName(index){if(index===0)return nickname();return (otherNames[index-1]||"").trim()||"Spiller "+(index+1)}
+function drawNameFields(){
+ const wrap=document.querySelector("#playernames");wrap.replaceChildren();
+ for(let i=1;i<N;i++){
+  const label=document.createElement("label");label.textContent="Spiller "+(i+1)+":";
+  const field=document.createElement("input");field.type="text";field.maxLength=24;
+  field.placeholder="Nickname";field.value=otherNames[i-1]||"";
+  field.addEventListener("input",()=>{otherNames[i-1]=field.value;try{localStorage.setItem(otherNamesKey,JSON.stringify(otherNames))}catch(e){}render()});
+  label.appendChild(field);wrap.appendChild(label);
+ }
+}
+
+function saveNickname(){try{const name=nicknameInput.value.trim();if(name)localStorage.setItem(nickKey,name);else localStorage.removeItem(nickKey)}catch(e){}}
+nicknameInput.addEventListener("change",()=>{saveNickname();render()});
+function getScores(){try{return JSON.parse(localStorage.getItem(scoreKey)||"{}")}catch(e){return {}}}
+function awardWinner(color){
+ const name=playerName(colors.indexOf(color));
+ const data=getScores();const key=name.toLocaleLowerCase("no");
+ if(!data[key])data[key]={name,points:0,wins:0};
+ data[key].points+=100;data[key].wins+=1;
+ try{localStorage.setItem(scoreKey,JSON.stringify(data))}catch(e){}
+ renderScores();
+}
+function renderScores(){
+ const scores=Object.values(getScores()).sort((a,b)=>b.points-a.points).slice(0,5);
+ const target=document.querySelector("#scores");target.replaceChildren();
+ if(!scores.length){target.textContent="Ingen resultater ennå.";return}
+ scores.forEach((p,i)=>{const row=document.createElement("div");row.className="scoreline";const n=document.createElement("span");n.textContent=(i+1)+". "+p.name;const v=document.createElement("strong");v.textContent=p.points+" poeng";row.append(n,v);target.appendChild(row)})
+}
 const colors=["red","green","yellow","blue"], names={red:"Rød",green:"Grønn",yellow:"Gul",blue:"Blå"};
 const board=document.querySelector("#board"), dieBtn=document.querySelector("#die"), info=document.querySelector("#info");
 let N=4, turn=0, roll=0, waiting=false, pieces={};
@@ -63,15 +99,15 @@ function build(){
 function current(){return colors[turn]}
 function legal(pc){if(pc.color!==current())return false;if(pc.step<0)return roll===6;if(pc.step>=57)return false;return pc.step+roll<=57}
 function render(){
- document.querySelector("#turn").textContent="Tur: "+names[current()];
- document.querySelector("#players").innerHTML=colors.slice(0,N).map((c,i)=>`<div class="p ${c} ${i===turn?"active":""}">${names[c]} spiller</div>`).join("");
+ document.querySelector("#turn").textContent="Tur: "+(playerName(turn));
+ document.querySelector("#players").innerHTML=colors.slice(0,N).map((c,i)=>`<div class="p ${c} ${i===turn?"active":""}">${playerName(i)}</div>`).join("");
  document.querySelectorAll(".token").forEach(x=>x.classList.remove("can"));
  if(waiting)pieces[current()].filter(legal).forEach(p=>p.el.classList.add("can"));
 }
 function throwDie(){
  if(waiting)return;roll=1+Math.floor(Math.random()*6);dieBtn.textContent=roll;let opts=pieces[current()].filter(legal);
- if(!opts.length){info.textContent=names[current()]+" fikk "+roll+" – ingen mulig flytting.";setTimeout(next,700)}
- else{waiting=true;info.textContent=names[current()]+" fikk "+roll+". Velg en markert brikke.";render()}
+ if(!opts.length){info.textContent=playerName(turn)+" fikk "+roll+" – ingen mulig flytting.";setTimeout(next,700)}
+ else{waiting=true;info.textContent=playerName(turn)+" fikk "+roll+". Velg en markert brikke.";render()}
 }
 function move(pc){
  if(!waiting||!legal(pc))return;
@@ -85,11 +121,17 @@ function move(pc){
    }))
  }
  waiting=false;
- if(pieces[pc.color].every(p=>p.step===57)){info.textContent="🏆 "+names[pc.color]+" vant spillet!";dieBtn.disabled=true;return}
+ if(pieces[pc.color].every(p=>p.step===57)){info.textContent="🏆 "+(playerName(colors.indexOf(pc.color)))+" vant spillet!";dieBtn.disabled=true;awardWinner(pc.color);return}
  if(roll===6){info.textContent+=" Du fikk 6 og får kaste igjen!";roll=0;dieBtn.textContent="🎲";render()}
  else next()
 }
 function next(){waiting=false;roll=0;turn=(turn+1)%N;dieBtn.textContent="🎲";info.textContent="Trykk på terningen.";render()}
-function reset(){N=+document.querySelector("#count").value;turn=0;roll=0;waiting=false;dieBtn.disabled=false;dieBtn.textContent="🎲";info.textContent="Trykk på terningen.";build()}
-drawTrack();dieBtn.onclick=throwDie;document.querySelector("#new").onclick=()=>{if(confirm("Starte et nytt Ludo-spill?"))reset()};document.querySelector("#count").onchange=reset;reset();
+function reset(){saveNickname();N=+document.querySelector("#count").value;drawNameFields();turn=0;roll=0;waiting=false;dieBtn.disabled=false;dieBtn.textContent="🎲";info.textContent="Trykk på terningen.";build()}
+document.querySelector("#clearNames").onclick=()=>{
+ if(!confirm("Vil du tømme alle lagrede nickname-felt på denne enheten? Poenglisten beholdes."))return;
+ nicknameInput.value="";otherNames=[];
+ try{localStorage.removeItem(nickKey);localStorage.removeItem(otherNamesKey)}catch(e){}
+ drawNameFields();render();
+};
+drawTrack();renderScores();dieBtn.onclick=throwDie;document.querySelector("#new").onclick=()=>{if(confirm("Starte et nytt Ludo-spill?"))reset()};document.querySelector("#count").onchange=reset;reset();
 </script></body></html>
