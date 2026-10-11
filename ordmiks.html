@@ -19,6 +19,27 @@ button{border:0;border-radius:14px;padding:13px 18px;font-size:18px;font-weight:
 @media(max-width:760px){.players{grid-template-columns:repeat(2,1fr)}} @media(max-width:440px){.players{grid-template-columns:1fr}.mixed{letter-spacing:.08em}}
 
 .choice-screen{max-width:760px;margin:28px auto;text-align:center}.choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:22px}.choice-card{display:block;text-decoration:none;border:4px solid #17345d;border-radius:25px;padding:28px 18px;background:#fff;box-shadow:0 10px 28px #18304b22;color:#17345d;cursor:pointer}.choice-card .flag{font-size:58px;display:block;margin-bottom:10px}.choice-card h2{font-size:28px;margin:4px 0}.choice-card p{font-weight:800;color:#53657c}.choice-card.en{background:linear-gradient(145deg,#eef6ff,#fff4e8)}.choice-card.hunt{background:linear-gradient(145deg,#eefbea,#fff8d9)}.choice-card.word{background:linear-gradient(145deg,#f3eaff,#fff3d9)}.choice-card.guess{background:linear-gradient(145deg,#fff0e5,#eef6ff)}#norwegianGame{display:none}@media(max-width:650px){.choice-grid{grid-template-columns:repeat(2,1fr);gap:9px}.choice-card{padding:18px 8px;border-width:3px}.choice-card .flag{font-size:42px}.choice-card h2{font-size:20px}.choice-card p{font-size:12px}}
+
+/* Oppfrisket Ordmiks-meny – kun menyen, spillkoden er urørt */
+body{background:radial-gradient(circle at 10% 10%,#c8edff 0,transparent 32%),radial-gradient(circle at 95% 5%,#ffdfef 0,transparent 36%),linear-gradient(145deg,#e9f4ff,#fff6df 52%,#e8e4ff)}
+.choice-screen{max-width:1100px;margin:24px auto 35px}
+.choice-screen h1{font-size:clamp(36px,5.6vw,64px);letter-spacing:-1.5px;color:#1b2f64;text-shadow:0 4px 18px #5374bb22}
+.choice-screen .sub{color:#4c5e82;font-size:clamp(14px,2vw,18px);margin-bottom:20px}
+.choice-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-top:20px}
+.choice-card{position:relative;min-width:0;min-height:205px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:19px 12px;border:2px solid #ffffffd9;border-radius:23px;box-shadow:0 11px 25px #263f8030,inset 0 1px #fff;overflow:hidden;background:linear-gradient(150deg,#fff,#e5eaff);transition:transform .2s,box-shadow .2s,border-color .2s}
+.choice-card::before{content:'';position:absolute;inset:0 0 auto;height:7px;background:linear-gradient(90deg,#6174ff,#a47dff)}
+.choice-card:hover,.choice-card:focus-visible{transform:translateY(-5px);box-shadow:0 17px 30px #263f8040;border-color:#7c86ee;outline:none}
+.choice-card .flag{position:relative;font-size:46px;line-height:1.2;margin:0 0 12px;filter:drop-shadow(0 4px 5px #1b2c4b20)}
+.choice-card h2{position:relative;font-size:clamp(16px,1.75vw,21px);line-height:1.18;margin:0 0 10px;color:#1a2d58}
+.choice-card p{position:relative;font-size:12px;line-height:1.45;margin:0;color:#4d5f82;font-weight:750}
+.choice-card.en{background:linear-gradient(150deg,#f0f6ff,#dbeaff)}.choice-card.en::before{background:linear-gradient(90deg,#398ef0,#76d6ff)}
+.choice-card.hunt{background:linear-gradient(150deg,#effff5,#d5f6e6)}.choice-card.hunt::before{background:linear-gradient(90deg,#17b98c,#83e6ac)}
+.choice-card.word{background:linear-gradient(150deg,#f8efff,#e9ddff)}.choice-card.word::before{background:linear-gradient(90deg,#9b60ed,#db9cff)}
+.choice-card.guess{background:linear-gradient(150deg,#fff5e7,#ffe3d4)}.choice-card.guess::before{background:linear-gradient(90deg,#f78c3f,#ffd16e)}
+.choice-card.bokstav{background:linear-gradient(150deg,#e9fbff,#c9f2f6)}.choice-card.bokstav::before{background:linear-gradient(90deg,#00a5c8,#61e0d2)}
+@media(max-width:760px){.choice-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.choice-card{min-height:160px;padding:13px 7px;border-radius:16px}.choice-card .flag{font-size:35px;margin-bottom:8px}.choice-card h2{font-size:clamp(12px,3.3vw,17px);margin-bottom:7px}.choice-card p{font-size:clamp(9px,2.3vw,11px);line-height:1.35}.choice-screen{margin:18px auto 28px}}
+@media(max-width:370px){.choice-grid{gap:6px}.choice-card{padding:12px 4px;min-height:155px}.choice-card h2{font-size:12px}.choice-card p{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.choice-card{transition:none}}
 </style></head>
 <body><div class="wrap">
 <div class="top"><a class="back" href="index.html">← Spillglede</a></div>
