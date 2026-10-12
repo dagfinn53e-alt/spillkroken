@@ -1,0 +1,133 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#65caff"><title>Mønsterjakten – Barnas Spillglede</title><style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#43260d;min-height:100vh;background:radial-gradient(ellipse at 75% 0%,#d9faff 0,transparent 36%),linear-gradient(#64c7ff 0%,#a7e8ff 40%,#c9ed95 72%,#66c85e 100%);background-attachment:fixed}
+body:before{content:"🌳  🌸    🌳    🦋      🌳     🌻    🌳";position:fixed;top:22%;left:0;width:100%;font-size:clamp(28px,5vw,72px);letter-spacing:1vw;text-align:center;opacity:.52;pointer-events:none}
+button{font:inherit;cursor:pointer}a{text-decoration:none;color:inherit}
+.wrap{max-width:1080px;margin:auto;padding:14px;position:relative}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{background:#fef7e6;border:3px solid #b77b39;border-radius:18px;padding:11px 15px;font-weight:900;box-shadow:0 4px 0 #805121}
+.brand{font-weight:950;background:#07578b;color:#fff;border:3px solid #69d9ff;border-radius:18px;padding:10px 16px}
+.hero{text-align:center;margin:14px auto 16px;max-width:760px}
+.hero h1{margin:0;display:inline-block;padding:10px 28px;font-size:clamp(31px,6.5vw,64px);line-height:1.15;color:#fff;text-shadow:3px 4px 0 #743b15,0 6px 13px #532b14;background:linear-gradient(#b97935,#8c4c1f);border:6px solid #dca45e;border-radius:30px;box-shadow:0 7px 0 #673715,0 13px 20px #17441d55;letter-spacing:-1px}
+.hero p{font-size:clamp(15px,2.6vw,22px);font-weight:950;margin:12px 0;color:#4c280e;text-shadow:0 1px #fff}
+.panel{background:#fff4d8;border:8px solid #b77a38;border-radius:30px;box-shadow:0 8px 0 #7e4b20,0 18px 28px #24552a55;padding:20px;margin:17px 0}
+.stats{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.pill{border-radius:18px;background:linear-gradient(#0e83bc,#064b85);border:3px solid #75d9ff;color:#fff;padding:9px 16px;font-weight:950;font-size:clamp(13px,2vw,17px);box-shadow:0 4px 0 #073f66}
+.pill.gold{background:linear-gradient(#ffe871,#ffb62c);border-color:#fff0a1;color:#794300;box-shadow:0 4px 0 #b97513}
+.progress{height:20px;border:3px solid #fff;background:#134e7d;border-radius:20px;overflow:hidden;margin:18px auto;max-width:760px;box-shadow:0 3px 0 #25506a}
+.progress>div{height:100%;background:linear-gradient(#b4ff39,#65d51a);border-radius:20px;transition:width .3s}
+.levels{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px}
+.level{border:2px solid #b78643;border-radius:12px;padding:9px 2px;background:#fffaf0;font-weight:950;color:#805027;font-size:12px}
+.level.active{background:#ffca35;border-color:#ef8e12;color:#5b340b}.level:disabled{opacity:.45;cursor:not-allowed}
+.task-title{text-align:center;font-size:clamp(23px,3.8vw,33px);margin:4px 0 6px;color:#68380f}
+.instruction{text-align:center;color:#6c4c29;font-weight:800;margin:0 0 16px}
+.pattern{display:flex;justify-content:center;align-items:center;gap:clamp(4px,1.3vw,12px);flex-wrap:nowrap;padding:19px 8px;min-height:140px;border-radius:24px;background:linear-gradient(#fff9e8,#fff0c8);border:3px solid #deb477}
+.tile{flex:0 1 104px;min-width:0;height:clamp(58px,10vw,103px);border-radius:19px;background:linear-gradient(#fff,#fff9e9);border:2px solid #d4a76b;box-shadow:0 5px 0 #d4b486;display:grid;place-items:center;font-size:clamp(25px,5vw,52px);font-weight:1000;color:#13518c;user-select:none}
+.tile.missing{background:#fff0a3;border:3px dashed #f4a20a;box-shadow:none;color:#00568b;font-size:clamp(30px,6vw,56px)}
+.options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:780px;margin:19px auto}
+.option{min-height:clamp(95px,15vw,140px);border:4px solid #d2a069;border-radius:24px;background:linear-gradient(#fff,#fff8e9);font-size:clamp(43px,8vw,76px);font-weight:1000;color:#145287;box-shadow:0 6px 0 #bd874e;transition:transform .12s,border-color .12s}
+.option:hover:not(:disabled){transform:translateY(-4px);border-color:#f4a51d}
+.option.correct{background:#d9f8e9;border-color:#24a569}.option.wrong{background:#ffe0e0;border-color:#e76b6b}.option:disabled{cursor:default}
+.feedback{min-height:43px;text-align:center;font-size:clamp(16px,2.4vw,21px);font-weight:950;color:#654021}
+.actions{display:flex;justify-content:center;gap:13px;flex-wrap:wrap}
+.btn{border:3px solid #ffe594;border-radius:18px;padding:14px 23px;background:linear-gradient(#ffda50,#ffa923);color:#663708;font-weight:950;box-shadow:0 5px 0 #bf7418}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.secondary{background:linear-gradient(#a9e9ff,#55b8f0);color:#094b78;border-color:#dcf7ff;box-shadow:0 5px 0 #2678ae}
+.foot{text-align:center;color:#184f2b;font-size:13px;font-weight:850;margin:22px 0;text-shadow:0 1px #fff}
+.overlay[hidden]{display:none!important}.overlay{position:fixed;inset:0;z-index:10;background:#17134ca8;display:grid;place-items:center;padding:16px}
+.modal{position:relative;z-index:2;width:min(94vw,500px);padding:35px 25px;text-align:center;border:7px solid #c38b43;border-radius:28px;background:#fff4d8;box-shadow:0 22px 90px #0004}
+.modal h2{font-size:clamp(28px,6vw,42px);color:#a35616;margin:4px 0}.modal p{font-size:19px;color:#6a4520;font-weight:850}
+.confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}.confetti i{position:absolute;top:-30px;width:11px;height:19px;animation:fall 3.4s linear infinite;opacity:.95}
+@keyframes fall{to{transform:translateY(110vh) rotate(900deg)}}
+@media(max-width:650px){.wrap{padding:9px}.panel{padding:12px;border-width:5px;border-radius:20px}.levels{grid-template-columns:repeat(5,1fr)}.level{padding:8px 1px}.tile{height:clamp(49px,12vw,72px);border-radius:10px}.pattern{padding:12px 5px;gap:4px;min-height:80px}.options{gap:8px}.option{min-height:90px;border-radius:14px}.top{font-size:12px}.pill{padding:7px 9px}.hero h1{padding:9px 15px}.back,.brand{padding:8px}}
+@media(max-width:380px){.tile{font-size:24px}.tile.missing{font-size:30px}.pattern{gap:3px}}
+</style></head><body><div class="wrap">
+<header class="top"><a class="back" href="barnas-spillglede.html">🏠 Tilbake</a><span class="brand">🐶 Barnas Spillglede · 6–8 år</span></header>
+<section class="hero"><h1>🌈 MØNSTERJAKTEN 🧩</h1><p>🐶 Finn figuren som mangler! 🌸</p></section>
+<section class="panel"><div class="stats"><span class="pill" id="levelLabel">Nivå 1</span><span class="pill" id="questionLabel">Oppgave 1 av 20</span><span class="pill gold" id="scoreLabel">⭐ 0 poeng</span></div><div class="progress"><div id="progressBar" style="width:0%"></div></div><div class="levels" id="levels"></div></section>
+<section class="panel"><h2 class="task-title" id="taskTitle">Finn figuren som mangler!</h2><p class="instruction" id="instruction">Hvilken figur kommer neste i mønsteret?</p><div class="pattern" id="pattern" aria-label="Mønster med en manglende brikke"></div><div class="options" id="options"></div><div class="feedback" id="feedback" aria-live="polite"></div><div class="actions"><button class="btn secondary" id="hint">💡 Hint</button><button class="btn secondary" id="retry">🔄 Prøv på nytt</button><button class="btn" id="next" disabled>Neste oppgave ➜</button></div></section>
+<p class="foot">🐶 120 bildeoppgaver + 🔢 80 talloppgaver · 10 nivåer · Lagres automatisk 🌼</p></div>
+<div class="overlay" id="celebration" hidden><div class="confetti" id="confetti"></div><div class="modal"><div style="font-size:72px">🐶🏆🎉</div><h2 id="celebrateTitle">HURRA!</h2><p id="celebrateText">Du klarte nivået!</p><button class="btn" id="continue">Fortsett eventyret ➜</button></div></div><script>
+'use strict';
+const $=id=>document.getElementById(id);
+
+const GROUPS=[
+ ['🐶','🐱','🐰','🦊','🐸','🐻','🐼','🐯','🐨','🦁','🐮','🐷'],
+ ['🌷','🌻','🌹','🌼','🌸','🌺','🍀','🌿','🌳','🌵','🍁','🍄'],
+ ['🍎','🍐','🍓','🍋','🍉','🍒','🍇','🍊','🥕','🍌','🥝','🍍'],
+ ['☀️','🌙','⭐','🌈','☁️','❄️','🌟','🌞','⚡','🌦️','🌧️','🌠'],
+ ['🚗','🚲','🚀','🚂','✈️','🚁','🛴','🚕','🚌','⛵','🚜','🚒'],
+ ['⚽','🎈','🎁','🎵','🪁','🎨','🎲','🧸','🎯','🪀','🎺','🎀'],
+ ['🔴','🟡','🔵','🟢','🟣','🟠','🟤','⚪','🟥','🟦','🟩','🟨'],
+ ['1','2','3','4','5','6','7','8','9','10','11','12']
+];
+function makeTask(level,i){
+ const numeric=((i+level*3)%5===1 || (i+level*3)%5===3);
+ if(numeric){
+   const mode=(i+level*5)%6;
+   const start=1+level*17+((i*7)%16);
+   const step=1+((level+i)%5);
+   let full,name,hint;
+   if(mode===0){full=Array.from({length:7},(_,k)=>start+k*step);name='Tall som øker';hint='Hvor mye større blir hvert tall?';}
+   else if(mode===1){const high=start+step*8;full=Array.from({length:7},(_,k)=>high-k*step);name='Tall som minker';hint='Hvor mye mindre blir hvert tall?';}
+   else if(mode===2){full=Array.from({length:7},(_,k)=>start+Math.floor(k/2)*step);name='To like tall';hint='Hvert tall kommer to ganger.';}
+   else if(mode===3){full=Array.from({length:7},(_,k)=>start+Math.floor((k+1)/2)*step);name='Finn tallmønsteret';hint='Se hvilke tall som kommer to ganger.';}
+   else if(mode===4){full=Array.from({length:7},(_,k)=>start+(k%2===0?0:step));name='Annenhver verdi';hint='Tallene bytter mellom to verdier.';}
+   else {full=Array.from({length:7},(_,k)=>start+Math.floor(k/3)*step);name='Tre like tall';hint='Hvert tall kommer tre ganger.';}
+   const answer=String(full[6]);
+   let options=[answer];
+   for(const delta of [step,-step,step*2,-step*2,1,-1,3,-3]){
+     const candidate=String(full[6]+delta);
+     if(Number(candidate)>=0&&!options.includes(candidate))options.push(candidate);
+     if(options.length===3)break;
+   }
+   const shift=(level+i)%3;
+   options=options.slice(0,3);
+   options=options.slice(shift).concat(options.slice(0,shift));
+   return {seq:full.slice(0,6).map(String),answer,options,name,hint};
+ }
+ const group=GROUPS[(level*3+i)%7];
+ const offset=(level*7+i*5)%group.length;
+ const symbols=[group[offset],group[(offset+3)%group.length],group[(offset+7)%group.length]];
+ const [a,b,c]=symbols;
+ const patterns=[
+  {base:[a,b],name:'Annenhver gang',hint:'De to første figurene gjentar seg.'},
+  {base:[a,b,c],name:'Tre på rad',hint:'Se etter tre figurer som kommer igjen.'},
+  {base:[a,a,b,b],name:'To og to',hint:'Det kommer to like av hver figur.'},
+  {base:[a,b,b],name:'En og to',hint:'Én figur, så to like – om igjen.'},
+  {base:[a,b,c,b],name:'Frem og tilbake',hint:'Se etter figuren som står mellom de andre.'},
+  {base:[a,b,a,c],name:'Annenhver er lik',hint:'Se på plass 1, 3 og 5.'},
+  {base:[a,a,a,b],name:'Tre like og én annen',hint:'Tell tre like før det kommer en annen.'},
+  {base:[a,b,c,b],name:'Opp og ned',hint:'Figurene går frem og tilbake.'},
+  {base:[a,b,b,c],name:'Fire-brikkers mønster',hint:'De fire første figurene gjentas.'}
+ ];
+ const kind=(i*3+level)%patterns.length;
+ const chosen=patterns[kind];
+ const full=Array.from({length:7},(_,k)=>chosen.base[k%chosen.base.length]);
+ const answer=full[6];
+ let options=[answer,...symbols.filter(v=>v!==answer)];
+ const shift=(level+i*2)%3;
+ options=options.slice(shift).concat(options.slice(0,shift));
+ return {seq:full.slice(0,6),answer,options,name:chosen.name,hint:chosen.hint};
+}
+const TASKS=Array.from({length:10},(_,l)=>Array.from({length:20},(_,i)=>makeTask(l,i)));
+
+const KEY='spillglede_monsterjakten_bilder_tall_fikset_v5';
+let state={level:0,index:0,unlocked:0,score:0,answered:false,correct:false};
+try{const saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&Number.isInteger(saved.level)&&saved.level>=0&&saved.level<10&&Number.isInteger(saved.index)&&saved.index>=0&&saved.index<20){state={...state,...saved,answered:false,correct:false};state.unlocked=Math.min(9,Math.max(state.level,Number(state.unlocked)||0));}}catch(e){}
+let hadHint=false,tries=0;
+function save(){try{localStorage.setItem(KEY,JSON.stringify({...state,answered:false,correct:false}));}catch(e){}}
+
+function render(){const task=TASKS[state.level][state.index];$('levelLabel').textContent='Nivå '+(state.level+1);$('questionLabel').textContent='Oppgave '+(state.index+1)+' av 20';$('scoreLabel').textContent='⭐ '+state.score+' poeng';$('progressBar').style.width=(state.index/20*100)+'%';$('taskTitle').textContent=task.name;$('instruction').textContent='Hvilken brikke kommer på spørsmålstegnet?';$('feedback').textContent='';$('next').disabled=true;$('hint').disabled=false;hadHint=false;tries=0;state.answered=false;state.correct=false;
+ $('levels').replaceChildren();for(let l=0;l<10;l++){const b=document.createElement('button');b.className='level'+(l===state.level?' active':'');b.textContent=(l<state.unlocked?'✓ ':'')+'Nivå '+(l+1);b.disabled=l>state.unlocked;b.onclick=()=>{state.level=l;state.index=0;save();render();};$('levels').appendChild(b);}
+ $('pattern').replaceChildren();for(const val of [...task.seq,'?']){const div=document.createElement('div');div.className='tile'+(val==='?'?' missing':'');div.textContent=val;$('pattern').appendChild(div);}
+ $('options').replaceChildren();task.options.forEach(val=>{const b=document.createElement('button');b.className='option';b.textContent=val;b.setAttribute('aria-label','Velg '+val);b.onclick=()=>answer(val,b);$('options').appendChild(b);});}
+function answer(val,btn){if(state.answered)return;const task=TASKS[state.level][state.index];if(val===task.answer){state.answered=true;state.correct=true;btn.classList.add('correct');for(const b of $('options').children)b.disabled=true;$('pattern').lastChild.textContent=val;$('pattern').lastChild.classList.remove('missing');const points=hadHint?5:tries?7:10;state.score+=points;$('scoreLabel').textContent='⭐ '+state.score+' poeng';$('feedback').textContent='🎉 Helt riktig! +'+points+' poeng';$('feedback').style.color='#168659';$('next').disabled=false;$('hint').disabled=true;}else{btn.classList.add('wrong');tries++;$('feedback').textContent='💛 Ikke helt – prøv igjen! Du kan prøve så mange ganger du vil.';$('feedback').style.color='#c27030';}}
+$('retry').onclick=()=>{render();};
+$('hint').onclick=()=>{hadHint=true;const t=TASKS[state.level][state.index];$('feedback').textContent='💡 Hint: '+t.hint;$('feedback').style.color='#6652b2';$('hint').disabled=true;};
+$('next').onclick=()=>{if(!state.correct)return;if(state.index===19){state.unlocked=Math.max(state.unlocked,Math.min(9,state.level+1));save();celebrate();}else{state.index++;save();render();}};
+function celebrate(){const last=state.level===9;$('celebrateTitle').textContent=last?'DU ER MØNSTER-MESTER! 🏆':'HURRA! 🎉';$('celebrateText').textContent=last?'Du klarte alle 10 nivåene og 200 oppgavene!':'Du klarte nivå '+(state.level+1)+'! Nå er nivå '+(state.level+2)+' låst opp!';$('continue').textContent=last?'Spill igjen fra nivå 1':'Neste nivå ➜';$('confetti').replaceChildren();const colors=['#f653a5','#ffcb37','#48c7df','#78d46b','#9c7bf0'];for(let i=0;i<75;i++){const p=document.createElement('i');p.style.left=((i*47)%100)+'%';p.style.background=colors[i%colors.length];p.style.animationDelay=((i*13)%22/10)+'s';p.style.animationDuration=(2.5+(i%5)*.3)+'s';$('confetti').appendChild(p);}$('celebration').hidden=false;melody();}
+function melody(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const ctx=new AC();[523,659,784,1046].forEach((f,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.value=f;osc.connect(gain);gain.connect(ctx.destination);const t=ctx.currentTime+i*.15;gain.gain.setValueAtTime(.001,t);gain.gain.exponentialRampToValueAtTime(.12,t+.02);gain.gain.exponentialRampToValueAtTime(.001,t+.23);osc.start(t);osc.stop(t+.25);});setTimeout(()=>ctx.close(),1500);}catch(e){}}
+$('continue').onclick=()=>{$('celebration').hidden=true;if(state.level===9){state.level=0;state.index=0;state.score=0;}else{state.level++;state.index=0;}save();render();};
+render();
+</script></body></html>
