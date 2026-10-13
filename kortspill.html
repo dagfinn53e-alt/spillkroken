@@ -1,50 +1,44 @@
 <!doctype html>
-<html lang="no">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kortspill – Spillglede</title>
+<html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kortspill – Spillglede</title>
 <style>
-*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#74411f,#2b160d 72%);color:#fff;min-height:100vh}
-header{text-align:center;padding:28px 15px 18px} h1{font-size:clamp(38px,7vw,78px);margin:0;color:#ffd85b;text-shadow:0 4px 0 #5b270c,0 7px 15px #000}
-.sub{font-size:clamp(16px,2.2vw,24px);font-weight:700;margin-top:8px}
-.wrap{max-width:1180px;margin:auto;padding:18px;display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
-.card{border:5px solid #e8b640;border-radius:25px;background:linear-gradient(145deg,#f6e2a5,#c88c3e);padding:18px;box-shadow:0 12px 25px #0008;color:#30180d;text-align:center;position:relative;overflow:hidden;min-height:300px}
-.card:before{content:"";position:absolute;inset:8px;border:2px solid #6b3517;border-radius:17px;pointer-events:none}
-.icon{height:150px;display:flex;justify-content:center;align-items:center;gap:8px}
-.playcard{width:82px;height:118px;background:#fff;border:4px solid #222;border-radius:10px;box-shadow:4px 5px 5px #0005;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900}
-.red{color:#d51f2b;transform:rotate(8deg)} .black{color:#111;transform:rotate(-8deg)}
-h2{font-size:31px;margin:5px 0}.desc{font-weight:700;min-height:44px}
-button,.btn{display:inline-block;border:3px solid #5a2a10;border-radius:30px;padding:12px 28px;font-size:19px;font-weight:900;text-decoration:none;cursor:pointer}
-.go{background:linear-gradient(#46c95c,#16872b);color:white;box-shadow:0 5px 0 #075c18}
-.soon{background:#6d6257;color:#eee;cursor:default}
-.back{display:block;width:max-content;margin:25px auto 40px;background:#ffd85b;color:#32190d}
-@media(max-width:700px){.wrap{grid-template-columns:1fr}.card{min-height:275px}}
-</style>
-</head>
-<body>
-<header><h1>🃏 KORTSPILL</h1><div class="sub">Velg et kortspill – flere kommer etter hvert!</div></header>
-<main class="wrap">
-<section class="card">
- <div class="icon"><div class="playcard black">K♠</div><div class="playcard red">A♥</div></div>
- <h2>7-kabalen</h2><div class="desc">Den klassiske kabalen for én spiller.</div>
- <a class="btn go" href="kabal.html">SPILL NÅ</a>
-</section>
-<section class="card">
- <div class="icon"><div class="playcard red">7♦</div><div class="playcard black">7♣</div></div>
- <h2>Hopp i havet</h2><div class="desc">Samle fire like kort.</div>
- <span class="btn soon">KOMMER SNART</span>
-</section>
-<section class="card">
- <div class="icon"><div class="playcard black">A♣</div><div class="playcard red">K♦</div></div>
- <h2>Amerikaner</h2><div class="desc">Spill taktisk mot tre datamotstandere.</div>
- <a class="btn go" href="amerikaner.html">SPILL NÅ</a>
-</section>
-<section class="card">
- <div class="icon"><div class="playcard black">J♠</div><div class="playcard red">Q♥</div></div>
- <h2>Kortmesteren – Vri åtter</h2><div class="desc">Spill Vri åtter mot datamaskinen!</div>
- <a class="btn go" href="kortmesteren.html">SPILL NÅ</a>
-</section>
-</main>
-<a class="btn back" href="index.html">← TIL SPILLGLEDE</a>
-</body></html>
+:root{color-scheme:dark;--gold:#ffd56b;--deep:#281309}*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:system-ui,Arial,sans-serif;color:white;background:radial-gradient(ellipse at 50% 0%,#6e3518 0%,#301608 45%,#120904 100%);overflow-x:hidden}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;background:repeating-linear-gradient(3deg,transparent 0 23px,#c68a4930 24px 26px,transparent 27px 48px)}.page{position:relative;max-width:1280px;margin:auto;padding:15px 20px 38px}header{text-align:center;margin:0 0 24px}.ornament{color:#ffcf59;letter-spacing:15px;font-size:clamp(23px,3.5vw,42px);text-shadow:0 2px 5px #000}h1{font-family:Georgia,serif;font-size:clamp(44px,7vw,86px);line-height:1;margin:0;color:#ffdd7c;letter-spacing:2px;text-shadow:0 2px #b36d15,0 5px #6c2405,0 9px 14px #000,0 0 25px #ffa82880}.subtitle{font-weight:750;font-size:clamp(15px,2vw,23px);margin:13px 0 0;text-shadow:0 2px 4px #000}.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.game{position:relative;isolation:isolate;min-height:350px;padding:17px 20px 20px;text-align:center;border:6px ridge #e7ac35;border-radius:27px;background:linear-gradient(135deg,#774016 0%,#361805 15%,#71401e 23%,#291405 29%,#78401d 83%,#301709 100%);box-shadow:inset 0 0 0 3px #422007,0 8px 0 #140900,0 16px 23px #000a;overflow:hidden;display:flex;align-items:center;flex-direction:column;justify-content:space-between;gap:5px}.game:before{content:"";position:absolute;z-index:-1;inset:12px;border:2px solid #ae772e;border-radius:14px;background:radial-gradient(ellipse at 50% 35%,#136947,#063d2e 67%,#03271e);box-shadow:inset 0 0 35px #000b}.game:after{content:"✦";position:absolute;top:1px;right:18px;color:#fff0a1;text-shadow:0 0 12px gold;font-size:21px}.cards{height:156px;display:flex;align-items:center;justify-content:center;gap:0;padding-top:12px;filter:drop-shadow(2px 8px 4px #0009)}.playing{width:83px;height:117px;background:linear-gradient(135deg,#fff,#e8e8e8);color:#101820;border:2px solid #d4d4d4;border-radius:9px;box-shadow:0 2px 0 #888,0 5px 8px #0008;display:flex;flex-direction:column;justify-content:center;align-items:center;font-family:Georgia,serif;font-weight:bold;font-size:37px;transform:rotate(var(--rotate,0deg));margin:0 -4px}.playing.red{color:#c8202a}.playing small{font-size:40px;line-height:1}.playing.back{background:repeating-linear-gradient(45deg,#102c6b 0 4px,#6a96da 4px 6px,#102c6b 6px 10px);border:5px solid white;color:transparent}.game h2{font-family:Georgia,serif;color:#ffe49a;font-size:clamp(23px,2.6vw,35px);line-height:1.15;text-shadow:0 2px 2px #000;margin:0;background:linear-gradient(#8e1a0d,#420600);border:3px ridge #e9b74b;border-radius:40px;box-shadow:0 3px 8px #0008;padding:9px 16px;width:min(94%,410px)}.desc{font-weight:650;font-size:clamp(14px,1.6vw,19px);line-height:1.3;text-shadow:0 2px 3px #000;min-height:26px;margin:4px 0}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:51px;padding:9px 25px;border-radius:32px;font-weight:900;font-size:clamp(16px,2vw,21px);text-decoration:none;letter-spacing:.3px;text-shadow:0 2px 3px #0009;border:3px solid #ffdc79;box-shadow:inset 0 2px 4px #fff7,0 5px 0 #16360c,0 9px 10px #0009;color:white;background:linear-gradient(#48ef4b,#0a9b25 55%,#046419);transition:transform .15s,filter .15s}.btn.go:hover,.btn.go:focus-visible{filter:brightness(1.18);transform:translateY(-2px)}.btn.go:active{transform:translateY(3px)}.btn.soon{background:linear-gradient(#727780,#343941);border-color:#aab0b5;box-shadow:inset 0 2px 3px #fff5,0 4px 0 #181a1f,0 8px 8px #0007;color:#eee;cursor:not-allowed}.return{display:flex;width:max-content;max-width:100%;margin:31px auto 0;background:linear-gradient(#ffe17b,#ffae12 65%,#d77b00);border:3px solid #ffecac;box-shadow:inset 0 2px 4px #fff9,0 5px 0 #713800,0 9px 15px #0009;color:#291306;text-shadow:none;padding:12px 35px}.return:hover{filter:brightness(1.12)}@media(max-width:700px){.page{padding:12px 11px 28px}.games{grid-template-columns:1fr;gap:16px}.game{min-height:322px;padding:10px 12px 17px}.cards{height:133px}.playing{width:68px;height:99px;font-size:29px}.playing small{font-size:33px}.ornament{letter-spacing:5px}header{margin-bottom:18px}.game h2{font-size:26px}.desc{font-size:16px}.btn{min-height:47px}}@media(prefers-reduced-motion:reduce){.btn{transition:none}}
+
+/* Kompakt kortspillmeny: fire kolonner på PC, tre på mobil. */
+.page{max-width:1500px;padding:14px 14px 30px}
+.games{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.game{min-width:0;min-height:245px;padding:10px 7px 13px;border-width:4px;border-radius:17px;gap:5px}
+.game:before{inset:7px;border-radius:10px}
+.game:after{right:9px;font-size:14px}
+.cards{height:91px;padding-top:6px}
+.playing{width:44px;height:66px;font-size:22px;border-radius:6px;margin:0 -3px}
+.playing small{font-size:22px}
+.playing.back{border-width:3px}
+.game h2{font-size:clamp(14px,1.55vw,21px);padding:7px 4px;border-width:2px;width:100%;overflow-wrap:anywhere}
+.desc{font-size:clamp(11px,1vw,14px);min-height:33px;margin:2px 0}
+.btn{min-height:37px;padding:6px 9px;font-size:clamp(11px,1vw,15px);border-width:2px}
+.return{font-size:16px;padding:10px 22px}
+@media(max-width:700px){
+ .page{padding:10px 5px 22px}
+ header{margin-bottom:13px}
+ h1{font-size:clamp(32px,8vw,52px)}
+ .subtitle{font-size:12px}
+ .ornament{font-size:20px;letter-spacing:4px}
+ .games{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ .game{min-height:175px;padding:7px 3px 9px;border-width:2px;border-radius:10px;gap:3px}
+ .game:before{inset:3px;border-width:1px;border-radius:7px}
+ .game:after{display:none}
+ .cards{height:55px;padding-top:3px}
+ .playing{width:25px;height:39px;font-size:13px;border-width:1px;border-radius:3px;margin:0 -2px}
+ .playing small{font-size:13px}
+ .playing.back{border-width:2px}
+ .game h2{font-size:clamp(10px,2.65vw,14px);padding:4px 2px;border-width:1px;line-height:1.1}
+ .desc{font-size:clamp(9px,2.2vw,11px);line-height:1.15;min-height:35px}
+ .btn{min-height:29px;padding:4px 3px;font-size:clamp(9px,2.2vw,11px);border-width:1px;box-shadow:0 2px 0 #16360c}
+ .return{font-size:13px;min-height:35px;margin-top:18px}
+}
+</style></head><body><div class="page"><header><div class="ornament" aria-hidden="true">♥ ♠ ♦ ♣</div><h1>KORTSPILL</h1><p class="subtitle">Velg et kortspill – flere kommer etter hvert!</p></header><main class="games">
+<section class="game"><div class="cards" aria-hidden="true"><div class="playing back" style="--rotate:-12deg"></div><div class="playing" style="--rotate:-5deg">K<small>♠</small></div><div class="playing red" style="--rotate:7deg">A<small>♥</small></div></div><h2>7-kabalen</h2><p class="desc">Den klassiske kabalen for én spiller.</p><a class="btn go" href="kabal.html">SPILL NÅ&nbsp; ▶</a></section>
+<section class="game"><div class="cards" aria-hidden="true"><div class="playing red" style="--rotate:-13deg">7<small>♦</small></div><div class="playing" style="--rotate:-4deg">7<small>♣</small></div><div class="playing red" style="--rotate:6deg">7<small>♥</small></div><div class="playing" style="--rotate:15deg">7<small>♠</small></div></div><h2>Hopp i havet</h2><p class="desc">Samle fire like kort.</p><span class="btn soon" aria-label="Hopp i havet kommer snart">KOMMER SNART 🔒</span></section>
+<section class="game"><div class="cards" aria-hidden="true"><div class="playing" style="--rotate:-14deg">A<small>♠</small></div><div class="playing red" style="--rotate:-7deg">K<small>♥</small></div><div class="playing" style="--rotate:0deg">Q<small>♣</small></div><div class="playing red" style="--rotate:8deg">J<small>♦</small></div></div><h2>Amerikaner</h2><p class="desc">Spill taktisk mot tre datamotstandere.</p><a class="btn go" href="amerikaner.html">SPILL NÅ&nbsp; ▶</a></section>
+<section class="game"><div class="cards" aria-hidden="true"><div class="playing" style="--rotate:-14deg">J<small>♠</small></div><div class="playing red" style="--rotate:-7deg">Q<small>♥</small></div><div class="playing" style="--rotate:0deg">8<small>♣</small></div><div class="playing red" style="--rotate:8deg">K<small>♦</small></div></div><h2>Kortmesteren – Vri åtter</h2><p class="desc">Spill Vri åtter mot datamaskinen!</p><a class="btn go" href="kortmesteren.html">SPILL NÅ&nbsp; ▶</a></section>
+</main><a class="btn return" href="index.html">← TIL SPILLGLEDE</a></div></body></html>
