@@ -1,0 +1,194 @@
+<!doctype html><html lang="no"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Lurifaks – Fantasiverkstedet</title><style>
+:root{font-family:'Trebuchet MS',system-ui,sans-serif;color:#193153}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 5%,#ffc8ef 0,transparent 30%),linear-gradient(130deg,#43308e,#1778bc 58%,#2bd6d0);padding:18px}.shell{max-width:1180px;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;color:white;text-shadow:0 2px 3px #2225}.top h1{margin:0;font-size:clamp(26px,4vw,45px)}.top p{margin:5px 0 16px}.top button,.controls button{border:0;border-radius:18px;padding:11px 17px;font-weight:900;background:#fff;color:#293c71;cursor:pointer;box-shadow:0 4px 0 #0002}.layout{display:grid;grid-template-columns:minmax(280px,1fr) minmax(330px,1.25fr);gap:18px}.panel{background:linear-gradient(150deg,#b5f8ff,#64c7f4);border:6px solid #e8faff;border-radius:29px;box-shadow:0 10px 0 #153b7d77,0 20px 40px #10266355;padding:15px}.scene{min-height:515px;position:relative;overflow:hidden;background:linear-gradient(#72d7ff 0 57%,#83d47d 57%);border:4px solid #fff9;border-radius:22px;display:flex;align-items:center;justify-content:center}.scene:before{content:'☁️　　　　　☁️';position:absolute;top:12px;left:5%;font-size:38px;opacity:.9}.scene:after{content:'🌼　　　🌷　　　　　🌻';position:absolute;bottom:12px;left:4%;font-size:29px}.fox{position:absolute;top:18px;right:14px;font-size:50px;animation:bob 3s ease-in-out infinite}.bubble{position:absolute;top:20px;left:12px;background:white;border:3px solid #496eb5;border-radius:20px;padding:10px 14px;max-width:65%;font-weight:bold;z-index:4}.monster{position:relative;width:260px;height:325px;filter:drop-shadow(0 15px 4px #274e6b55);animation:bob 3.5s ease-in-out infinite}.bodyshape{position:absolute;inset:55px 12px 20px;background:var(--skin,#a47bff);border:6px solid #283b77;border-radius:46% 46% 38% 38%;box-shadow:inset -23px -13px #0002,inset 18px 14px #fff5}.monster.round .bodyshape{border-radius:50%}.monster.square .bodyshape{border-radius:25%}.horns{position:absolute;top:17px;width:100%;font-size:67px;text-align:center;letter-spacing:24px;z-index:0}.eyes{position:absolute;top:118px;width:100%;display:flex;justify-content:center;gap:24px;z-index:2}.eye{width:66px;height:76px;border:5px solid #283b77;background:white;border-radius:50%;display:grid;place-items:center}.eye:after{content:'';width:28px;height:35px;background:#25244e;border-radius:50%;box-shadow:8px -7px 0 -4px white}.monster.one .eye:nth-child(2){display:none}.monster.one .eye{width:92px;height:92px}.monster.three .eye{width:52px;height:60px}.mouth{position:absolute;top:215px;left:50%;transform:translateX(-50%);z-index:2;font-size:67px;line-height:1}.arms{position:absolute;top:190px;left:-23px;right:-23px;display:flex;justify-content:space-between;font-size:51px;z-index:1}.feet{position:absolute;bottom:2px;left:34px;right:34px;display:flex;justify-content:space-between;font-size:48px;z-index:1}.spark{position:absolute;font-size:34px;animation:pop 1.1s forwards;pointer-events:none}.panel h2{margin:0 0 8px;font-size:24px}.hint{font-size:15px;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.choice{min-height:69px;border:3px solid #d6f7ff;border-radius:15px;background:linear-gradient(#fff,#d9f2ff);font-size:clamp(25px,3vw,39px);cursor:pointer;box-shadow:0 4px 0 #2471a655;transition:transform .13s}.choice:hover{transform:translateY(-3px)}.choice.selected{border-color:#ffb900;background:#fff3ae;box-shadow:0 0 0 3px #ffdf66,0 4px 0 #b78a28}.section{margin:10px 0 16px}.section strong{display:block;margin-bottom:7px}.controls{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:16px}.controls button{font-size:18px}.controls .done{background:linear-gradient(#e7ff70,#66d637);color:#285318;font-size:23px;padding:13px 35px}.message{min-height:34px;text-align:center;font-size:20px;font-weight:bold;margin:13px 0 0}.stars{background:#fff9;border-radius:15px;padding:8px 12px;display:inline-block;font-weight:900}.footnote{color:white;text-align:center;font-size:14px;margin-top:22px}@keyframes bob{50%{transform:translateY(-9px)}}@keyframes pop{to{transform:translateY(-80px) scale(1.5);opacity:0}}@media(max-width:760px){body{padding:8px}.layout{grid-template-columns:1fr}.scene{min-height:390px}.monster{transform:scale(.82);animation:none}.panel{padding:10px}.choice{min-height:59px}.bubble{font-size:13px;max-width:70%}.fox{font-size:37px}}
+
+.typebar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0}
+.typebtn{border:3px solid #fff;border-radius:18px;background:#e7f7ff;padding:12px 4px;cursor:pointer;font-weight:900;font-size:15px;color:#244b75;box-shadow:0 4px 0 #164b7955}
+.typebtn.active{background:#fff0a4;border-color:#ffc92e;transform:translateY(-2px)}
+.typebtn .em{display:block;font-size:36px}.partTitle{margin:12px 0 5px;font-size:17px}.partGrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.part{border:3px solid #fff;border-radius:14px;background:linear-gradient(#fff,#cceeff);min-height:62px;cursor:pointer;font-size:28px;box-shadow:0 3px 0 #2471a644}
+.part.active{border-color:#ffb900;background:#fff2a5}.preview{width:min(100%,400px);height:360px;position:relative;z-index:2;filter:drop-shadow(0 10px 7px #17436b55)}
+.scene{background:linear-gradient(#83d5ff 0 62%,#8bd477 62%)}
+.bubble{z-index:4}.panel h2{margin:0 0 5px}.counter{font-weight:900;color:#2b5a83;margin:5px 0}.controls button{touch-action:manipulation}
+@media(max-width:760px){.typebar{gap:4px}.typebtn{font-size:11px;padding:8px 2px}.typebtn .em{font-size:26px}.part{font-size:23px;min-height:55px}.preview{height:300px}}
+</style></head><body><main class="shell"><header class="top"><div><h1>🦊 Lurifaks sitt fantasiverksted</h1><p>Fem forskjellige figurtyper – bjørn, kanin, katt, rev og panda får hver sin ekte dyreform!</p></div><div class="stars">⭐ Stjerner: <span id="stars">0</span></div></header>
+<nav class="typebar" id="types" aria-label="Velg hva du vil bygge"></nav>
+<div class="layout"><section class="panel"><div class="scene" id="scene"><div class="bubble" id="bubble">Velg en figur og bygg den akkurat som du vil!</div><div class="fox">🦊</div><svg id="preview" class="preview" viewBox="0 0 400 380" role="img" aria-label="Figuren du bygger"></svg></div><div class="message" id="message" aria-live="polite">Velg deler og se figuren forandre seg!</div><div class="controls"><button id="random">🎲 Overrask meg</button><button id="reset">↻ Start på nytt</button></div></section>
+<section class="panel"><h2 id="workshop">🎨 Bygg din figur</h2><p class="hint">Trykk på delene. Figuren endrer seg med én gang.</p><div id="parts"></div>
+<div class="counter" id="counter"></div><div class="message" id="challenge"></div>
+<div class="controls"><button id="hint">💡 Hint</button><button class="done" id="done">✓ Ferdig!</button><button id="next">🌟 Ny utfordring</button></div></section></div>
+<p class="footnote">Spillglede • For barn 3–8 år • Gratis • Fungerer uten internett • Ingen tidsfrist</p></main>
+<script>
+const $=id=>document.getElementById(id);
+const kinds=[['monster','👾','Monster'],['robot','🤖','Robot'],['animal','🐻','Skogsdyr'],['dragon','🐲','Drage'],['alien','👽','Romvenn']];
+const common={
+colors:[['💜','#a47bff'],['💙','#68b9f6'],['💚','#79d88a'],['💛','#ffe073'],['🩷','#ffa3bb'],['🧡','#ffad69']],
+eyes:[['👁️','one'],['👀','two'],['👀👁️','three'],['😴','sleep'],['😍','heart']],
+mouth:[['😄','smile'],['😮','wow'],['😋','tongue'],['😁','teeth'],['🙂','calm']],
+decor:[['👑','crown'],['⭐','stars'],['🌸','flower'],['🎀','bow'],['🌈','rainbow'],['🎩','hat']],
+body:[['🥚','oval'],['⚪','round'],['🟪','square'],['🔺','triangle'],['💟','heart']],
+arms:[['🙌','up'],['✋','normal'],['💪','strong'],['🪽','wings'],['🚫','none']],
+feet:[['👟','shoes'],['🐾','paws'],['🛼','skates'],['🥾','boots'],['🚫','none']]
+};
+const extras={
+monster:[['🦄','horns'],['🐰','ears'],['🌵','spikes'],['🐙','tentacles'],['🌟','antenna']],
+robot:[['📡','antenna'],['⚙️','gears'],['🔋','battery'],['💡','lamp'],['🛡️','shield']],
+animal:[['🐻','bear'],['🐰','rabbit'],['🐱','cat'],['🦊','fox'],['🐼','panda']],
+dragon:[['🔥','fire'],['🪽','wings'],['🦄','horns'],['🌵','spikes'],['☁️','cloud']],
+alien:[['📡','antenna'],['🛸','ufo'],['🌟','stars'],['👂','ears'],['✨','glow']]
+};
+let kind='monster',stars=0,step=0,completed=new Set();
+const state={colors:'#a47bff',eyes:'two',mouth:'smile',decor:'crown',body:'oval',arms:'normal',feet:'shoes',extra:'horns'};
+const sections=[['body','Kroppsform'],['colors','Farge'],['eyes','Øyne'],['mouth','Munn'],['extra','Dyretype eller spesielle deler'],['arms','Armer eller vinger'],['feet','Føtter'],['decor','Pynt']];
+function opts(key){return key==='extra'?extras[kind]:common[key]}
+function resetState(){Object.assign(state,{colors:'#a47bff',eyes:'two',mouth:'smile',decor:'crown',body:'oval',arms:'normal',feet:'shoes',extra:extras[kind][0][1]})}
+function renderControls(){
+$('types').innerHTML='';
+kinds.forEach(([id,emoji,name])=>{let b=document.createElement('button');b.className='typebtn'+(id===kind?' active':'');b.innerHTML='<span class="em">'+emoji+'</span>'+name;b.onclick=()=>{kind=id;step=0;resetState();renderControls();renderPreview();updateTask();};$('types').append(b)});
+$('workshop').textContent=kinds.find(k=>k[0]===kind)[1]+' Bygg din '+kinds.find(k=>k[0]===kind)[2].toLowerCase();
+$('parts').innerHTML='';
+const activeSections=kind==='animal'?[['extra','Velg dyret først'],['colors','Pelsfarge'],['eyes','Øyne'],['mouth','Munn'],['decor','Pynt'],['feet','Føtter']]:sections;
+activeSections.forEach(([key,label],i)=>{let wrap=document.createElement('div');wrap.innerHTML='<h3 class="partTitle">'+(i+1)+'. '+label+'</h3>';let grid=document.createElement('div');grid.className='partGrid';opts(key).forEach(([emoji,value])=>{let b=document.createElement('button');b.className='part'+(state[key]===value?' active':'');b.textContent=emoji;b.title=label+': '+value;b.setAttribute('aria-label',label+' '+emoji);b.setAttribute('aria-pressed',state[key]===value);b.onclick=()=>{state[key]=value;renderControls();renderPreview();$('message').textContent='Så fint! Prøv flere deler!';};grid.append(b)});wrap.append(grid);$('parts').append(wrap)})
+}
+const shape=()=>state.body==='square'?'<rect x="90" y="105" width="220" height="215" rx="35"/>':state.body==='round'?'<circle cx="200" cy="215" r="118"/>':state.body==='triangle'?'<path d="M200 75 Q214 75 230 110 L322 295 Q330 325 290 325 H110 Q70 325 83 290 L170 110 Q187 75 200 75Z"/>':state.body==='heart'?'<path d="M200 325 C115 268 66 218 86 153 C102 97 167 98 200 147 C242 89 306 105 317 158 C330 224 278 278 200 325Z"/>':'<ellipse cx="200" cy="215" rx="110" ry="130"/>';
+
+
+function creatureSVG(){
+const c=state.colors, ink='#344764', e=state.extra;
+const ell=(x,y,rx,ry,fill=c,stroke=ink)=>`<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${fill}" stroke="${stroke}" stroke-width="6"/>`;
+const path=(d,fill=c)=>`<path d="${d}" fill="${fill}" stroke="${ink}" stroke-width="6" stroke-linejoin="round"/>`;
+const rect=(x,y,w,h,r,fill=c)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" stroke="${ink}" stroke-width="6"/>`;
+let a='',animal=kind==='animal'?e:'';
+let shapes={oval:ell(200,240,88,100),round:ell(200,235,106,105),square:rect(104,145,192,185,20),triangle:path('M200 125 L308 325 H92 Z'),heart:path('M200 320 Q65 235 104 164 Q151 105 200 162 Q250 105 296 164 Q334 235 200 320Z')};
+if(kind==='animal'){
+const natural={bear:'#ad7851',rabbit:'#ddd7ee',cat:'#e7b36e',fox:'#e99143',panda:'#f6f6f6'}[animal]||c;
+const fur=state.colors==='#a47bff'?natural:c;
+const ear=animal==='rabbit'
+ ?ell(155,92,23,77,fur)+ell(245,92,23,77,fur)+ell(155,92,11,59,'#f6acc4','none')+ell(245,92,11,59,'#f6acc4','none')
+ :animal==='fox'?path('M103 175 L113 42 L185 125Z',fur)+path('M215 125 L287 42 L297 175Z',fur)
+ :animal==='cat'?path('M111 162 L124 71 L178 121Z',fur)+path('M222 121 L276 71 L289 162Z',fur)
+ :ell(128,126,32,34,animal==='panda'?'#2c3543':fur)+ell(272,126,32,34,animal==='panda'?'#2c3543':fur);
+if(animal==='fox'){
+ a+=path('M267 283 Q354 215 350 315 L318 343 L295 312Z','#e99143');
+ a+=ell(196,269,71,68,fur)+ell(196,282,39,48,'#fff1d5','none');
+ a+=ear+path('M101 170 Q122 102 200 119 Q278 102 299 170 L265 240 L200 283 L135 240Z',fur);
+ a+=path('M127 220 L200 283 L273 220 Q235 240 200 238 Q165 240 127 220Z','#fff6e9');
+}else if(animal==='rabbit'){
+ a+=ell(295,282,23,23,'#fff');a+=ell(200,260,67,79,fur)+ell(200,277,42,50,'#fff','none');
+ a+=ell(156,333,33,17,fur)+ell(247,333,33,17,fur);
+ a+=ear+ell(200,181,91,85,fur)+ell(200,235,41,31,'#fff','none');
+}else if(animal==='cat'){
+ a+=`<path d="M273 282 Q353 285 323 178" fill="none" stroke="${fur}" stroke-width="22" stroke-linecap="round"/>`;
+ a+=ell(200,267,69,74,fur)+ell(200,280,37,46,'#f8dfb7','none');
+ a+=ear+path('M105 179 Q112 115 200 113 Q288 115 295 179 Q302 265 200 268 Q98 265 105 179Z',fur);
+ a+=`<path d="M145 234 L95 223 M144 249 L94 254 M255 234 L305 223 M256 249 L306 254" stroke="${ink}" stroke-width="3"/>`;
+}else if(animal==='panda'){
+ a+=ell(200,270,83,78,'#f6f6f6')+ell(136,270,25,45,'#303844')+ell(264,270,25,45,'#303844');
+ a+=ell(153,330,30,17,'#303844')+ell(247,330,30,17,'#303844');
+ a+=ear+ell(200,185,99,89,'#f6f6f6')+ell(156,190,31,39,'#303844','none')+ell(244,190,31,39,'#303844','none');
+}else{
+ a+=ell(200,267,85,79,fur)+ell(200,279,44,46,'#e9bc89','none');
+ a+=ell(148,328,34,19,fur)+ell(252,328,34,19,fur);
+ a+=ear+ell(200,181,102,91,fur)+ell(200,236,48,33,'#e9bc89','none');
+}
+}else if(kind==='robot'){
+a+=rect(117,155,166,165,18,'#a6c9dc')+rect(130,95,140,120,20,'#d6e9f3')+rect(143,117,114,76,12,'#325b85');
+a+=rect(76,185,38,99,10,'#a6c9dc')+rect(286,185,38,99,10,'#a6c9dc')+rect(140,316,42,38,7,'#708da9')+rect(218,316,42,38,7,'#708da9');
+a+=`<path d="M200 95 V56" stroke="${ink}" stroke-width="9"/>`+ell(200,48,15,15,'#ffe267');
+a+=rect(173,272,54,28,9,'#f8dc72');
+}else if(kind==='dragon'){
+a+=path('M271 272 Q373 260 341 174 Q340 248 293 236Z','#e5a652');
+a+=path('M143 203 L70 121 L96 253Z','#8ad6ec')+path('M257 203 L330 121 L303 253Z','#8ad6ec');
+a+=ell(200,256,82,84,c)+ell(200,173,99,86,c);
+a+=path('M122 132 L107 67 L160 112Z','#f5c978')+path('M240 112 L293 67 L278 132Z','#f5c978');
+a+=ell(200,230,48,37,'#ffdfac');
+if(e==='fire')a+='<text x="287" y="239" font-size="64">🔥</text>';
+}else if(kind==='alien'){
+a+=ell(200,272,67,69,c)+ell(200,163,121,95,c);
+a+=`<path d="M155 92 L132 45 M245 92 L268 45" stroke="${ink}" stroke-width="8"/>`+ell(132,43,14,14,'#ffdb71')+ell(268,43,14,14,'#ffdb71');
+a+=ell(151,331,28,15,c)+ell(249,331,28,15,c);
+}else{
+a+=shapes[state.body]||shapes.oval;
+if(e==='horns')a+=path('M125 155 L112 65 L169 142Z')+path('M231 142 L288 65 L275 155Z');
+if(e==='ears')a+=ell(121,124,25,61)+ell(279,124,25,61);
+if(e==='antenna')a+=`<path d="M200 141 V70" stroke="${ink}" stroke-width="7"/>`+ell(200,64,16,16,'#fce16d');
+}
+if(kind!=='robot'){
+let count=state.eyes==='one'?1:state.eyes==='three'?3:2;
+for(let i=0;i<count;i++){
+const x=count===1?200:count===2?165+i*70:146+i*54;
+a+=ell(x,kind==='animal'?195:kind==='dragon'?174:180, count===3?19:24,27,'#fff');
+if(state.eyes==='sleep')a+=`<path d="M${x-13} 184 Q${x} 199 ${x+13} 184" fill="none" stroke="${ink}" stroke-width="5"/>`;
+else if(state.eyes==='heart')a+=`<text x="${x}" y="191" font-size="25" text-anchor="middle">💗</text>`;
+else a+=ell(x+4,kind==='animal'?198:kind==='dragon'?177:184,9,13,'#24344f','none');
+}
+}else{
+for(let x of state.eyes==='one'?[200]:state.eyes==='three'?[169,200,231]:[171,229])a+=ell(x,153,12,16,'#86f8f6','none');
+}
+const my=kind==='animal'?253:kind==='robot'?209:kind==='dragon'?235:245;
+if(kind==='animal')a+=ell(200,my-12,18,12,animal==='panda'?'#293443':'#4a3d46','none');
+const mouths={smile:`M169 ${my} Q200 ${my+33} 231 ${my}`,wow:`M200 ${my-5} a17 22 0 1 0 1 0`,tongue:`M169 ${my} Q200 ${my+41} 231 ${my} Q200 ${my+55} 169 ${my}`,teeth:`M170 ${my} Q200 ${my+30} 230 ${my} L230 ${my+16} Q200 ${my+38} 170 ${my+16}Z`,calm:`M176 ${my} Q200 ${my+10} 224 ${my}`};
+a+=`<path d="${mouths[state.mouth]}" fill="${['wow','tongue','teeth'].includes(state.mouth)?'#9a526d':'none'}" stroke="#503e56" stroke-width="6" stroke-linecap="round"/>`;
+if(kind==='robot'&&e==='gears')a+='<text x="200" y="305" font-size="34" text-anchor="middle">⚙️</text>';
+if(kind==='dragon'&&e==='cloud')a+='<text x="310" y="240" font-size="45">☁️</text>';
+if(kind==='alien'&&e==='ufo')a+='<text x="295" y="110" font-size="45">🛸</text>';
+if(state.arms==='wings'&&kind!=='dragon')a+='<text x="76" y="260" font-size="48">🪽</text><text x="280" y="260" font-size="48">🪽</text>';
+if(state.arms==='strong')a+='<text x="70" y="270" font-size="44">💪</text><text x="290" y="270" font-size="44">💪</text>';
+if(state.feet==='skates')a+='<text x="133" y="362" font-size="37">🛼</text><text x="236" y="362" font-size="37">🛼</text>';
+if(state.feet==='shoes')a+='<text x="133" y="362" font-size="36">👟</text><text x="236" y="362" font-size="36">👟</text>';
+const deco={crown:'👑',stars:'⭐',flower:'🌸',bow:'🎀',rainbow:'🌈',hat:'🎩'}[state.decor];
+if(deco)a+=`<text x="200" y="${kind==='animal'?100:kind==='robot'?84:kind==='dragon'?78:65}" font-size="48" text-anchor="middle">${deco}</text>`;
+return a;
+}
+
+function renderPreview(){
+$('preview').innerHTML=creatureSVG(); return;
+let skin=state.colors,outline='#31527c',s='';
+const add=x=>s+=x;
+add('<defs><linearGradient id="shine" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#fff" stop-opacity=".55"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#234" stop-opacity=".2"/></linearGradient></defs>');
+if(state.arms!=='none'){
+let hand=state.arms==='wings'?'🪽':state.arms==='strong'?'💪':state.arms==='up'?'🙌':'✋';
+add('<text x="45" y="238" font-size="61" text-anchor="middle">'+hand+'</text><text x="354" y="238" font-size="61" text-anchor="middle">'+hand+'</text>')}
+if(state.feet!=='none'){let foot={shoes:'👟',paws:'🐾',skates:'🛼',boots:'🥾'}[state.feet];add('<text x="140" y="357" font-size="52" text-anchor="middle">'+foot+'</text><text x="260" y="357" font-size="52" text-anchor="middle">'+foot+'</text>')}
+if(kind==='dragon')add('<path d="M290 255 Q365 245 353 310 Q340 350 312 327" stroke="'+skin+'" stroke-width="35" fill="none" stroke-linecap="round"/>');
+add('<g fill="'+skin+'" stroke="'+outline+'" stroke-width="7">'+shape()+'</g><g fill="url(#shine)">'+shape()+'</g>');
+if(kind==='robot')add('<rect x="125" y="150" width="150" height="130" rx="18" fill="none" stroke="#3a6488" stroke-width="5" stroke-dasharray="12 7"/><circle cx="200" cy="298" r="12" fill="#fce66c"/>');
+if(kind==='animal')add('<ellipse cx="147" cy="118" rx="32" ry="42" fill="'+skin+'" stroke="'+outline+'" stroke-width="6"/><ellipse cx="253" cy="118" rx="32" ry="42" fill="'+skin+'" stroke="'+outline+'" stroke-width="6"/>');
+if(kind==='alien')add('<circle cx="200" cy="120" r="23" fill="#b4faff" opacity=".7"/>');
+if(state.extra==='horns'||state.extra==='spikes')add('<path d="M137 125 L115 43 L177 108 M263 125 L285 43 L223 108" fill="'+skin+'" stroke="'+outline+'" stroke-width="6"/>');
+if(state.extra==='ears')add('<ellipse cx="125" cy="100" rx="23" ry="68" fill="'+skin+'" stroke="'+outline+'" stroke-width="5"/><ellipse cx="275" cy="100" rx="23" ry="68" fill="'+skin+'" stroke="'+outline+'" stroke-width="5"/>');
+if(state.extra==='antenna')add('<path d="M200 110 V58" stroke="'+outline+'" stroke-width="8"/><circle cx="200" cy="51" r="17" fill="#ffe76a"/>');
+if(state.extra==='wings')add('<text x="57" y="184" font-size="85">🪽</text><text x="278" y="184" font-size="85">🪽</text>');
+if(state.extra==='fire')add('<text x="278" y="260" font-size="55">🔥</text>');
+if(state.extra==='gears'||state.extra==='battery'||state.extra==='lamp'||state.extra==='shield')add('<text x="200" y="304" font-size="45" text-anchor="middle">'+({gears:'⚙️',battery:'🔋',lamp:'💡',shield:'🛡️'}[state.extra])+'</text>');
+if(['bear','rabbit','cat','fox','panda'].includes(state.extra))add('<text x="200" y="306" font-size="48" text-anchor="middle">'+({bear:'🐻',rabbit:'🐰',cat:'🐱',fox:'🦊',panda:'🐼'}[state.extra])+'</text>');
+let count=state.eyes==='one'?1:state.eyes==='three'?3:2;
+for(let i=0;i<count;i++){let x=count===1?200:count===2?162+i*76:139+i*61;add('<ellipse cx="'+x+'" cy="189" rx="25" ry="31" fill="white" stroke="'+outline+'" stroke-width="4"/>');if(state.eyes==='sleep')add('<path d="M'+(x-13)+' 192 Q'+x+' 209 '+(x+13)+' 192" fill="none" stroke="#345" stroke-width="6"/>');else if(state.eyes==='heart')add('<text x="'+x+'" y="201" font-size="29" text-anchor="middle">💗</text>');else add('<circle cx="'+(x+5)+'" cy="194" r="11" fill="#172a4a"/><circle cx="'+(x+9)+'" cy="188" r="4" fill="white"/>')}
+let mouths={smile:'M162 250 Q200 292 238 250',wow:'M200 251 m-18 0 a18 24 0 1 0 36 0 a18 24 0 1 0 -36 0',tongue:'M164 251 Q200 289 236 251 Q200 310 164 251',teeth:'M163 249 Q200 280 237 249 L237 269 Q200 298 163 269Z',calm:'M172 263 Q200 274 228 263'};
+add('<path d="'+mouths[state.mouth]+'" fill="'+(state.mouth==='wow'||state.mouth==='tongue'||state.mouth==='teeth'?'#853b70':'none')+'" stroke="#533253" stroke-width="7" stroke-linecap="round"/>');
+if(state.mouth==='teeth')add('<path d="M171 263 H229" stroke="white" stroke-width="10"/>');
+if(state.decor!=='none')add('<text x="200" y="94" text-anchor="middle" font-size="60">'+({crown:'👑',stars:'⭐',flower:'🌸',bow:'🎀',rainbow:'🌈',hat:'🎩'}[state.decor])+'</text>');
+$('preview').innerHTML=s;
+}
+const tasks=[
+{key:'colors',value:'#68b9f6',text:'Lag en blå figur!',hint:'Trykk på det blå hjertet 💙.'},
+{key:'eyes',value:'three',text:'Lag en figur med tre øyne!',hint:'Se etter tre øyne 👀👁️.'},
+{key:'decor',value:'crown',text:'Gi figuren en krone!',hint:'Finn kronen 👑.'},
+{key:'body',value:'round',text:'Lag en helt rund kropp!',hint:'Velg den runde formen ⚪.'},
+{key:'arms',value:'wings',text:'Gi figuren vinger!',hint:'Se etter vingene 🪽.'},
+{key:'colors',value:'#79d88a',text:'Lag en grønn figur!',hint:'Finn den grønne fargen 💚.'},
+{key:'feet',value:'skates',text:'Gi figuren rulleskøyter!',hint:'Finn rulleskøytene 🛼.'},
+{key:'mouth',value:'tongue',text:'Lag en figur som rekker tunge!',hint:'Finn det morsomme ansiktet 😋.'},
+{key:'decor',value:'flower',text:'Pynt med en blomst!',hint:'Finn blomsten 🌸.'},
+{key:'body',value:'square',text:'Lag en firkantet kropp!',hint:'Velg firkanten 🟪.'}
+];
+function currentTask(){return kind==='animal' && (step%tasks.length===3 || step%tasks.length===9) ? {key:'extra',value:step%tasks.length===3?'rabbit':'fox',text:step%tasks.length===3?'Bygg en kanin med lange ører!':'Bygg en rev med spisse ører!',hint:'Velg riktig dyr øverst i delelisten.'}:tasks[step%tasks.length]}
+function updateTask(){let t=currentTask();$('counter').textContent='Oppdrag '+(step+1)+' av 10 for '+kinds.find(k=>k[0]===kind)[2];$('challenge').textContent=t.text;$('bubble').textContent=t.text;$('message').textContent='Bygg figuren og trykk Ferdig!'}
+function spark(){for(let i=0;i<16;i++){let el=document.createElement('span');el.className='spark';el.textContent=i%2?'⭐':'✨';el.style.left=(10+Math.random()*80)+'%';el.style.top=(20+Math.random()*65)+'%';$('scene').append(el);setTimeout(()=>el.remove(),1100)}}
+$('done').onclick=()=>{let t=currentTask();if(state[t.key]===t.value){let id=kind+':'+step;if(!completed.has(id)){completed.add(id);stars++;$('stars').textContent=stars;localStorage.setItem('lurifaks-verksted-stars',stars)}$('message').textContent='Hurra! Du klarte oppdraget! 🌟';$('bubble').textContent='Så flott du bygger!';spark()}else{$('message').textContent='Nesten! Prøv en gang til, eller bruk hint 💡'}};
+$('hint').onclick=()=>{$('message').textContent=currentTask().hint};
+$('next').onclick=()=>{step=(step+1)%tasks.length;updateTask()};
+$('random').onclick=()=>{sections.forEach(([key])=>{let o=opts(key);state[key]=o[Math.floor(Math.random()*o.length)][1]});renderControls();renderPreview();spark();$('message').textContent='For en fantastisk figur!'};
+$('reset').onclick=()=>{resetState();renderControls();renderPreview();$('message').textContent='Nå kan du begynne på nytt!'};
+try{stars=Number(localStorage.getItem('lurifaks-verksted-stars'))||0;$('stars').textContent=stars}catch(e){}
+renderControls();renderPreview();updateTask();
+</script></body></html>
