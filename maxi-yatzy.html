@@ -1,0 +1,97 @@
+<!doctype html><html lang="nb"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Maxi Yatzy – Spillglede test</title><style>
+:root{font-family:system-ui,Arial;color:#f6faff;background:#0d1835}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#254b7a,#0d1835 75%);min-height:100vh}.wrap{max-width:1120px;margin:auto;padding:16px}h1{text-align:center;margin:8px 0}header p{text-align:center;color:#c9dcf4;margin:4px 0 18px}.panel{background:#132b50;border:1px solid #6c9acb;border-radius:17px;padding:18px;box-shadow:0 10px 30px #0003}.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,1fr);gap:16px}.dice{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0}.die{height:76px;width:68px;border-radius:13px;background:#f9fafb;color:#1d3556;border:4px solid #cdd8e8;font-size:38px;font-weight:900;cursor:pointer;box-shadow:0 5px 0 #889cb7}.die.held{background:#ffdd71;border-color:#f7a21e;transform:translateY(2px)}.die:disabled{opacity:.55;cursor:default}button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:12px 14px;font-weight:800;background:#65d9ff;color:#082542}button.primary{background:#ffd15d}button.secondary{background:#e4effc}button:disabled{opacity:.4;cursor:not-allowed}.actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.status{background:#09213e;padding:13px;border-radius:10px;min-height:50px;text-align:center;margin:16px 0}details{background:#132b50;border:1px solid #6c9acb;border-radius:12px;padding:13px;margin-bottom:16px}summary{cursor:pointer;font-weight:800}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:9px 5px;border-bottom:1px solid #36587e;text-align:left}th:nth-child(2),td:nth-child(2){text-align:center}td:last-child{text-align:right}tr.section td{background:#24476c;font-weight:900}button.score{padding:7px 9px;font-size:13px;min-width:82px}button.score.zero{background:#d4e0ed} .done{color:#a8f4c3;font-weight:800}.muted{color:#b3c7e0}.stats{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}.stats strong{color:#ffda77} .note{font-size:12px;color:#b5cbe5} .warn{color:#ffd15d}input{border-radius:8px;padding:8px;background:#fff;border:0;max-width:160px} @media(max-width:750px){.layout{grid-template-columns:1fr}.die{width:51px;height:63px;font-size:30px}.panel{padding:12px}.wrap{padding:9px}h1{font-size:25px}table{font-size:13px}}
+</style></head><body><div class="wrap"><nav><a href="terningspill.html" style="color:#fff">← Til terningspill</a></nav><header><h1>🎲 Maxi Yatzy</h1><p>Spillglede • 6 terninger • 3 kast</p></header><details><summary>📘 Spilleveiledning – åpne/lukk</summary><p>Kast seks terninger. Trykk på terningene du vil beholde, og kast resten på nytt (maks tre kast). Velg en ledig kategori for å føre poeng. Du kan føre poeng etter første eller andre kast også.</p><p>Hvis du ikke har en passende kombinasjon, kan du stryke en ledig kategori for 0 poeng. Tre like og fire like gir summen av de like terningene. Fullt hus er 3+2+1, hus er 3+3, tårn er 4+2. Maxi Yatzy (seks like) gir 100 poeng.</p><p>Dette er en enkel Maxi Yatzy-test med 20 kategorier. Poeng og progresjon lagres automatisk på denne enheten.</p></details><div class="layout"><section class="panel"><h2>🎯 Terningbordet</h2><div class="stats"><span id="round">Runde 1 av 20</span><span id="throws">Kast 0 av 3</span></div><div class="dice" id="dice"></div><div class="actions"><button class="primary" id="roll">🎲 Kast terningene</button><button id="hint">💡 Hint (3)</button><button class="secondary" id="reset">↻ Nytt spill</button></div><div class="status" id="status" role="status">Trykk «Kast terningene» for å begynne!</div><p class="note">Gule terninger er beholdt. Klikk på dem igjen for å slippe dem.</p><hr style="border:0;border-top:1px solid #44668d"><h2>🏆 Din poengsum</h2><p class="stats"><span>Øvre del: <strong id="upper">0</strong></span><span>Bonus: <strong id="bonus">0</strong></span><span>Totalt: <strong id="total">0</strong></span></p><p class="note">Bonus: 100 poeng når øvre del når minst 84.</p><p>Nick: <input id="nick" maxlength="20" placeholder="Ditt nick"> <button id="saveNick" class="secondary">Lagre nick</button></p>
+<p class="note" id="dbStatus" aria-live="polite">Kobler til Supabase …</p>
+<h3>🏅 Topp 5 – Supabase</h3><div id="leaders" class="muted">Henter resultater …</div>
+<p>⭐ Mine registrerte poeng: <strong id="myPoints">0</strong></p>
+<button id="refresh" class="secondary">🔄 Oppdater toppliste</button>
+<p class="note">Fullført spill gir 100 poeng, maks én registrering per dag. Spillresultatet i terningpoeng vises også på topplisten.</p></section><section class="panel"><h2>🧾 Poengskjema</h2><table><thead><tr><th>Kategori</th><th>Mulig nå</th><th>Resultat</th></tr></thead><tbody id="sheet"></tbody></table><p class="note">«Stryk 0» vises på ledige kategorier når du har kastet. Du kan alltid komme videre.</p></section></div></div><script>
+(()=>{'use strict';
+const SPILLGLEDE_URL='https://evpqlrqxofooowyvwdcn.supabase.co';
+const SPILLGLEDE_KEY='sb_publishable_C2rRF4LjsHVKHE4uj3ByCA_V5XxXZbs';
+const AUTH_STORAGE='spillglede_auth_v1';
+function getSession(){try{return JSON.parse(localStorage.getItem(AUTH_STORAGE)||'null')}catch{return null}}
+function saveSession(v){localStorage.setItem(AUTH_STORAGE,JSON.stringify(v))}
+async function api(path,method='GET',body=null,token=null){
+ const headers={'apikey':SPILLGLEDE_KEY,'Content-Type':'application/json'};
+ if(token)headers.Authorization='Bearer '+token;
+ const response=await fetch(SPILLGLEDE_URL+path,{method,headers,body:body===null?undefined:JSON.stringify(body)});
+ const raw=await response.text();let data;
+ try{data=raw?JSON.parse(raw):null}catch{data={message:raw}}
+ if(!response.ok)throw Error(data?.message||data?.msg||data?.error_description||data?.error||'Feil '+response.status);
+ return data;
+}
+async function authSession(){
+ let s=getSession();
+ if(s?.access_token&&s.expires_at>Date.now()/1000+90)return s;
+ if(s?.refresh_token){try{
+ const t=await api('/auth/v1/token?grant_type=refresh_token','POST',{refresh_token:s.refresh_token});
+ s={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};saveSession(s);return s
+ }catch{localStorage.removeItem(AUTH_STORAGE)}}
+ const t=await api('/auth/v1/signup','POST',{});
+ if(!t?.access_token)throw Error('Anonym innlogging er ikke aktivert.');
+ s={...t,expires_at:Math.floor(Date.now()/1000)+t.expires_in};saveSession(s);return s;
+}
+function userId(s){return s.user?.id||JSON.parse(atob(s.access_token.split('.')[1])).sub}
+function dbMessage(m){$('dbStatus').textContent=m}
+async function loadNickname(){
+ try{
+ const session=await authSession();
+ const rows=await api('/rest/v1/spillere?id=eq.'+encodeURIComponent(userId(session))+'&select=nicknavn','GET',null,session.access_token);
+ if(rows?.length){
+ nick=rows[0].nicknavn;$('nick').value=nick;$('nick').disabled=true;$('saveNick').hidden=true;
+ dbMessage('✓ Nicknavnet ditt er hentet fra Spillglede.');
+ }else dbMessage('Registrer nicknavn én gang for Spillglede.');
+ await refreshLeaders();
+ }catch(e){dbMessage('Tilkoblingsfeil: '+e.message)}
+}
+async function saveNickname(){
+ const name=$('nick').value.trim();
+ if(!/^[\p{L}\p{N}_ -]{3,20}$/u.test(name)){dbMessage('Nick må ha 3–20 tegn.');return}
+ const b=$('saveNick');b.disabled=true;
+ try{
+ const session=await authSession();
+ await api('/rest/v1/spillere','POST',{id:userId(session),nicknavn:name},session.access_token);
+ nick=name;$('nick').disabled=true;b.hidden=true;
+ dbMessage('✓ Nicknavnet er lagret.');
+ await refreshLeaders();
+ if(state.finished&&!state.awarded)await registerFinish();
+ }catch(e){dbMessage('Kunne ikke lagre nick: '+e.message)}finally{b.disabled=false}
+}
+async function refreshLeaders(){
+ try{
+ const session=await authSession();
+ const rows=await api('/rest/v1/rpc/maxi_yatzy_toppliste','POST',{},session.access_token);
+ $('leaders').replaceChildren();
+ if(!rows?.length)$('leaders').textContent='Ingen fullførte spill ennå.';
+ else rows.slice(0,5).forEach((x,i)=>{
+ const d=document.createElement('div');
+ d.textContent=(i+1)+'. '+x.nicknavn+' – '+x.poeng+' ⭐ (beste Maxi Yatzy: '+x.beste_resultat+')';
+ $('leaders').append(d);
+ });
+ const mine=await api('/rest/v1/rpc/maxi_yatzy_mine_poeng','POST',{},session.access_token);
+ $('myPoints').textContent=Number(mine)||0;
+ dbMessage('✓ Topplisten er oppdatert.');
+ }catch(e){dbMessage('Supabase-feil: '+e.message)}
+}
+let savingResult=false;
+async function registerFinish(){
+ if(savingResult||!state.finished||state.awarded)return;
+ if(!nick){dbMessage('Lagre nicknavn for å registrere ferdig spill.');return}
+ savingResult=true;
+ try{
+ const session=await authSession();
+ const response=await api('/rest/v1/rpc/maxi_yatzy_registrer_fullfort','POST',{p_resultat:total()},session.access_token);
+ state.awarded=true;save();
+ say(Number(response)>0?'🎉 Fullført! '+total()+' terningpoeng. +100 poeng registrert i Supabase!':'🎉 Fullført! '+total()+' terningpoeng. Dagens bonus er allerede registrert.');
+ await refreshLeaders();
+ }catch(e){dbMessage('Resultatet ble ikke registrert: '+e.message)}
+ finally{savingResult=false}
+}
+const $=id=>document.getElementById(id);const KEY='spillglede_maxiyatzy_live_v1';const cats=[['Enere','ones'],['Toere','twos'],['Treere','threes'],['Firere','fours'],['Femmere','fives'],['Seksere','sixes'],['Ett par','pair'],['To par','twopair'],['Tre par','threepair'],['Tre like','three'],['Fire like','four'],['Fem like','five'],['Liten straight (1–5)','small'],['Stor straight (2–6)','large'],['Full straight (1–6)','full'],['Fullt hus (3+2+1)','house'],['Hus (3+3)','villa'],['Tårn (4+2)','tower'],['Sjanse','chance'],['Maxi Yatzy (6 like)','maxi']];let state={dice:[0,0,0,0,0,0],held:[false,false,false,false,false,false],throws:0,scores:{},hints:3,finished:false,awarded:false};try{const x=JSON.parse(localStorage.getItem(KEY));if(x&&Array.isArray(x.dice)&&x.dice.length===6&&x.scores&&typeof x.scores==='object')state={...state,...x}}catch(e){};let nick='';$('nick').value='';const count=()=>{let a=Array(7).fill(0);state.dice.forEach(x=>{if(x>0)a[x]++});return a};const sum=()=>state.dice.reduce((a,b)=>a+b,0);function points(key){if(!state.throws)return 0;let c=count(),groups=[];for(let n=6;n>=1;n--)if(c[n])groups.push([n,c[n]]);let matching=n=>groups.filter(x=>x[1]>=n).map(x=>x[0]);let exact=n=>groups.filter(x=>x[1]===n).map(x=>x[0]);let vals=state.dice.slice().sort((a,b)=>a-b).join('');if(['ones','twos','threes','fours','fives','sixes'].includes(key)){let n=['ones','twos','threes','fours','fives','sixes'].indexOf(key)+1;return c[n]*n}switch(key){case 'pair':return (matching(2)[0]||0)*2;case 'twopair':{let a=matching(2);return a.length>=2?2*(a[0]+a[1]):0}case 'threepair':{let a=matching(2);return a.length>=3?2*(a[0]+a[1]+a[2]):0}case 'three':return (matching(3)[0]||0)*3;case 'four':return (matching(4)[0]||0)*4;case 'five':return (matching(5)[0]||0)*5;case 'small':return [1,2,3,4,5].every(n=>c[n])?15:0;case 'large':return [2,3,4,5,6].every(n=>c[n])?20:0;case 'full':return vals==='123456'?21:0;case 'house':return exact(3).length===1&&exact(2).length===1&&exact(1).length===1?sum():0;case 'villa':return exact(3).length===2?sum():0;case 'tower':return exact(4).length===1&&exact(2).length===1?sum():0;case 'chance':return sum();case 'maxi':return matching(6).length?100:0;default:return 0}}function upper(){return ['ones','twos','threes','fours','fives','sixes'].reduce((s,k)=>s+(state.scores[k]||0),0)}function total(){return Object.values(state.scores).reduce((a,b)=>a+b,0)+(upper()>=84?100:0)}function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}function say(s){$('status').textContent=s}function render(){let done=Object.keys(state.scores).length;$('round').textContent='Runde '+Math.min(done+1,20)+' av 20';$('throws').textContent='Kast '+state.throws+' av 3';$('dice').innerHTML='';state.dice.forEach((v,i)=>{let b=document.createElement('button');b.className='die'+(state.held[i]?' held':'');b.textContent=v||'?';b.title=state.held[i]?'Beholdt – trykk for å slippe':'Trykk for å beholde';b.disabled=!state.throws||state.finished;b.onclick=()=>{state.held[i]=!state.held[i];save();render()};$('dice').append(b)});$('roll').disabled=state.throws>=3||state.finished;$('roll').textContent=state.throws?'🎲 Kast igjen':'🎲 Kast terningene';$('hint').disabled=state.hints===0||!state.throws||state.finished;$('hint').textContent='💡 Hint ('+state.hints+')';$('upper').textContent=upper();$('bonus').textContent=upper()>=84?100:0;$('total').textContent=total();$('sheet').innerHTML='';cats.forEach(([name,key],i)=>{if(i===0||i===6){let tr=document.createElement('tr');tr.className='section';let td=document.createElement('td');td.colSpan=3;td.textContent=i===0?'Øvre del':'Kombinasjoner';tr.append(td);$('sheet').append(tr)}let tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td'),c=document.createElement('td');a.textContent=name;let p=points(key);b.textContent=state.throws&&!state.finished?(p?p+' p':'–'):'–';if(Object.hasOwn(state.scores,key)){c.textContent='✓ '+state.scores[key]+' p';c.className='done'}else if(state.throws&&!state.finished){if(p){let btn=document.createElement('button');btn.className='score';btn.textContent='Før '+p+' p';btn.onclick=()=>record(key,p);c.append(btn)}else{let btn=document.createElement('button');btn.className='score zero';btn.textContent='Stryk 0';btn.onclick=()=>{if(confirm('Stryke «'+name+'» med 0 poeng?'))record(key,0)};c.append(btn)}}else c.textContent='–';tr.append(a,b,c);$('sheet').append(tr)});leaders();save()}function record(key,p){if(!state.throws||state.finished||Object.hasOwn(state.scores,key))return;if(p!==points(key)&&p!==0)return;state.scores[key]=p;state.throws=0;state.dice=[0,0,0,0,0,0];state.held=[false,false,false,false,false,false];if(Object.keys(state.scores).length===cats.length){state.finished=true;say('🎉 Ferdig! Du fikk '+total()+' terningpoeng. Registrerer i Supabase …');setTimeout(registerFinish,0)}else say('Du førte '+p+' poeng. Klar for neste runde!');render()}function leaders(){ /* Topplisten oppdateres via Supabase */ } $('roll').onclick=()=>{if(state.throws>=3||state.finished)return;state.dice=state.dice.map((v,i)=>state.held[i]?v:Math.ceil(Math.random()*6));state.throws++;say('Kast '+state.throws+'/3. Behold terninger eller før poeng i skjemaet.');render()};$('hint').onclick=()=>{if(!state.throws||state.hints<=0)return;state.hints--;let opts=cats.filter(([n,k])=>!Object.hasOwn(state.scores,k)).map(([n,k])=>({n,p:points(k)})).sort((a,b)=>b.p-a.p);say(opts[0]?.p?'💡 Tips: «'+opts[0].n+'» gir '+opts[0].p+' poeng nå.':'💡 Ingen poengkombinasjon akkurat nå. Du kan kaste igjen eller stryke 0.');render()};$('reset').onclick=()=>{if(!confirm('Starte helt nytt Maxi Yatzy-spill?'))return;state={dice:[0,0,0,0,0,0],held:[false,false,false,false,false,false],throws:0,scores:{},hints:3,finished:false,awarded:false};say('Nytt spill! Kast terningene.');render()};$('saveNick').onclick=saveNickname;
+$('refresh').onclick=refreshLeaders;
+render();
+if(state.finished){say('Spillet er ferdig. Trykk Nytt spill for å spille igjen.');}
+loadNickname().then(()=>{if(state.finished&&!state.awarded)registerFinish()});
+})();
+</script></body></html>
