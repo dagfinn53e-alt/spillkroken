@@ -1,4 +1,4 @@
-'<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
 <meta charset="UTF-8">
@@ -264,6 +264,56 @@ button:focus{
   .playerBoard .playerName{font-size:14px}
   .playerBoard .playerPoints{font-size:20px}
 }
+
+/* Spillglede – oppfrisket og mobilvennlig design. Spillmotoren er uendret. */
+*{box-sizing:border-box}
+body{min-height:100vh;background:radial-gradient(ellipse at 15% 5%,#5530a0 0%,transparent 43%),radial-gradient(ellipse at 90% 65%,#9a315d 0%,transparent 48%),linear-gradient(150deg,#0b1530,#241145 55%,#321628);background-attachment:fixed;line-height:1.45}
+.container{max-width:1050px;padding:22px 18px 42px}
+h1{font-size:clamp(30px,5vw,54px);line-height:1.12;color:#ffe477;text-shadow:0 3px 0 #5e3380,0 7px 22px #0009;margin:10px 0 20px}
+h2{line-height:1.25}
+.card{background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.065));border:1px solid #ffffff50;border-radius:24px;padding:24px;margin:18px 0;box-shadow:0 14px 30px #0005,inset 0 1px #ffffff30;backdrop-filter:blur(7px)}
+button{min-height:47px;margin:5px;padding:11px 17px;border:2px solid #fff5a4;border-radius:14px;background:linear-gradient(#ffe786,#f5b72e);color:#261531;box-shadow:0 4px 0 #966024,0 8px 13px #0005;transition:filter .15s,transform .15s;font-size:clamp(14px,1.8vw,18px)}
+button:hover{filter:brightness(1.08);transform:translateY(-2px)}
+button:focus-visible,.music-partner-btn:focus-visible,.bingo-link-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+button:disabled{cursor:default;opacity:1}
+.back{background:linear-gradient(#3d8bf2,#2156ae);color:white;border-color:#91c8ff;box-shadow:0 4px 0 #15346b,0 8px 13px #0005}
+.levelBtn{background:linear-gradient(#bdfae4,#74dcb5)}
+.levelBtn.active,.playerBtn.active{background:linear-gradient(#42dc92,#118858);color:#fff;border-color:#a3ffcc;transform:none}
+#playerSetup .playerBtn{min-width:135px}
+#setup h2{color:#ffe477;margin:22px 0 12px}
+#chosen{background:#0e123e9e;border:1px solid #ffffff4a;border-radius:14px;padding:12px;font-weight:700}
+#quiz #question{font-size:clamp(21px,3.5vw,31px);margin:18px 0 20px}
+#answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:830px;margin:auto}
+.choice{display:flex;align-items:center;justify-content:center;width:100%;max-width:none;min-height:76px;margin:0;padding:12px 14px;white-space:normal;overflow-wrap:anywhere;text-align:center;background:linear-gradient(#fff,#eae9ff);color:#1c1c3b;border:2px solid #ffffffc9;box-shadow:0 4px 0 #8181a9,0 8px 12px #0004}
+.choice.correct,.choice.correct:hover{background:#159957!important;color:white;border-color:#a8ffd1}
+.choice.wrong,.choice.wrong:hover{background:#cc354e!important;color:white;border-color:#ffb8c3}
+.statsBox{max-width:900px;background:#0d1a42aa;border:1px solid #ffffff3d}
+#multiScores{gap:10px}
+.playerBoard{background:linear-gradient(155deg,#383268,#1d2a54);border:2px solid #b4a8e0;border-radius:16px}
+.playerBoard.turnNow{background:linear-gradient(145deg,#15795b,#0b4b44);border-color:#ffe477}
+#progress,#score{font-weight:800}
+@media(max-width:650px){
+ .container{padding:12px 9px 30px}
+ h1{font-size:clamp(27px,7vw,40px);margin:12px 0 16px}
+ .card{padding:15px 9px;border-radius:17px;margin:13px 0}
+ .card h2{font-size:clamp(18px,5vw,23px)}
+ button{min-height:43px;margin:4px;padding:9px 9px;font-size:14px;border-radius:11px}
+ #playerSetup .playerBtn{min-width:0;width:calc(50% - 12px)}
+ #setup>button:not(:last-of-type){min-width:calc(50% - 12px)}
+ .levelBox .levelBtn{width:calc(50% - 12px)}
+ #answers{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .choice{min-height:74px;padding:9px 5px;font-size:clamp(12px,3.4vw,16px);line-height:1.25}
+ #multiScores{grid-template-columns:repeat(var(--players,1),minmax(0,1fr));gap:5px;margin:10px auto}
+ .playerBoard{padding:10px 3px;border-radius:10px}
+ .playerBoard .playerName{font-size:clamp(10px,2.7vw,14px);overflow-wrap:anywhere}
+ .playerBoard .playerPoints{font-size:clamp(13px,3.4vw,19px)}
+ .music-partner{padding:12px;gap:12px}
+ .music-partner-logo{width:110px;height:110px}
+ .bingo-link-box{padding:14px}
+}
+@media(max-width:360px){.choice{font-size:12px}.playerBoard .playerName{font-size:10px}}
+@media(prefers-reduced-motion:reduce){button{transition:none}.confetti{animation:none}}
+
 </style>
 </head>
 
