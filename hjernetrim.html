@@ -18,15 +18,18 @@ h1{text-align:center;font-size:clamp(40px,7vw,66px);margin:16px 0 4px}
 .soon{opacity:.6;cursor:default}
 .soon:hover{transform:none}
 .badge{margin-top:10px;background:#e8edf4;padding:6px 12px;border-radius:999px;font-weight:900;font-size:14px}
+/* Bedre tastaturfokus og berøringsflater */
+.card:focus-visible,.back:focus-visible{outline:4px solid #ff9d00;outline-offset:3px}
+@media(hover:none){.card:hover{transform:none;box-shadow:0 9px 22px #17304f22}}
 @media(max-width:650px){
-.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-.card{min-height:105px;padding:7px 4px;border-width:2px;border-radius:14px}
+.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.card{min-height:118px;padding:9px 5px;border-width:2px;border-radius:14px;overflow:hidden}
 .icon{font-size:25px}
-.card h2{font-size:13px;margin:2px 0;overflow-wrap:anywhere}
-.card p{font-size:10px;line-height:1.15}
-.wrap{padding:10px}
-h1{font-size:36px;margin:12px 0 4px}
-.intro{font-size:15px;margin-bottom:15px}
+.card h2{font-size:clamp(12px,3.35vw,15px);margin:4px 0 3px;overflow-wrap:anywhere;hyphens:auto;line-height:1.12}
+.card p{font-size:clamp(10px,2.5vw,11px);line-height:1.22;overflow-wrap:anywhere}
+.wrap{padding:12px 9px 22px}
+h1{font-size:clamp(27px,8vw,36px);margin:12px 0 4px;overflow-wrap:anywhere}
+.intro{font-size:14px;line-height:1.35;margin-bottom:16px}
 }
 </style>
 </head>
