@@ -1,68 +1,665 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="no">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Spillglede</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dyrespill – Spillglede</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:radial-gradient(circle at top,#70431f,#24130c 72%);color:#fff}
-header{text-align:center;padding:28px 14px 18px}
-h1{margin:0;color:#ffd85b;font-size:clamp(48px,8vw,82px);text-shadow:0 4px #54240b}
-.lead{font-size:clamp(17px,2.3vw,24px);font-weight:800;color:#fff2c1;margin:8px 0}
-.grid{max-width:1120px;margin:10px auto 38px;padding:14px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
-.game{min-height:145px;border:4px solid #d6a33b;border-radius:26px;text-decoration:none;color:#35190b;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px 7px;box-shadow:0 9px 0 #5b2b10,0 14px 24px #0006;transition:.15s}
-.game:hover{transform:translateY(-4px)}
-.icon{font-size:39px;line-height:1}
-.game h2{font-size:20px;margin:6px 0 4px}
-.game p{font-size:12px;font-weight:800;margin:0;line-height:1.3}
-.yatzy{background:linear-gradient(145deg,#fff7dc,#d9efff)}
-.ludo{background:linear-gradient(145deg,#e1ffdc,#8ee39a)}
-.cards{background:linear-gradient(145deg,#ffe2c8,#e6a269)}
-.memory{background:linear-gradient(145deg,#eadcff,#bd91f0)}
-.bingo{background:linear-gradient(145deg,#d8efff,#78bdf5)}
-.quiz{background:linear-gradient(145deg,#fff2aa,#ffc84d)}
-.ordmiks{background:linear-gradient(145deg,#dfffe8,#8fe3b0)}
-.norskquiz{background:linear-gradient(145deg,#f7fbff,#b8d8ff)}
-.hjernetrim{background:linear-gradient(145deg,#fff4c9,#f2b7ff)}
-.diverse{background:linear-gradient(145deg,#e3f9ff,#9fe4ed)}
-.barnas{background:linear-gradient(145deg,#ffe1f3,#ffc16f)}
-.about-wrap{text-align:center;margin:-18px 0 24px}
-.about-btn{display:inline-block;background:#fff4c9;color:#35190b;text-decoration:none;font-weight:900;font-size:18px;padding:12px 22px;border:3px solid #d6a33b;border-radius:18px;box-shadow:0 5px 0 #5b2b10}
-.about-btn:hover{transform:translateY(-2px)}
-footer{text-align:center;padding:0 15px 28px;color:#ffe7aa;font-weight:800}
-@media(max-width:950px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:520px){
-.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:9px}
-.game{min-height:128px;padding:8px 5px;border-width:3px;border-radius:19px}
-.icon{font-size:34px}
-.game h2{font-size:19px;margin:5px 0 3px}
-.game p{font-size:12px;line-height:1.2}
-header{padding:18px 8px 10px}
-h1{font-size:38px}
-.lead{font-size:15px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+
+body{
+  min-height:100vh;
+  font-family:Arial,sans-serif;
+  color:#123c73;
+  text-align:center;
+  overflow-x:hidden;
+  background:
+    radial-gradient(circle at top,#fff3c4 0%,#7ec8ff 32%,#dff3ff 68%,#fff7ed 100%);
+}
+
+.paw-bg{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.12;
+  z-index:0;
+  background-image:
+    radial-gradient(circle,#ffffff 18%,transparent 20%),
+    radial-gradient(circle,#ffffff 18%,transparent 20%);
+  background-size:90px 90px;
+  background-position:0 0,45px 45px;
+  animation:pawDrift 12s linear infinite;
+}
+
+@keyframes pawDrift{
+  from{transform:translateY(0)}
+  to{transform:translateY(90px)}
+}
+
+.wrap{
+  position:relative;
+  z-index:2;
+  max-width:1250px;
+  margin:auto;
+  padding:20px 14px 60px;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  background:rgba(255,255,255,.82);
+  border:1px solid rgba(255,255,255,.75);
+  border-radius:28px;
+  padding:14px 18px;
+  box-shadow:0 12px 28px rgba(0,45,110,.14);
+  margin-bottom:22px;
+  backdrop-filter:blur(8px);
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:24px;
+  font-weight:900;
+  color:#004cff;
+}
+
+.logo-badge{
+  width:48px;
+  height:48px;
+  border-radius:17px;
+  background:linear-gradient(145deg,#1f8fff,#004cff);
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 18px rgba(0,76,255,.35);
+}
+
+.nav{display:flex;flex-wrap:wrap;gap:9px}
+
+.nav a{
+  text-decoration:none;
+  background:linear-gradient(145deg,#ffffff,#dff3ff);
+  color:#004cff;
+  border:1px solid #b8ddff;
+  border-radius:999px;
+  padding:10px 14px;
+  font-weight:900;
+  box-shadow:0 8px 16px rgba(0,76,255,.10);
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  border-radius:38px;
+  padding:44px 22px;
+  color:white;
+  background:
+    radial-gradient(circle at 22% 18%,rgba(255,255,255,.35),transparent 25%),
+    linear-gradient(145deg,#1f8fff,#004cff 45%,#7c3aed 100%);
+  box-shadow:0 20px 48px rgba(0,45,110,.26);
+}
+
+.hero h1{
+  font-size:clamp(2.4rem,7vw,4.7rem);
+  margin-bottom:12px;
+  text-shadow:0 0 12px #ffffff,0 0 26px rgba(126,200,255,.75);
+}
+
+.hero p{
+  max-width:830px;
+  margin:auto;
+  color:#eef6ff;
+  font-size:clamp(1rem,2.4vw,1.35rem);
+  line-height:1.6;
+  font-weight:700;
+}
+
+.hero-icons{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+  margin-top:26px;
+  font-size:54px;
+}
+
+.hero-icons span{
+  filter:drop-shadow(0 0 14px rgba(255,255,255,.7));
+  animation:floaty 3.5s ease-in-out infinite;
+}
+
+.hero-icons span:nth-child(2){animation-delay:.5s}
+.hero-icons span:nth-child(3){animation-delay:1s}
+.hero-icons span:nth-child(4){animation-delay:1.5s}
+
+@keyframes floaty{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+}
+
+.section{margin-top:34px}
+
+.section h2{
+  font-size:clamp(2rem,5vw,3rem);
+  margin-bottom:9px;
+  color:#001d4a;
+}
+
+.section p.lead{
+  color:#4a1a1a;
+  font-size:20px;
+  font-weight:900;
+  margin-bottom:24px;
+}
+
+.main-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+}
+
+.game-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:22px;
+}
+
+.big-card,
+.game-card{
+  position:relative;
+  overflow:hidden;
+  background:white;
+  border-radius:28px;
+  padding:24px 18px;
+  box-shadow:0 12px 25px rgba(0,0,0,.14);
+  text-decoration:none;
+  color:#23396b;
+  transition:transform .2s, box-shadow .2s;
+}
+
+.big-card:hover,
+.game-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 18px 34px rgba(0,0,0,.20);
+}
+
+.big-card{min-height:330px}
+
+.big-card.memory{
+  background:
+    radial-gradient(circle at top,#ffe27a 0%,#43206d 45%,#080313 100%);
+  color:white;
+}
+
+.big-card.puzzle{
+  background:
+    radial-gradient(circle at top,#ffd38a 0%,#1f8fff 42%,#004cff 100%);
+  color:white;
+}
+
+.big-icon{
+  font-size:92px;
+  margin-bottom:15px;
+  filter:drop-shadow(0 0 16px rgba(255,255,255,.45));
+}
+
+.big-card h3,
+.game-card h3{
+  font-size:clamp(1.5rem,3vw,2.2rem);
+  margin-bottom:13px;
+}
+
+.big-card p,
+.game-card p{
+  line-height:1.45;
+  font-size:17px;
+  font-weight:700;
+}
+
+.stars{
+  font-size:28px;
+  margin:18px 0;
+  color:#ffd166;
+  letter-spacing:4px;
+}
+
+.play-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:16px;
+  min-width:80px;
+  min-height:58px;
+  border-radius:999px;
+  padding:0 22px;
+  background:linear-gradient(145deg,#1f8fff,#004cff);
+  color:white;
+  font-size:20px;
+  font-weight:900;
+  box-shadow:0 0 18px rgba(0,76,255,.4);
+}
+
+.memory .play-button{background:linear-gradient(145deg,#ffb300,#8e4dff)}
+.puzzle .play-button{background:linear-gradient(145deg,#ff8a3d,#004cff)}
+
+.big-card.dog-puzzle{
+  background:
+    radial-gradient(circle at top,#dbeafe 0%,#1f8fff 42%,#004cff 100%);
+  color:white;
+}
+
+.big-card.cat-puzzle{
+  background:
+    radial-gradient(circle at top,#fce7f3 0%,#db2777 42%,#7a284f 100%);
+  color:white;
+}
+
+.cat-puzzle .play-button{
+  background:linear-gradient(145deg,#db2777,#7a284f);
+}
+
+
+.game-card{min-height:290px}
+
+.game-icon{
+  height:120px;
+  border-radius:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:58px;
+  margin-bottom:16px;
+  background:linear-gradient(145deg,#ffffff,#dff3ff);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.8),0 8px 18px rgba(0,76,255,.12);
+}
+
+.music .game-icon{background:linear-gradient(145deg,#fff1a8,#b678ff)}
+.dog .game-icon{background:linear-gradient(145deg,#fff1c2,#ffb45d)}
+.cat .game-icon{background:linear-gradient(145deg,#fdf2f8,#c084fc)}
+
+.hidden-games{display:none}
+
+.footer{
+  margin-top:40px;
+  color:#14346d;
+  font-size:18px;
+  font-weight:bold;
+}
+
+@media(max-width:1050px){
+  .main-grid{grid-template-columns:1fr}
+  .game-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media(max-width:760px){
+  .topbar{justify-content:center}
+  .nav a{flex:1 1 42%}
+  .main-grid,.game-grid{grid-template-columns:1fr}
+  .hero{padding:34px 16px}
+  .big-card,.game-card{min-height:auto}
+}
+</style>
+
+<style id="premium-dark-games-upgrade">
+/* Premium mørk stil – beholder alle eksisterende spill og lenker */
+body{
+  color:#f5f9ff!important;
+  background:
+    radial-gradient(circle at 8% 0%,rgba(255,185,45,.10),transparent 28rem),
+    radial-gradient(circle at 92% 4%,rgba(38,171,255,.13),transparent 30rem),
+    linear-gradient(180deg,#020914 0%,#041426 48%,#07172d 100%)!important;
+}
+.paw-bg{opacity:.035!important}
+.wrap{max-width:1450px!important}
+
+.topbar{
+  background:rgba(5,18,39,.96)!important;
+  border:1px solid rgba(89,151,255,.34)!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.30)!important;
+}
+.logo{color:#fff!important}
+.logo-badge{
+  border-radius:50%!important;
+  background:linear-gradient(145deg,#ffd35a,#e99d21)!important;
+  color:#281a05!important;
+  box-shadow:0 0 26px rgba(255,188,49,.26)!important;
+}
+.nav a{
+  background:#081b34!important;
+  color:#dceaff!important;
+  border-color:rgba(255,255,255,.09)!important;
+}
+.nav a:hover{background:#126cf3!important;color:#fff!important}
+
+.hero{
+  padding:48px 22px!important;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(255,194,61,.22),transparent 24rem),
+    radial-gradient(circle at 86% 20%,rgba(38,207,255,.20),transparent 25rem),
+    linear-gradient(135deg,#071b38 0%,#123a6c 48%,#4a2268 100%)!important;
+  border:1px solid rgba(103,157,255,.34);
+  box-shadow:0 26px 65px rgba(0,0,0,.34)!important;
+}
+.hero h1{
+  font-family:Georgia,serif;
+  font-style:italic;
+  color:#fff!important;
+  text-shadow:0 4px 20px rgba(0,0,0,.30)!important;
+}
+.hero p{color:#e5edf8!important}
+.hero-icons span{filter:drop-shadow(0 8px 16px rgba(0,0,0,.28))!important}
+
+.section h2{color:#fff!important}
+.section p.lead{color:#c8d7e9!important;font-size:17px!important;font-weight:700!important}
+
+.main-grid{gap:14px!important}
+.big-card{
+  min-height:355px!important;
+  border:1px solid rgba(255,255,255,.15)!important;
+  box-shadow:0 20px 48px rgba(0,0,0,.28)!important;
+}
+.big-card.dog-puzzle{
+  background:
+    radial-gradient(circle at 50% 5%,rgba(255,215,107,.45),transparent 14rem),
+    linear-gradient(155deg,#0b3553,#08758c 50%,#06213a)!important;
+}
+.big-card.cat-puzzle{
+  background:
+    radial-gradient(circle at 50% 5%,rgba(255,180,223,.38),transparent 14rem),
+    linear-gradient(155deg,#55224d,#a62c79 50%,#35172f)!important;
+}
+.big-card.memory{
+  background:
+    radial-gradient(circle at 50% 5%,rgba(255,206,82,.35),transparent 14rem),
+    linear-gradient(155deg,#36205f,#532a80 50%,#120a27)!important;
+}
+.big-icon{
+  width:118px;height:118px;margin:0 auto 18px!important;
+  display:grid;place-items:center;
+  border-radius:34px;
+  background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.17);
+  font-size:66px!important;
+}
+.big-card h3{font-size:28px!important}
+.big-card p{color:#e5edf6!important;font-size:15px!important}
+.stars{font-size:23px!important}
+.play-button{min-height:48px!important;font-size:15px!important}
+
+.game-grid{gap:12px!important}
+.game-card{
+  min-height:275px!important;
+  padding:14px!important;
+  color:#f5f9ff!important;
+  background:linear-gradient(155deg,#0b2847,#071a30)!important;
+  border:1px solid rgba(83,161,232,.28)!important;
+  box-shadow:0 16px 38px rgba(0,0,0,.24)!important;
+}
+.game-card.music{border-color:rgba(255,194,65,.42)!important}
+.game-card.dog{border-color:rgba(70,207,236,.38)!important}
+.game-card.cat{border-color:rgba(238,91,184,.38)!important}
+.game-icon{
+  height:112px!important;
+  border-radius:20px!important;
+  background:linear-gradient(145deg,#0e3c5b,#0a223d)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)!important;
+}
+.music .game-icon{background:linear-gradient(145deg,#5d3a22,#39235d)!important}
+.cat .game-icon{background:linear-gradient(145deg,#552348,#321b4e)!important}
+.game-card h3{font-size:20px!important}
+.game-card p{color:#cbd9e7!important;font-size:14px!important}
+.game-card .play-button{
+  min-width:110px!important;
+  min-height:44px!important;
+  padding:0 16px!important;
+  font-size:14px!important;
+}
+
+.footer{
+  color:#aebfd2!important;
+  padding:18px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+
+/* Fast tilbakeknapp på mobil */
+.mobile-home{
+  display:none;
+}
+@media(max-width:760px){
+  .wrap{padding:8px 8px 72px!important}
+  .topbar{border-radius:21px!important;margin-bottom:10px!important}
+  .logo{width:100%;justify-content:center}
+  .nav{width:100%}
+  .nav a{font-size:12px;padding:9px 8px!important}
+  .hero{border-radius:24px!important;padding:29px 13px!important}
+  .hero h1{font-size:38px!important}
+  .hero-icons{font-size:37px!important;gap:11px!important}
+  .section{margin-top:22px!important}
+  .section h2{font-size:27px!important}
+  .main-grid{gap:9px!important}
+  .big-card{min-height:auto!important;padding:17px 12px!important;border-radius:22px!important}
+  .big-icon{width:76px;height:76px;font-size:43px!important;border-radius:23px}
+  .big-card h3{font-size:22px!important}
+  .game-grid{grid-template-columns:repeat(2,1fr)!important;gap:8px!important}
+  .game-card{min-height:210px!important;padding:9px!important;border-radius:19px!important}
+  .game-icon{height:76px!important;font-size:39px!important;margin-bottom:10px!important}
+  .game-card h3{font-size:16px!important;margin-bottom:7px!important}
+  .game-card p{font-size:12px!important}
+  .game-card .stars{font-size:16px!important;margin:10px 0!important;letter-spacing:1px!important}
+  .game-card .play-button{min-width:0!important;width:100%;min-height:38px!important;font-size:12px!important;padding:0 8px!important}
+  .mobile-home{
+    display:flex;
+    position:fixed;
+    left:12px;bottom:12px;z-index:999;
+    align-items:center;justify-content:center;
+    padding:11px 15px;border-radius:999px;
+    background:linear-gradient(135deg,#ffd35a,#efa522);
+    color:#1d1507;font-weight:900;text-decoration:none;
+    box-shadow:0 12px 30px rgba(0,0,0,.35);
+    border:1px solid rgba(255,255,255,.45);
+  }
+}
+</style>
+
+
+<style id="premium10-spillportal-final">
+/* Premium 10 – kompakt spillportal */
+.wrap{max-width:1320px!important;padding-top:10px!important}
+.topbar{padding:9px 13px!important;margin-bottom:10px!important;border-radius:20px!important}
+.logo{font-size:20px!important}.logo-badge{width:39px!important;height:39px!important;border-radius:14px!important}
+.nav a{padding:8px 11px!important;font-size:11px!important}
+
+.hero{padding:24px 16px!important;border-radius:25px!important}
+.hero h1{font-size:clamp(2rem,5vw,3.7rem)!important;margin-bottom:6px!important}
+.hero p{font-size:14px!important;line-height:1.45!important;max-width:760px!important}
+.hero-icons{margin-top:12px!important;font-size:35px!important;gap:12px!important}
+
+.section{margin-top:18px!important}
+.section h2{font-size:clamp(1.6rem,3vw,2.25rem)!important;margin-bottom:4px!important}
+.section p.lead{font-size:13px!important;margin-bottom:10px!important}
+
+.main-grid{gap:10px!important}
+.big-card{min-height:245px!important;padding:14px 12px!important;border-radius:21px!important}
+.big-icon{width:72px!important;height:72px!important;font-size:39px!important;border-radius:21px!important;margin-bottom:9px!important}
+.big-card h3{font-size:21px!important;margin-bottom:6px!important}
+.big-card p{font-size:12px!important;line-height:1.35!important}
+.stars{font-size:17px!important;margin:9px 0!important;letter-spacing:1px!important}
+.play-button{min-height:38px!important;padding:0 14px!important;font-size:12px!important;margin-top:6px!important}
+
+.game-grid{grid-template-columns:repeat(5,1fr)!important;gap:9px!important}
+.game-card{min-height:205px!important;padding:10px!important;border-radius:18px!important}
+.game-icon{height:67px!important;font-size:34px!important;border-radius:15px!important;margin-bottom:8px!important}
+.game-card h3{font-size:16px!important;margin-bottom:5px!important}
+.game-card p{font-size:11px!important;line-height:1.3!important}
+.game-card .stars{font-size:14px!important;margin:7px 0!important}
+.game-card .play-button{min-height:34px!important;font-size:10px!important;margin-top:4px!important}
+.footer{margin-top:22px!important;font-size:12px!important;padding:12px!important}
+
+/* Admin skal ikke ligge synlig på den offentlige spillsiden */
+.nav a[href="admin.html"]{display:none!important}
+
+@media(max-width:760px){
+ .wrap{padding:5px 5px 68px!important}
+ .topbar{padding:6px 7px!important;margin-bottom:5px!important;border-radius:14px!important}
+ .logo{width:auto!important;font-size:15px!important}.logo-badge{width:31px!important;height:31px!important}
+ .nav{width:auto!important;margin-left:auto!important}.nav a{font-size:8px!important;padding:5px 7px!important;flex:auto!important}
+ .hero{padding:13px 7px!important;border-radius:16px!important}
+ .hero h1{font-size:27px!important}.hero p{font-size:9px!important;line-height:1.35!important}
+ .hero-icons{font-size:25px!important;gap:7px!important;margin-top:7px!important}
+ .section{margin-top:11px!important}.section h2{font-size:21px!important}.section p.lead{font-size:9px!important;margin-bottom:6px!important}
+ .main-grid{grid-template-columns:repeat(3,1fr)!important;gap:5px!important}
+ .big-card{padding:8px 5px!important;border-radius:14px!important;min-height:172px!important}
+ .big-icon{width:46px!important;height:46px!important;font-size:25px!important;border-radius:13px!important;margin-bottom:5px!important}
+ .big-card h3{font-size:12px!important;margin-bottom:4px!important}.big-card p{font-size:8px!important;line-height:1.2!important}
+ .big-card .stars{font-size:11px!important;margin:5px 0!important}.big-card .play-button{min-height:28px!important;font-size:8px!important;padding:0 5px!important}
+ .game-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
+ .game-card{min-height:160px!important;padding:6px!important;border-radius:13px!important}
+ .game-icon{height:46px!important;font-size:25px!important;margin-bottom:5px!important;border-radius:11px!important}
+ .game-card h3{font-size:12px!important;margin-bottom:3px!important}.game-card p{font-size:8px!important;line-height:1.2!important}
+ .game-card .stars{font-size:10px!important;margin:5px 0!important}.game-card .play-button{min-height:27px!important;font-size:8px!important}
 }
 </style>
 </head>
+
 <body>
-<header>
-<h1>🎉 SPILLGLEDE 🎉</h1>
-<div class="lead">Spill sammen – le sammen – ha det moro!</div>
+<div class="paw-bg"></div>
+
+<div class="wrap">
+
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-badge">🐾</div>
+    <span>Spillglede – Dyrespill</span>
+  </div>
+
+  <nav class="nav">
+    <a href="index.html">🏠 Spillglede</a>
+    <a href="https://www.xn--hundenevre-85a.com/">🐕 Hundene Våre</a>
+    
+  </nav>
 </header>
-<div class="grid">
-<a class="game yatzy" href="terningspill.html"><span class="icon">🎲</span><h2>Terningspill</h2><p>Yatzy og Maxi Yatzy<br>Velg ditt terningspill</p></a>
-<a class="game ludo" href="brettspill.html"><span class="icon">🎲🏠</span><h2>Brettspill</h2><p>Ludo og Bykongen<br>Flere brettspill kommer</p></a>
-<a class="game cards" href="kortspill.html"><span class="icon">🃏</span><h2>Kortspill</h2><p>7-kabalen<br>Flere kortspill kommer</p></a>
-<a class="game memory" href="memory.html"><span class="icon">🧠</span><h2>Memory</h2><p>1–4 spillere<br>6, 8 eller 12 par</p></a>
-<a class="game bingo" href="bingo.html"><span class="icon">🎱</span><h2>Bingo</h2><p>Vanlig Bingo – 4 spillere<br>Musikkbingo – 2 spillere / 2 brett</p></a>
-<a class="game quiz" href="musikkquiz.html"><span class="icon">🎵</span><h2>Musikkquiz</h2><p>1–4 spillere<br>Musikk fra flere tiår</p></a>
-<a class="game norskquiz" href="quiz.html"><span class="icon">❓</span><h2>Quiz</h2><p>Norsk Quiz, Fotballquiz<br>og flere quiz-spill</p></a>
-<a class="game ordmiks" href="ordmiks.html"><span class="icon">🔤</span><h2>Ordmiks</h2><p>1–4 spillere<br>Finn riktig ord fra blandede bokstaver</p></a>
-<a class="game hjernetrim" href="hjernetrim.html"><span class="icon">🧠</span><h2>Hjernetrim</h2><p>Talltrim, figurrekker<br>og flere utfordringer</p></a>
-<a class="game diverse" href="diverse-spill.html"><span class="icon">🎮</span><h2>Diverse spill</h2><p>Mahjong og flere morsomme spill</p></a>
-<a class="game barnas" href="barnas-spillglede.html"><span class="icon">🌈</span><h2>Barnas Spillglede</h2><p>12 spill for barn<br>3–5, 6–8 og 9–12 år</p></a>
+
+<section class="hero">
+  <h1>🐕🐈 Dyrespill</h1>
+  <p>
+    Velkommen til Dyrespill på Spillglede.
+    Her finner du puslespill, Memory Adventure, rasequiz, landquiz og musikkquiz. Spillene åpnes i en ny fane hos Hundene Våre.
+  </p>
+
+  <div class="hero-icons">
+    <span>🐶</span>
+    <span>🐱</span>
+    <span>🧩</span>
+    <span>🧠</span>
+    <span>🎵</span>
+  </div>
+</section>
+
+<section class="section">
+  <h2>🌟 Hovedspill</h2>
+  <p class="lead">Velg et av hovedspillene.</p>
+
+  <div class="main-grid">
+
+    <a class="big-card puzzle dog-puzzle" href="https://www.xn--hundenevre-85a.com/hundepuslespill.html" target="_blank" rel="noopener noreferrer">
+      <div class="big-icon">🐶🧩</div>
+      <h3>Hundepuslespill</h3>
+      <p>
+        Velg hunderase og nivå: Lett, Medium, Vanskelig eller Ekspert.
+        Spillet viser originalbildet ved siden av puslespillet.
+      </p>
+      <div class="stars">⭐ ⭐ ⭐</div>
+      <span class="play-button">🐶 Spill hundepuslespill</span>
+    </a>
+
+    <a class="big-card puzzle cat-puzzle" href="https://www.xn--hundenevre-85a.com/kattepuslespill.html" target="_blank" rel="noopener noreferrer">
+      <div class="big-icon">🐱🧩</div>
+      <h3>Kattepuslespill</h3>
+      <p>
+        Velg katterase og nivå: Lett, Medium, Vanskelig eller Ekspert.
+        Samme puslespilloppsett, men med kattestil og kattebilder.
+      </p>
+      <div class="stars">⭐ ⭐ ⭐</div>
+      <span class="play-button">🐱 Spill kattepuslespill</span>
+    </a>
+
+    <a class="big-card memory" href="https://www.xn--hundenevre-85a.com/memorymap.html" target="_blank" rel="noopener noreferrer">
+      <div class="big-icon">🗺️</div>
+      <h3>Memory Adventure MAP</h3>
+      <p>
+        Gå inn i Memory Adventure med Hundeparken, mørk skog, kennel,
+        bonusbane, nattmemory og mesterbane.
+      </p>
+      <div class="stars">⭐ ⭐ ⭐</div>
+      <span class="play-button">➡️ Åpne kart</span>
+    </a>
+
+  </div>
+</section>
+
+<section class="section">
+  <h2>🎯 Quiz</h2>
+  <p class="lead">Test kunnskapene dine om hunder, katter, land og musikk.</p>
+
+  <div class="game-grid">
+
+    <a class="game-card music" href="https://www.xn--hundenevre-85a.com/musikkquiz.html" target="_blank" rel="noopener noreferrer">
+      <div class="game-icon">🎵</div>
+      <h3>Musikk Quiz</h3>
+      <p>60-, 70-, 80- og 90-tallet med country, soul, pop og rock.</p>
+      <div class="stars">⭐ ⭐ ⭐</div>
+      <span class="play-button">▶️ Spill</span>
+    </a>
+
+    <a class="game-card dog" href="https://www.xn--hundenevre-85a.com/hunderasequiz.html" target="_blank" rel="noopener noreferrer">
+      <div class="game-icon">🐕</div>
+      <h3>Hunderase Quiz</h3>
+      <p>Gjett riktig hunderase og test hva du kan om hunder.</p>
+      <div class="stars">⭐ ⭐ ⭐</div>
+      <span class="play-button">▶️ Spill</span>
+    </a>
+
+    <a class="game-card cat" href="https://www.xn--hundenevre-85a.com/katterasequiz.html" target="_blank" rel="noopener noreferrer">
+      <div class="game-icon">🐈</div>
+      <h3>Katterase Quiz</h3>
+      <p>Gjett riktig katterase og lær mer om katter.</p>
+      <div class="stars">⭐ ⭐ ⭐</div>
+      <span class="play-button">▶️ Spill</span>
+    </a>
+
+    <a class="game-card dog" href="https://www.xn--hundenevre-85a.com/hundelandquiz.html" target="_blank" rel="noopener noreferrer">
+      <div class="game-icon">🌍🐶</div>
+      <h3>Hundeland Quiz</h3>
+      <p>Hvilket land kommer hunderasene fra?</p>
+      <div class="stars">⭐ ⭐ ⭐</div>
+      <span class="play-button">▶️ Spill</span>
+    </a>
+
+    <a class="game-card cat" href="https://www.xn--hundenevre-85a.com/kattelandquiz.html" target="_blank" rel="noopener noreferrer">
+      <div class="game-icon">🌍🐱</div>
+      <h3>Katteland Quiz</h3>
+      <p>Hvilket land forbindes katterasene med?</p>
+      <div class="stars">⭐ ⭐ ⭐</div>
+      <span class="play-button">▶️ Spill</span>
+    </a>
+
+  </div>
+</section>
+
+
+
+<div class="footer">
+  Spillglede – Dyrespill, Memory, puslespill og quiz 🐾
 </div>
-<div class="about-wrap"><a class="about-btn" href="om-spillglede.html">❤️ Om Spillglede</a></div>
-<footer>Spillglede – for familie og venner ❤️</footer>
+
+</div>
+<a class="mobile-home" href="index.html">← Spillglede</a>
 </body>
 </html>
