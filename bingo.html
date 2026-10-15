@@ -7,23 +7,23 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;font-family:Arial,sans-serif;color:white;
-background:radial-gradient(circle at 50% 0,#075397,#03182f 68%);
+background:radial-gradient(ellipse at 50% 0,#126cb6 0%,#052b53 48%,#021325 100%);
 display:flex;align-items:center;justify-content:center;padding:22px}
 .wrap{width:min(1050px,100%);text-align:center}
-h1{font-size:clamp(42px,8vw,82px);margin:0 0 8px;font-weight:1000;letter-spacing:3px}
-p{font-size:20px;margin:0 0 28px}
-.games{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+h1{font-size:clamp(38px,8vw,78px);margin:0 0 8px;font-weight:1000;letter-spacing:3px;color:#ffe27b;text-shadow:0 4px 0 #8a4b0b,0 8px 20px #0008}
+p{font-size:clamp(14px,2.5vw,20px);margin:0 0 25px;font-weight:700}
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .game{display:block;text-decoration:none;color:white;border:4px solid rgba(255,255,255,.5);
-border-radius:28px;padding:34px 18px;box-shadow:0 12px 30px #0008;transition:.15s}
-.game:hover{transform:translateY(-4px);border-color:white}
-.normal{background:linear-gradient(135deg,#0877df,#06447f)}
-.music{background:linear-gradient(135deg,#8b2bd1,#d33675)}
-.icon{font-size:72px;display:block}
-.name{font-size:32px;font-weight:1000;display:block;margin-top:8px}
-.desc{font-size:18px;font-weight:700;display:block;margin-top:10px}
+border-radius:24px;padding:29px 15px;box-shadow:inset 0 2px 0 #ffffff50,0 7px 0 #00172b,0 14px 24px #0008;transition:transform .15s,filter .15s;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:260px}
+.game:hover,.game:focus-visible{transform:translateY(-3px);border-color:#ffe27b;filter:brightness(1.08)}
+.normal{background:linear-gradient(145deg,#188ef0,#07529d 65%,#053565)}
+.music{background:linear-gradient(145deg,#a342e7,#a326a9 55%,#d13577)}
+.icon{font-size:66px;display:block;filter:drop-shadow(0 5px 4px #0005)}
+.name{font-size:clamp(20px,3.4vw,30px);font-weight:1000;display:block;margin-top:10px;text-shadow:0 2px 4px #0008}
+.desc{font-size:clamp(12px,2vw,17px);font-weight:700;display:block;margin-top:10px;line-height:1.35}
 .back{display:inline-block;margin-top:28px;color:white;text-decoration:none;font-weight:900;
-background:#07549a;border:2px solid #24a9ff;border-radius:15px;padding:11px 18px}
-@media(max-width:650px){.games{grid-template-columns:1fr}.game{padding:24px 14px}.icon{font-size:58px}.name{font-size:27px}}
+background:linear-gradient(#ffe791,#e7ae37);color:#2a200b;border:2px solid #fff0b4;border-radius:18px;padding:12px 22px;box-shadow:0 4px 0 #8d590d,0 8px 16px #0007}
+@media(max-width:650px){body{padding:12px 8px;align-items:flex-start}.wrap{padding-top:12px}h1{letter-spacing:1px}p{margin-bottom:18px}.games{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.game{min-height:200px;padding:16px 6px;border-width:3px;border-radius:17px}.icon{font-size:clamp(37px,10vw,55px)}.name{font-size:clamp(16px,4.5vw,23px);line-height:1.15}.desc{font-size:clamp(11px,3vw,14px)}.back{margin-top:24px;font-size:14px}}@media(max-width:340px){.games{gap:6px}.game{padding:12px 4px;min-height:185px}.name{font-size:15px}}@media(prefers-reduced-motion:reduce){.game{transition:none}}
 </style>
 </head>
 <body>
