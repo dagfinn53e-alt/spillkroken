@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bil-Ludo – Spillglede (TEST)</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#fff;background:radial-gradient(circle at top,#315b43,#101b16 60%,#080c0a)}
+.wrap{max-width:1050px;margin:auto;padding:14px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.back{color:#fff;text-decoration:none;font-weight:800;background:#ffffff18;padding:10px 14px;border:1px solid #ffffff44;border-radius:12px}.logo{font-weight:900;font-size:25px;color:#ffd54a;text-shadow:2px 2px #6e2100}
+.frame{background:linear-gradient(145deg,#713a1d,#3b1c0d);border:5px solid #cb8735;border-radius:26px;padding:17px;box-shadow:0 16px 50px #0008,inset 0 0 0 2px #f2c36e}
+.game{background:#0d5638;border:3px solid #e4ad4b;border-radius:19px;padding:16px}h1{text-align:center;color:#ffdc55;font-size:44px;margin:0;text-shadow:3px 3px #7d2400}.sub{text-align:center;color:#f6e9c9;margin:5px 0 13px}
+.layout{display:grid;grid-template-columns:minmax(300px,650px) 1fr;gap:18px;align-items:start}
+.board{position:relative;aspect-ratio:1;background:#f8e9c4;border:5px solid #2a170c;border-radius:14px;overflow:hidden;box-shadow:0 10px 25px #0006}
+.cell{position:absolute;width:6.67%;height:6.67%;border:1px solid #8b7659;background:#fff8e7}.path{background:#fff8e7}.safe{background:#f1d47b}
+.home{position:absolute;width:40%;height:40%;border:3px solid #382313;display:grid;grid-template-columns:1fr 1fr;place-items:center;padding:9%}.home.red{left:0;top:0;background:#e74b3f}.home.green{right:0;top:0;background:#3eb65a}.home.yellow{right:0;bottom:0;background:#f0cf35}.home.blue{left:0;bottom:0;background:#368bd4}
+.nest{width:56%;aspect-ratio:1;background:#fff9;border:2px solid #4c3926;border-radius:50%}.center{position:absolute;left:40%;top:40%;width:20%;height:20%;background:conic-gradient(#3eb65a 0 25%,#f0cf35 0 50%,#368bd4 0 75%,#e74b3f 0);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+.token{position:absolute;width:5.2%;aspect-ratio:1;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 5px #0008;z-index:10;transform:translate(-50%,-50%);cursor:pointer}.token.red{background:#c51e22}.token.green{background:#168b38}.token.yellow{background:#d6a900}.token.blue{background:#176ab1}.token.can{outline:4px solid #fff;animation:pulse .8s infinite alternate}@keyframes pulse{to{transform:translate(-50%,-50%) scale(1.15)}}
+.panel{background:#2b170c;border:2px solid #d59a43;border-radius:16px;padding:15px}.turn{font-size:20px;font-weight:900;text-align:center;margin-bottom:12px}.die{display:block;margin:10px auto;width:90px;height:90px;border:4px solid #e1bd75;border-radius:18px;background:#fff9e8;color:#111;font-size:55px;font-weight:900;box-shadow:0 7px 0 #8d642d;cursor:pointer}.die:disabled{opacity:.65}.info{text-align:center;min-height:58px;color:#ffe9ae;font-weight:700}.players{display:grid;gap:7px;margin:12px 0}.p{padding:9px;border-radius:10px;font-weight:800;border:2px solid transparent}.p.active{border-color:#fff}.p.red{background:#9e2727}.p.green{background:#16723a}.p.yellow{background:#947b11}.p.blue{background:#1b5d91}.new{width:100%;padding:11px;border-radius:12px;border:1px solid #f0c76d;background:#5d2c15;color:#fff;font-weight:900;cursor:pointer}
+.setup{text-align:center;margin-bottom:12px}.nickname{width:min(220px,90%);padding:9px;border-radius:9px;border:2px solid #e4ad4b;font-size:16px;margin:4px 7px;background:#fff;color:#222}.playernames{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:8px auto}.playernames label{display:flex;align-items:center;gap:5px;background:#ffffff12;padding:5px 8px;border-radius:10px}.playernames input{width:125px;max-width:34vw;border:1px solid #e4ad4b;border-radius:7px;padding:7px;font-size:15px}.scorebox{max-width:650px;margin:8px auto 14px;padding:10px;border:1px solid #e4ad4b;border-radius:12px;background:#ffffff12}.scorebox h3{margin:0 0 8px;text-align:center;color:#ffdc55}.scoreline{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #ffffff22}.scoreline:last-child{border:0}@media(max-width:760px){.scorebox{margin:6px auto 9px;padding:7px 10px}.scorebox h3{font-size:16px;margin-bottom:3px}.scoreline{padding:3px 0;font-size:13px}.playernames{margin:5px auto}.playernames label{padding:3px 6px}.playernames input{padding:5px}}@media(max-width:760px){.wrap{padding:7px}.panel{padding:9px}.p{padding:6px}.players{margin:7px 0}.info{min-height:36px}.turn{margin-bottom:4px}.sub{margin:3px 0 7px}.die{margin:5px auto}}.clear-names{background:#fff4d6;color:#41230d;border:1px solid #d59a43;border-radius:9px;padding:7px 10px;font-weight:800;cursor:pointer;margin:4px}.setup select{font-size:16px;padding:8px;border-radius:9px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.panel{max-width:650px;width:100%;margin:auto}.die{width:75px;height:75px;font-size:45px}h1{font-size:36px}.frame{padding:8px}.game{padding:9px}.logo{font-size:20px}}
+
+
+/* Bil-Ludo testdesign – originale spilleregler og lagring er beholdt */
+body{background:radial-gradient(circle at 50% 0,#3b697a 0,#172a34 45%,#0b1420 100%)}
+.frame{background:linear-gradient(140deg,#324c60,#162431);border-color:#e6a947;box-shadow:0 18px 45px #0008,inset 0 0 0 2px #ffdf8e}
+.game{background:linear-gradient(145deg,#15546a,#0a3544);border-color:#f8cc66}
+h1{font-size:clamp(31px,5vw,51px);letter-spacing:1px;color:#ffe483;text-shadow:2px 3px #6c3b0e}
+.sub{font-weight:700}.logo{color:#ffe483}
+.board{background:repeating-linear-gradient(45deg,#72b56c 0 14px,#7fbd76 14px 28px);border:6px solid #333b44;box-shadow:0 0 0 4px #f2cb6b,0 12px 30px #0008}
+.cell.lane{border:1px solid #fff9;box-shadow:inset 0 0 0 2px #ffffff66;border-radius:5px;z-index:2}.cell.path{background:#4b5860;border:1px solid #b8b9ad;box-shadow:inset 0 0 0 2px #69757c}
+.cell.path:after{content:"";position:absolute;left:35%;right:35%;top:45%;border-top:2px dashed #f9f5d5;opacity:.8}
+.cell.safe{background:#f6d763;box-shadow:inset 0 0 0 2px #fff1a6}
+.cell.safe:after{content:"★";border:0;top:8%;left:24%;font-size:clamp(8px,2vw,19px);color:#74471a}
+.home{border:4px solid #2c3438;border-radius:12px;box-shadow:inset 0 0 0 3px #ffffff33}
+.home.red{background:linear-gradient(145deg,#ff8273,#b72d32)}
+.home.green{background:linear-gradient(145deg,#80e59c,#1a8d56)}
+.home.yellow{background:linear-gradient(145deg,#ffef8a,#d3a526)}
+.home.blue{background:linear-gradient(145deg,#7dc8ff,#2679bc)}
+.nest{background:#f9f6e3cc;border:2px dashed #38424c;box-shadow:inset 0 2px 3px #0002}
+.center{filter:drop-shadow(0 0 4px #fff8)}
+.token{display:grid;place-items:center;font-size:clamp(11px,2.35vw,26px);width:6.3%;border:2px solid white;border-radius:35%;background:#fff!important;line-height:1;padding:0;box-shadow:0 2px 5px #000a,0 0 0 2px var(--car-color)}
+.token.red{--car-color:#b92e31}.token.green{--car-color:#0e8240}.token.yellow{--car-color:#c18c00}.token.blue{--car-color:#1465a8}
+.token.can{outline:3px solid #ffed6c;box-shadow:0 0 0 4px var(--car-color),0 0 15px 6px #fff8a8;z-index:30}
+.panel{background:linear-gradient(155deg,#243c4e,#172b3c);border-color:#efc66e}
+.die{background:#fff5d8;border-color:#ffcf63;box-shadow:0 7px 0 #96611c}
+.new{background:#a65d1d;border-color:#fbd582}
+.p{box-shadow:inset 0 0 0 1px #ffffff33}.p.active{border-color:#ffe377;box-shadow:0 0 0 2px #fff8}
+.scorebox{background:#102f4088}.rules{max-width:650px;margin:0 auto 13px;border:1px solid #e8c66a;border-radius:12px;background:#102e3d;padding:9px 13px;color:#fff3ce}.rules summary{cursor:pointer;font-weight:800}.rules p{margin:9px 0 3px;line-height:1.45}
+@media(max-width:760px){.token{font-size:clamp(10px,3.2vw,17px);width:7.1%;border-width:1px}.board{border-width:4px}.home{border-width:2px}.rules{font-size:13px}.sub{font-size:13px}}
+/* Hver spiller har sin egen tydelige bilfarge. */
+.token.red{color:#e63946}.token.green{color:#24a34b}.token.yellow{color:#f2c323}.token.blue{color:#2389e9}
+.token svg{display:block;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 1px 1px #0007)}
+.token{background:#fffef5!important;overflow:visible}
+</style></head>
+<body><div class="wrap"><div class="top"><a class="back" href="index.html">← Spillglede</a><div class="logo">SPILLGLEDE 🎲</div></div>
+<div class="frame"><div class="game"><h1>🏎️ BIL-LUDO</h1><div class="sub">Fire garasjer · fire lag · første lag med alle bilene i mål vinner!</div><details class="rules"><summary>📖 Slik spiller du</summary><p>Kast 6 for å kjøre en bil ut av garasjen. Trykk på en bil med lysende ramme for å flytte. Land på en motstanders rute for å sende bilen tilbake til garasjen. Du må ha nøyaktig kast for å komme i mål. Kast 6 og få en ekstra tur.</p></details>
+<div class="setup"><label>🏅 Ditt nickname: <input id="nickname" class="nickname" maxlength="24" placeholder="Velg spillernavn"></label><div>Antall spillere: <select id="count"><option value="2">2 spillere</option><option value="3">3 spillere</option><option value="4" selected>4 spillere</option></select></div><button id="clearNames" type="button" class="clear-names">🧹 Tøm testnavn</button></div>
+<div id="playernames" class="playernames"></div><div class="scorebox"><h3>🏆 TOPP 5 – LUDO</h3><div id="scores"></div></div><div class="layout"><div id="board" class="board">
+<div class="home red"><i class="nest"></i><i class="nest"></i><i class="nest"></i><i class="nest"></i></div>
+<div class="home green"><i class="nest"></i><i class="nest"></i><i class="nest"></i><i class="nest"></i></div>
+<div class="home yellow"><i class="nest"></i><i class="nest"></i><i class="nest"></i><i class="nest"></i></div>
+<div class="home blue"><i class="nest"></i><i class="nest"></i><i class="nest"></i><i class="nest"></i></div><div class="center"></div></div>
+<div class="panel"><div id="turn" class="turn"></div><button id="die" class="die">🎲</button><div id="info" class="info">Trykk på terningen.</div><div id="players" class="players"></div><button id="new" class="new">↻ Nytt spill</button></div>
+</div></div></div></div>
+<script>
+const nickKey="spillglede_nickname_v1", scoreKey="spillglede_brettspill_scores_v1";
+const nicknameInput=document.querySelector("#nickname");
+try{nicknameInput.value=localStorage.getItem(nickKey)||""}catch(e){}
+function nickname(){return nicknameInput.value.trim().slice(0,24)||"Spiller 1"}
+const otherNamesKey="spillglede_ludo_other_names_v1";
+let otherNames=[];
+try{otherNames=JSON.parse(localStorage.getItem(otherNamesKey)||"[]")}catch(e){}
+function playerName(index){if(index===0)return nickname();return (otherNames[index-1]||"").trim()||"Spiller "+(index+1)}
+function drawNameFields(){
+ const wrap=document.querySelector("#playernames");wrap.replaceChildren();
+ for(let i=1;i<N;i++){
+  const label=document.createElement("label");label.textContent="Spiller "+(i+1)+":";
+  const field=document.createElement("input");field.type="text";field.maxLength=24;
+  field.placeholder="Nickname";field.value=otherNames[i-1]||"";
+  field.addEventListener("input",()=>{otherNames[i-1]=field.value;try{localStorage.setItem(otherNamesKey,JSON.stringify(otherNames))}catch(e){}render()});
+  label.appendChild(field);wrap.appendChild(label);
+ }
+}
+
+function saveNickname(){try{const name=nicknameInput.value.trim();if(name)localStorage.setItem(nickKey,name);else localStorage.removeItem(nickKey)}catch(e){}}
+nicknameInput.addEventListener("change",()=>{saveNickname();render()});
+function getScores(){try{return JSON.parse(localStorage.getItem(scoreKey)||"{}")}catch(e){return {}}}
+function awardWinner(color){
+ const name=playerName(colors.indexOf(color));
+ const data=getScores();const key=name.toLocaleLowerCase("no");
+ if(!data[key])data[key]={name,points:0,wins:0};
+ data[key].points+=100;data[key].wins+=1;
+ try{localStorage.setItem(scoreKey,JSON.stringify(data))}catch(e){}
+ renderScores();
+}
+function renderScores(){
+ const scores=Object.values(getScores()).sort((a,b)=>b.points-a.points).slice(0,5);
+ const target=document.querySelector("#scores");target.replaceChildren();
+ if(!scores.length){target.textContent="Ingen resultater ennå.";return}
+ scores.forEach((p,i)=>{const row=document.createElement("div");row.className="scoreline";const n=document.createElement("span");n.textContent=(i+1)+". "+p.name;const v=document.createElement("strong");v.textContent=p.points+" poeng";row.append(n,v);target.appendChild(row)})
+}
+const colors=["red","green","yellow","blue"], names={red:"Rød",green:"Grønn",yellow:"Gul",blue:"Blå"};
+const board=document.querySelector("#board"), dieBtn=document.querySelector("#die"), info=document.querySelector("#info");
+let N=4, turn=0, roll=0, waiting=false, pieces={};
+const path=[];
+function addPath(){
+ // 52-step rectangular/ring path represented around an inset square; visually clear and playable.
+ const pts=[];
+ for(let i=0;i<52;i++){const a=(-135+i*360/52)*Math.PI/180;pts.push([50+32*Math.cos(a),50+32*Math.sin(a)])}
+ return pts;
+}
+path.push(...addPath());
+const starts={red:0,green:13,yellow:26,blue:39};
+const laneColors={red:"#e74b3f",green:"#3eb65a",yellow:"#f0cf35",blue:"#368bd4"};
+const nests={red:[[13,13],[27,13],[13,27],[27,27]],green:[[73,13],[87,13],[73,27],[87,27]],yellow:[[73,73],[87,73],[73,87],[87,87]],blue:[[13,73],[27,73],[13,87],[27,87]]};
+function lanePos(color,step){
+ // After 52 squares the car enters its OWN six-space finishing lane.
+ // The last square (57) is the goal; all four lanes end at the center.
+ const entry=path[(starts[color]+51)%52];
+ const fraction=(step-51)/6;
+ return [entry[0]+(50-entry[0])*fraction,entry[1]+(50-entry[1])*fraction];
+}
+function drawTrack(){
+ path.forEach((p,i)=>{let c=document.createElement("div");c.className="cell path";c.style.left=(p[0]-3.335)+"%";c.style.top=(p[1]-3.335)+"%";board.appendChild(c)});
+ colors.forEach(color=>{
+  for(let step=52;step<=56;step++){
+   const [x,y]=lanePos(color,step);
+   const c=document.createElement("div");c.className="cell lane";
+   c.style.left=(x-3.335)+"%";c.style.top=(y-3.335)+"%";
+   c.style.background=laneColors[color];c.title=names[color]+" vei mot mål";
+   board.appendChild(c);
+  }
+ });
+}
+function posPiece(pc){
+ let x,y;
+ if(pc.step<0){[x,y]=nests[pc.color][pc.id]}
+ else if(pc.step>=52){[x,y]=lanePos(pc.color,pc.step);
+  if(pc.step===57){ // Keep completed cars individually visible in the center.
+   x=46+(pc.id%2)*8;y=46+Math.floor(pc.id/2)*8;
+  }
+ } else {[x,y]=path[(starts[pc.color]+pc.step)%52]}
+ pc.el.style.left=x+"%";pc.el.style.top=y+"%";
+ pc.el.style.zIndex=pc.step===57?25:12;
+}
+function build(){
+ document.querySelectorAll(".token").forEach(x=>x.remove());pieces={};
+ colors.slice(0,N).forEach(c=>{pieces[c]=[];for(let i=0;i<4;i++){let el=document.createElement("button");el.className="token "+c;el.type="button";el.innerHTML=`<svg viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path fill="currentColor" stroke="#18202a" stroke-width="2.5" d="M13 24h5l6-10h16l7 10h4a7 7 0 0 1 7 7v13h-6a8 8 0 0 1-16 0H28a8 8 0 0 1-16 0H6V32a8 8 0 0 1 7-8Z"/><path fill="#c6f2ff" d="m25 18-4 8h23l-5-8Z"/><circle cx="20" cy="44" r="6" fill="#17202a"/><circle cx="44" cy="44" r="6" fill="#17202a"/><circle cx="20" cy="44" r="2.5" fill="#d7e0e7"/><circle cx="44" cy="44" r="2.5" fill="#d7e0e7"/></svg>`;el.setAttribute("aria-label",names[c]+" bil "+(i+1));el.title=names[c]+" bil "+(i+1);board.appendChild(el);let pc={color:c,id:i,step:-1,el};el.onclick=()=>move(pc);pieces[c].push(pc);posPiece(pc)}});render()
+}
+function current(){return colors[turn]}
+function legal(pc){if(pc.color!==current())return false;if(pc.step<0)return roll===6;if(pc.step>=57)return false;return pc.step+roll<=57}
+function render(){
+ document.querySelector("#turn").textContent="Tur: "+(playerName(turn));
+ document.querySelector("#players").innerHTML=colors.slice(0,N).map((c,i)=>`<div class="p ${c} ${i===turn?"active":""}">${playerName(i)}</div>`).join("");
+ document.querySelectorAll(".token").forEach(x=>x.classList.remove("can"));
+ if(waiting)pieces[current()].filter(legal).forEach(p=>p.el.classList.add("can"));
+}
+function throwDie(){
+ if(waiting)return;roll=1+Math.floor(Math.random()*6);dieBtn.textContent=roll;let opts=pieces[current()].filter(legal);
+ if(!opts.length){info.textContent=playerName(turn)+" fikk "+roll+" – ingen mulig flytting.";const six=roll===6;setTimeout(()=>{if(six){roll=0;dieBtn.textContent="🎲";info.textContent="Du fikk 6 – kast igjen!";render()}else next()},700)}
+ else{waiting=true;info.textContent=playerName(turn)+" fikk "+roll+". Velg en markert bil.";render()}
+}
+function move(pc){
+ if(!waiting||!legal(pc))return;
+ if(pc.step<0)pc.step=0;else pc.step+=roll;
+ let captureMessage="";
+ posPiece(pc);
+ // On the shared track, landing on an opponent sends it to the garage.
+ if(pc.step>=0&&pc.step<52){
+   let abs=(starts[pc.color]+pc.step)%52;
+   colors.slice(0,N).filter(c=>c!==pc.color).forEach(c=>pieces[c].forEach(o=>{
+     if(o.step>=0&&o.step<52&&(starts[o.color]+o.step)%52===abs){o.step=-1;posPiece(o);captureMessage="💥 "+names[pc.color]+" slo ut "+names[o.color]+" og sendte bilen til garasjen!"}
+   }))
+ }
+ waiting=false;
+ if(captureMessage)info.textContent=captureMessage;else info.textContent=playerName(turn)+" kjørte frem.";
+ if(pieces[pc.color].every(p=>p.step===57)){info.textContent="🏆 "+(playerName(colors.indexOf(pc.color)))+" vant spillet!";dieBtn.disabled=true;awardWinner(pc.color);return}
+ if(roll===6){info.textContent+=" Du fikk 6 og får kaste igjen!";roll=0;dieBtn.textContent="🎲";render()}
+ else next()
+}
+function next(){waiting=false;roll=0;turn=(turn+1)%N;dieBtn.textContent="🎲";info.textContent="Trykk på terningen.";render()}
+function reset(){saveNickname();N=+document.querySelector("#count").value;drawNameFields();turn=0;roll=0;waiting=false;dieBtn.disabled=false;dieBtn.textContent="🎲";info.textContent="Trykk på terningen.";build()}
+document.querySelector("#clearNames").onclick=()=>{
+ if(!confirm("Vil du tømme alle lagrede nickname-felt på denne enheten? Poenglisten beholdes."))return;
+ nicknameInput.value="";otherNames=[];
+ try{localStorage.removeItem(nickKey);localStorage.removeItem(otherNamesKey)}catch(e){}
+ drawNameFields();render();
+};
+drawTrack();renderScores();dieBtn.onclick=throwDie;document.querySelector("#new").onclick=()=>{if(confirm("Starte et nytt Ludo-spill?"))reset()};document.querySelector("#count").onchange=reset;reset();
+</script></body></html>
